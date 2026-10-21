@@ -481,6 +481,7 @@ private fun AboutPage(onBack: () -> Unit) {
         Pref("QV Gallery", tr(R.string.version_fmt, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE))
         Pref(tr(R.string.description), tr(R.string.about_body))
         Pref(tr(R.string.device), "${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}")
+        Pref("License", "MIT")
         Pref(tr(R.string.open_source), "Jetpack Compose, Coil, Telephoto, Media3 (Apache 2.0)")
     }
 }
