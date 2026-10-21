@@ -1,0 +1,39 @@
+name: sonar-issues
+# Waits for SonarCloud's analysis of each push and exports the open issues to the ci-sonar branch.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  checks: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Export SonarCloud issues
+        run: |
+          [ -n "$SONAR_TOKEN" ] || { echo "SONAR_TOKEN not set; nothing to do"; exit 0; }
+          for i in $(seq 1 80); do
+            R=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/check-runs" \
+                --jq '[.check_runs[] | select(.name | startswith("SonarCloud"))][0] | "\(.status) \(.conclusion)"')
+            echo "SonarCloud: $R"
+            case "$R" in completed*) break ;; esac
+            sleep 15
+          done
+          mkdir -p sonar && cd sonar
+          KEY="jimmy-yu-UU_quick-view-gallery"
+          curl -sf -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?componentKeys=$KEY&branch=main&resolved=false&ps=500" > issues.json || echo '{}' > issues.json
+          curl -sf -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$KEY&branch=main" > gate.json || echo '{}' > gate.json
+          python3 ../.github/scripts/sonar_issues.py
+          echo "sha=${{ github.sha }} sonar=$R" > status.txt
+          git init -q && git add -A
+          git -c user.name=ci -c user.email=ci@local commit -qm "sonar issues for ${{ github.sha }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" HEAD:ci-sonar

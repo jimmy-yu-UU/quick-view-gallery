@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   release:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # Runs for every UI test so SonarCloud issues are exported; publishing needs a passing test.
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
@@ -31,7 +31,7 @@ jobs:
           echo "build run: $RUN"
 
       - name: Wait for SonarCloud quality gate
-        if: steps.build.outputs.wip != 'true'
+        if: steps.build.outputs.wip != 'true' && github.event.workflow_run.conclusion == 'success'
         run: |
           for i in $(seq 1 80); do
             R=$(gh api "repos/${{ github.repository }}/commits/$SHA/check-runs" \
@@ -46,39 +46,22 @@ jobs:
           echo "::error::SonarCloud result did not arrive in time; not releasing."
           exit 1
 
-      # So the problems can be read and fixed: dump SonarCloud's open issues to the ci-sonar branch.
-      - name: Export SonarCloud issues
-        if: always() && steps.build.outputs.wip != 'true'
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          [ -n "$SONAR_TOKEN" ] || { echo "SONAR_TOKEN not set; skipping issue export"; exit 0; }
-          mkdir -p sonar && cd sonar
-          KEY="jimmy-yu-UU_quick-view-gallery"
-          curl -sf -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?componentKeys=$KEY&branch=main&resolved=false&ps=500" > issues.json || echo '{}' > issues.json
-          curl -sf -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$KEY&branch=main" > gate.json || echo '{}' > gate.json
-          python3 ../.github/scripts/sonar_issues.py
-          echo "sha=$SHA" > status.txt
-          git init -q && git add -A
-          git -c user.name=ci -c user.email=ci@local commit -qm "sonar issues for $SHA"
-          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" HEAD:ci-sonar
-
       - uses: actions/download-artifact@v4
-        if: steps.build.outputs.wip != 'true'
+        if: steps.build.outputs.wip != 'true' && github.event.workflow_run.conclusion == 'success'
         with:
           name: apk
           run-id: ${{ steps.build.outputs.run }}
           github-token: ${{ github.token }}
 
       - uses: actions/download-artifact@v4
-        if: steps.build.outputs.wip != 'true'
+        if: steps.build.outputs.wip != 'true' && github.event.workflow_run.conclusion == 'success'
         with:
           name: release-meta
           run-id: ${{ steps.build.outputs.run }}
           github-token: ${{ github.token }}
 
       - name: Publish release
-        if: steps.build.outputs.wip != 'true'
+        if: steps.build.outputs.wip != 'true' && github.event.workflow_run.conclusion == 'success'
         run: |
           VERSION=$(cat version.txt)
           if [ "$(cat signed.txt)" != "true" ]; then echo "::error::Build was not signed with the release key."; exit 1; fi

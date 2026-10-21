@@ -185,8 +185,16 @@ def push_media():
     adb("push", f"{MEDIA}/Big", "/sdcard/Pictures/", timeout=300)
     adb("push", f"{MEDIA}/Formats", "/sdcard/Pictures/", timeout=300)
     adb("push", f"{MEDIA}/Camera", "/sdcard/DCIM/", timeout=300)
-    sh("content call --method scan_volume --uri content://media --arg external_primary", timeout=300)
-    time.sleep(5)
+    # Wait until MediaStore has indexed every test file; a slow emulator can lag behind the push.
+    expected = sum(len(files) for _, _, files in os.walk(MEDIA))
+    for attempt in range(12):
+        sh("content call --method scan_volume --uri content://media --arg external_primary", timeout=300)
+        rows = sh("content query --uri content://media/external/file --projection _data")
+        indexed = sum(1 for l in rows.splitlines() if "/Pictures/" in l or "/DCIM/Camera/" in l)
+        log(f"indexed {indexed}/{expected}")
+        if indexed >= expected:
+            break
+        time.sleep(10)
     log("media count: " + sh("content query --uri content://media/external/file --projection _data | grep -c _data"))
 
 
