@@ -1,5 +1,7 @@
 package com.jimmyyu.qvgallery.ui
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import android.app.Activity
 import android.view.WindowManager
 import androidx.activity.compose.BackHandler
@@ -165,7 +167,7 @@ fun SlideshowScreen(settings: AppSettings, source: List<MediaItem>, startIndex: 
                     .padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = { exit() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "結束", tint = Color.White) }
+                IconButton(onClick = { exit() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, tr(R.string.exit), tint = Color.White) }
                 Text(
                     "${index + 1} / ${order.size}   ${order.getOrNull(index)?.name.orEmpty()}",
                     color = Color.White,
@@ -185,13 +187,13 @@ fun SlideshowScreen(settings: AppSettings, source: List<MediaItem>, startIndex: 
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 IconButton(onClick = { index = if (index > 0) index - 1 else order.size - 1 }) {
-                    Icon(Icons.Filled.SkipPrevious, "上一張", tint = Color.White)
+                    Icon(Icons.Filled.SkipPrevious, tr(R.string.previous), tint = Color.White)
                 }
                 IconButton(onClick = { paused = !paused }) {
-                    Icon(if (paused) Icons.Filled.PlayArrow else Icons.Filled.Pause, if (paused) "播放" else "暫停", tint = Color.White)
+                    Icon(if (paused) Icons.Filled.PlayArrow else Icons.Filled.Pause, if (paused) tr(R.string.play) else tr(R.string.pause), tint = Color.White)
                 }
                 IconButton(onClick = { index = if (index + 1 < order.size) index + 1 else 0 }) {
-                    Icon(Icons.Filled.SkipNext, "下一張", tint = Color.White)
+                    Icon(Icons.Filled.SkipNext, tr(R.string.next), tint = Color.White)
                 }
             }
         }

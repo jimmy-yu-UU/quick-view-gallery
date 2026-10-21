@@ -39,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -76,8 +77,19 @@ import com.jimmyyu.qvgallery.ui.theme.QvTheme
 import com.jimmyyu.qvgallery.ui.viewer.KeyEvents
 import com.jimmyyu.qvgallery.ui.viewer.ViewerScreen
 import java.io.File
+import java.lang.ref.WeakReference
 
 open class BaseActivity : FragmentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        App.uiContext = WeakReference(this)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        App.uiContext = WeakReference(this)
+    }
+
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         val code = event.keyCode
         if (code == KeyEvent.KEYCODE_VOLUME_UP || code == KeyEvent.KEYCODE_VOLUME_DOWN) {
@@ -125,11 +137,12 @@ fun AppGate(vm: GalleryViewModel, s: AppSettings, content: @Composable () -> Uni
     val context = LocalContext.current
     var permitted by remember { mutableStateOf(hasMediaPermission(context)) }
     var lockTick by remember { mutableIntStateOf(0) }
+    val latest by rememberUpdatedState(s)
     LifecycleResumeEffect(Unit) {
         val now = hasMediaPermission(context)
         if (now && !permitted) vm.reload()
         permitted = now
-        LockManager.onAppForeground(s.relockSeconds)
+        LockManager.onAppForeground(latest.relockSeconds)
         lockTick++
         onPauseOrDispose {}
     }
@@ -165,10 +178,10 @@ private fun PermissionScreen(onGranted: () -> Unit) {
         ) {
             Icon(Icons.Filled.PhotoLibrary, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(64.dp))
             Spacer(Modifier.height(24.dp))
-            Text("需要存取你的相片", style = MaterialTheme.typography.headlineSmall)
+            Text(tr(R.string.perm_title), style = MaterialTheme.typography.headlineSmall)
             Spacer(Modifier.height(12.dp))
             Text(
-                "建議授予「所有檔案存取權」，才能完整使用移動、複製、重新命名、刪除、SD 卡與 USB 隨身碟等功能。\n所有資料都只在手機上處理，不會上傳。",
+                tr(R.string.perm_body),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -180,14 +193,14 @@ private fun PermissionScreen(onGranted: () -> Unit) {
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("授予所有檔案存取權 (建議)") }
+            ) { Text(tr(R.string.perm_all_files)) }
             Spacer(Modifier.height(12.dp))
             OutlinedButton(
                 onClick = {
                     requestMedia.launch(arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO))
                 },
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("只允許讀取相片與影片") }
+            ) { Text(tr(R.string.perm_media_only)) }
         }
     }
 }
@@ -324,7 +337,7 @@ private fun HiddenGate(s: AppSettings, onCancel: () -> Unit, content: @Composabl
         LockScreen(
             type = s.lockType,
             biometric = s.biometric,
-            title = "解鎖以查看隱藏的相簿",
+            title = tr(R.string.unlock_hidden),
             onCancel = onCancel,
             check = { LockManager.verify(it, s) },
             onUnlocked = { LockManager.markUnlocked(); unlocked = true },

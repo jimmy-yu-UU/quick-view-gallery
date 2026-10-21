@@ -1,5 +1,7 @@
 package com.jimmyyu.qvgallery.ui.viewer
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import android.view.View
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
@@ -115,7 +117,7 @@ suspend fun rotateLossless(vm: GalleryViewModel, item: MediaItem): Boolean {
         vm.fileOps.scan(listOf(item.path))
         vm.reload()
     } else {
-        vm.toast("無法直接旋轉，改用編輯器")
+        vm.toast(tr(R.string.rotate_fallback))
     }
     return ok
 }
@@ -128,26 +130,26 @@ fun DetailsDialog(item: MediaItem, onDismiss: () -> Unit) {
     }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("詳細資訊") },
+        title = { Text(tr(R.string.details)) },
         text = {
             SelectionContainer {
                 Column(Modifier.heightIn(max = 480.dp).verticalScroll(rememberScrollState())) {
                     val rows = buildList {
-                        add("名稱" to item.name)
-                        add("路徑" to item.path)
-                        add("大小" to formatSize(context, item.size))
-                        if (item.width > 0) add("解析度" to "${item.width} × ${item.height}")
-                        if (item.isVideo && item.duration > 0) add("長度" to formatDuration(item.duration))
-                        add("拍攝日期" to formatDate(item.dateTaken))
-                        add("修改日期" to formatDate(item.dateModified))
-                        add("類型" to item.mimeType)
+                        add(tr(R.string.name) to item.name)
+                        add(tr(R.string.path) to item.path)
+                        add(tr(R.string.size) to formatSize(context, item.size))
+                        if (item.width > 0) add(tr(R.string.resolution) to "${item.width} × ${item.height}")
+                        if (item.isVideo && item.duration > 0) add(tr(R.string.duration) to formatDuration(item.duration))
+                        add(tr(R.string.date_taken) to formatDate(item.dateTaken))
+                        add(tr(R.string.date_modified) to formatDate(item.dateModified))
+                        add(tr(R.string.type) to item.mimeType)
                         addAll(exif)
                     }
                     rows.forEach { (k, v) -> DetailRow(k, v) }
                 }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("關閉") } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(tr(R.string.close)) } },
     )
 }
 
@@ -169,15 +171,15 @@ private fun readExif(context: android.content.Context, item: MediaItem): List<Pa
             buildList {
                 val make = e.getAttribute(ExifInterface.TAG_MAKE)
                 val model = e.getAttribute(ExifInterface.TAG_MODEL)
-                if (make != null || model != null) add("相機" to listOfNotNull(make, model).joinToString(" "))
-                e.getAttribute(ExifInterface.TAG_LENS_MODEL)?.let { add("鏡頭" to it) }
-                e.getAttributeDouble(ExifInterface.TAG_F_NUMBER, 0.0).takeIf { it > 0 }?.let { add("光圈" to "f/%.1f".format(it)) }
+                if (make != null || model != null) add(tr(R.string.camera) to listOfNotNull(make, model).joinToString(" "))
+                e.getAttribute(ExifInterface.TAG_LENS_MODEL)?.let { add(tr(R.string.lens) to it) }
+                e.getAttributeDouble(ExifInterface.TAG_F_NUMBER, 0.0).takeIf { it > 0 }?.let { add(tr(R.string.aperture) to "f/%.1f".format(it)) }
                 e.getAttributeDouble(ExifInterface.TAG_EXPOSURE_TIME, 0.0).takeIf { it > 0 }?.let {
-                    add("快門" to if (it < 1) "1/${(1 / it).toInt()} s" else "%.1f s".format(it))
+                    add(tr(R.string.shutter) to if (it < 1) "1/${(1 / it).toInt()} s" else "%.1f s".format(it))
                 }
                 e.getAttribute(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY)?.let { add("ISO" to it) }
-                e.getAttributeDouble(ExifInterface.TAG_FOCAL_LENGTH, 0.0).takeIf { it > 0 }?.let { add("焦距" to "%.1f mm".format(it)) }
-                e.latLong?.let { (lat, lon) -> add("位置" to "%.5f, %.5f".format(lat, lon)) }
+                e.getAttributeDouble(ExifInterface.TAG_FOCAL_LENGTH, 0.0).takeIf { it > 0 }?.let { add(tr(R.string.focal_length) to "%.1f mm".format(it)) }
+                e.latLong?.let { (lat, lon) -> add(tr(R.string.location) to "%.5f, %.5f".format(lat, lon)) }
             }
         }.orEmpty()
     }.getOrDefault(emptyList())

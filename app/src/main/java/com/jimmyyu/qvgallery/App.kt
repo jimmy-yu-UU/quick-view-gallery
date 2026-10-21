@@ -2,6 +2,8 @@ package com.jimmyyu.qvgallery
 
 import android.app.Application
 import android.content.Context
+import androidx.annotation.StringRes
+import java.lang.ref.WeakReference
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -37,6 +39,7 @@ class App : Application(), SingletonImageLoader.Factory {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         settings = SettingsRepository(this)
         media = MediaRepository(this)
         fileOps = FileOps(this)
@@ -69,8 +72,21 @@ class App : Application(), SingletonImageLoader.Factory {
     }
 
     companion object {
+        lateinit var instance: App
+            private set
+
+        /** The foreground activity; its resources carry the current per-app language. */
+        @Volatile
+        var uiContext: WeakReference<Context>? = null
+
         fun imageCacheDir(context: Context) = context.cacheDir.resolve("image_cache")
     }
 }
 
 val Context.app: App get() = applicationContext as App
+
+/** Localised string; usable from composables, callbacks and view models alike. */
+fun tr(@StringRes id: Int, vararg args: Any): String {
+    val context = App.uiContext?.get() ?: App.instance
+    return if (args.isEmpty()) context.getString(id) else context.getString(id, *args)
+}

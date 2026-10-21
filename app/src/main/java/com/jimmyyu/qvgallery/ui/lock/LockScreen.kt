@@ -1,5 +1,7 @@
 package com.jimmyyu.qvgallery.ui.lock
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.compose.animation.core.Animatable
@@ -63,7 +65,7 @@ import kotlin.math.hypot
 fun LockScreen(
     type: LockType,
     biometric: Boolean,
-    title: String = "請解鎖",
+    title: String = tr(R.string.please_unlock),
     onCancel: (() -> Unit)? = null,
     check: (String) -> Boolean,
     onUnlocked: () -> Unit,
@@ -74,7 +76,7 @@ fun LockScreen(
     val scope = rememberCoroutineScope()
 
     fun fail() {
-        error = if (type == LockType.PATTERN) "圖形錯誤，請再試一次" else "密碼錯誤，請再試一次"
+        error = if (type == LockType.PATTERN) tr(R.string.wrong_pattern) else tr(R.string.wrong_password)
         scope.launch {
             for (x in listOf(18f, -18f, 12f, -12f, 6f, 0f)) shake.animateTo(x)
         }
@@ -94,8 +96,8 @@ fun LockScreen(
         )
         prompt.authenticate(
             BiometricPrompt.PromptInfo.Builder()
-                .setTitle("解鎖 QV Gallery")
-                .setNegativeButtonText(if (type == LockType.PATTERN) "使用圖形" else "使用密碼")
+                .setTitle(tr(R.string.unlock_app))
+                .setNegativeButtonText(if (type == LockType.PATTERN) tr(R.string.use_pattern) else tr(R.string.use_password))
                 .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
                 .build()
         )
@@ -119,9 +121,9 @@ fun LockScreen(
             }
             Spacer(Modifier.weight(1f))
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                if (onCancel != null) TextButton(onClick = onCancel) { Text("取消") }
+                if (onCancel != null) TextButton(onClick = onCancel) { Text(tr(R.string.cancel)) }
                 if (canBiometric) {
-                    FilledTonalIconButton(onClick = { promptBiometric() }) { Icon(Icons.Filled.Fingerprint, "生物辨識") }
+                    FilledTonalIconButton(onClick = { promptBiometric() }) { Icon(Icons.Filled.Fingerprint, tr(R.string.biometric)) }
                 }
             }
         }
@@ -133,30 +135,29 @@ fun LockScreen(
 fun SetupLockScreen(type: LockType, onDone: (String) -> Unit, onCancel: () -> Unit) {
     var first by remember { mutableStateOf<String?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
-    val noun = if (type == LockType.PATTERN) "圖形" else "PIN 碼"
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
             Modifier.fillMaxSize().systemBarsPadding().padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.weight(0.5f))
-            Text(if (first == null) "設定新的$noun" else "再次輸入以確認", style = MaterialTheme.typography.titleLarge)
+            Text(if (first == null) (if (type == LockType.PATTERN) tr(R.string.set_new_pattern) else tr(R.string.set_new_pin)) else tr(R.string.confirm_again), style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(8.dp))
             Text(
-                error ?: if (type == LockType.PATTERN) "至少連接 4 個點" else "至少 4 位數字",
+                error ?: if (type == LockType.PATTERN) tr(R.string.pattern_hint) else tr(R.string.pin_hint),
                 color = if (error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(24.dp))
             SecretInput(type, key = first) { secret ->
                 when {
-                    secret.length < 4 -> error = "太短了"
+                    secret.length < 4 -> error = tr(R.string.too_short)
                     first == null -> { first = secret; error = null }
                     first == secret -> onDone(secret)
-                    else -> { first = null; error = "兩次輸入不一致，請重新設定" }
+                    else -> { first = null; error = tr(R.string.mismatch) }
                 }
             }
             Spacer(Modifier.weight(1f))
-            TextButton(onClick = onCancel) { Text("取消") }
+            TextButton(onClick = onCancel) { Text(tr(R.string.cancel)) }
         }
     }
 }
@@ -248,10 +249,10 @@ fun PinPad(resetKey: Any? = null, onEntered: (String) -> Unit) {
                     Box(Modifier.size(72.dp), contentAlignment = Alignment.Center) {
                         when (k) {
                             "⌫" -> IconButton(onClick = { pin = pin.dropLast(1) }, modifier = Modifier.size(64.dp)) {
-                                Icon(Icons.AutoMirrored.Filled.Backspace, "刪除")
+                                Icon(Icons.AutoMirrored.Filled.Backspace, tr(R.string.delete))
                             }
                             "OK" -> TextButton(onClick = { if (pin.isNotEmpty()) { onEntered(pin); pin = "" } }) {
-                                Text("確定", fontWeight = FontWeight.Bold)
+                                Text(tr(R.string.ok), fontWeight = FontWeight.Bold)
                             }
                             else -> TextButton(onClick = { if (pin.length < 16) pin += k }, modifier = Modifier.size(64.dp)) {
                                 Text(k, fontSize = 26.sp)

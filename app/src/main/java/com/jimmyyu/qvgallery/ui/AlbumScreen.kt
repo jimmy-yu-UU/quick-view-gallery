@@ -1,5 +1,7 @@
 package com.jimmyyu.qvgallery.ui
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -89,7 +91,7 @@ fun rememberDeleter(vm: GalleryViewModel, settings: AppSettings): (List<MediaIte
                     systemPending = withIds to onDone
                     launcher.launch(IntentSenderRequest.Builder(vm.fileOps.deleteRequest(withIds).intentSender).build())
                 } else {
-                    vm.toast("${failed.size} 個項目無法刪除")
+                    vm.toast(tr(R.string.n_cannot_delete, failed.size))
                     onDone()
                 }
             }
@@ -97,9 +99,9 @@ fun rememberDeleter(vm: GalleryViewModel, settings: AppSettings): (List<MediaIte
     }
     pending?.let { (items, onDone) ->
         ConfirmDialog(
-            title = if (items.size == 1) "刪除這個檔案？" else "刪除 ${items.size} 個項目？",
-            text = if (items.size == 1) items[0].name else "檔案將被永久刪除，無法復原。",
-            confirm = "刪除",
+            title = if (items.size == 1) tr(R.string.delete_this_file) else tr(R.string.delete_n_items, items.size),
+            text = if (items.size == 1) items[0].name else tr(R.string.delete_permanent),
+            confirm = tr(R.string.delete),
             onConfirm = { run(items, onDone) },
             onDismiss = { pending = null },
         )
@@ -137,22 +139,22 @@ fun AlbumScreen(
         topBar = {
             if (selecting) {
                 TopAppBar(
-                    navigationIcon = { IconButton(onClick = { selection = emptySet() }) { Icon(Icons.Filled.Close, "取消") } },
-                    title = { Text("已選取 ${selection.size}") },
+                    navigationIcon = { IconButton(onClick = { selection = emptySet() }) { Icon(Icons.Filled.Close, tr(R.string.cancel)) } },
+                    title = { Text(tr(R.string.n_selected, selection.size)) },
                     actions = {
-                        IconButton(onClick = { selection = items.map { it.path }.toSet() }) { Icon(Icons.Filled.SelectAll, "全選") }
-                        IconButton(onClick = { context.startActivity(vm.fileOps.shareIntent(selectedItems())) }) { Icon(Icons.Filled.Share, "分享") }
-                        IconButton(onClick = { deleter(selectedItems()) { selection = emptySet() } }) { Icon(Icons.Filled.Delete, "刪除") }
+                        IconButton(onClick = { selection = items.map { it.path }.toSet() }) { Icon(Icons.Filled.SelectAll, tr(R.string.select_all)) }
+                        IconButton(onClick = { context.startActivity(vm.fileOps.shareIntent(selectedItems())) }) { Icon(Icons.Filled.Share, tr(R.string.share)) }
+                        IconButton(onClick = { deleter(selectedItems()) { selection = emptySet() } }) { Icon(Icons.Filled.Delete, tr(R.string.delete)) }
                         var menu by remember { mutableStateOf(false) }
-                        IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, "更多") }
+                        IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, tr(R.string.more)) }
                         DropdownMenu(menu, onDismissRequest = { menu = false }) {
                             DropdownMenuItem(
-                                text = { Text("移動到…") },
+                                text = { Text(tr(R.string.move_to_ellipsis)) },
                                 leadingIcon = { Icon(Icons.AutoMirrored.Filled.DriveFileMove, null) },
                                 onClick = { menu = false; moveTarget = true },
                             )
                             DropdownMenuItem(
-                                text = { Text("複製到…") },
+                                text = { Text(tr(R.string.copy_to_ellipsis)) },
                                 leadingIcon = { Icon(Icons.Filled.ContentCopy, null) },
                                 onClick = { menu = false; moveTarget = false },
                             )
@@ -161,19 +163,19 @@ fun AlbumScreen(
                 )
             } else {
                 TopAppBar(
-                    navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回") } },
+                    navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, tr(R.string.back)) } },
                     title = {
                         Column {
                             Text(AlbumKeys.title(albumKey), maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(
-                                "${items.size} 個項目",
+                                tr(R.string.n_items, items.size),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                     },
                     actions = {
-                        IconButton(onClick = { sortMenu = true }) { Icon(Icons.Filled.FilterList, "排序") }
+                        IconButton(onClick = { sortMenu = true }) { Icon(Icons.Filled.FilterList, tr(R.string.sort)) }
                         DropdownMenu(sortMenu, onDismissRequest = { sortMenu = false }) {
                             MediaSort.entries.forEach { sort ->
                                 DropdownMenuItem(
@@ -184,26 +186,26 @@ fun AlbumScreen(
                             }
                             HorizontalDivider()
                             DropdownMenuItem(
-                                text = { Text("遞增") },
+                                text = { Text(tr(R.string.ascending)) },
                                 leadingIcon = { RadioButton(selected = settings.mediaSortAsc, onClick = null) },
                                 onClick = { vm.updateSettings { it.copy(mediaSortAsc = true) } },
                             )
                             DropdownMenuItem(
-                                text = { Text("遞減") },
+                                text = { Text(tr(R.string.descending)) },
                                 leadingIcon = { RadioButton(selected = !settings.mediaSortAsc, onClick = null) },
                                 onClick = { vm.updateSettings { it.copy(mediaSortAsc = false) } },
                             )
                         }
-                        IconButton(onClick = onSlideshow, enabled = items.isNotEmpty()) { Icon(Icons.Filled.Slideshow, "幻燈片") }
-                        IconButton(onClick = { moreMenu = true }) { Icon(Icons.Filled.MoreVert, "更多") }
+                        IconButton(onClick = onSlideshow, enabled = items.isNotEmpty()) { Icon(Icons.Filled.Slideshow, tr(R.string.slideshow)) }
+                        IconButton(onClick = { moreMenu = true }) { Icon(Icons.Filled.MoreVert, tr(R.string.more)) }
                         DropdownMenu(moreMenu, onDismissRequest = { moreMenu = false }) {
-                            DropdownMenuItem(text = { Text("選取全部") }, onClick = { moreMenu = false; selection = items.map { it.path }.toSet() })
+                            DropdownMenuItem(text = { Text(tr(R.string.select_everything)) }, onClick = { moreMenu = false; selection = items.map { it.path }.toSet() })
                             DropdownMenuItem(
-                                text = { Text("每列多一張") },
+                                text = { Text(tr(R.string.more_columns)) },
                                 onClick = { vm.updateSettings { it.copy(mediaColumns = (it.mediaColumns + 1).coerceAtMost(8)) } },
                             )
                             DropdownMenuItem(
-                                text = { Text("每列少一張") },
+                                text = { Text(tr(R.string.fewer_columns)) },
                                 onClick = { vm.updateSettings { it.copy(mediaColumns = (it.mediaColumns - 1).coerceAtLeast(2)) } },
                             )
                         }
@@ -214,7 +216,7 @@ fun AlbumScreen(
     ) { padding ->
         if (items.isEmpty()) {
             Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                if (loading) CircularProgressIndicator() else Text("這裡沒有任何項目", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (loading) CircularProgressIndicator() else Text(tr(R.string.empty_here), color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             return@Scaffold
         }
@@ -245,7 +247,7 @@ fun AlbumScreen(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 val photos = items.count { !it.isVideo }
                 Text(
-                    "$photos 張相片 · ${items.size - photos} 部影片 · ${formatSize(context, items.sumOf { it.size })}",
+                    tr(R.string.album_footer, photos, items.size - photos, formatSize(context, items.sumOf { it.size })),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -256,7 +258,7 @@ fun AlbumScreen(
 
     moveTarget?.let { move ->
         FolderPickerDialog(
-            title = if (move) "移動到" else "複製到",
+            title = if (move) tr(R.string.move_to) else tr(R.string.copy_to),
             albums = vm.albums.value.map { it.path }.filter { it != albumKey },
             onPick = { dest ->
                 val chosen = selectedItems()

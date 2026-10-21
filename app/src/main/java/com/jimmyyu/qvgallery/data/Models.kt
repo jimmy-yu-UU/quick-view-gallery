@@ -1,5 +1,7 @@
 package com.jimmyyu.qvgallery.data
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import android.net.Uri
 import java.io.File
 
@@ -45,9 +47,9 @@ object AlbumKeys {
     const val PHOTOS = "::photos"
 
     fun title(key: String): String = when (key) {
-        ALL -> "所有媒體"
-        VIDEOS -> "所有影片"
-        PHOTOS -> "所有相片"
+        ALL -> tr(R.string.all_media)
+        VIDEOS -> tr(R.string.all_videos)
+        PHOTOS -> tr(R.string.all_photos)
         else -> key.substringAfterLast('/').ifEmpty { key }
     }
 }
@@ -74,5 +76,13 @@ object MediaTypes {
     }
 }
 
-enum class AlbumSort(val label: String) { NAME("名稱"), DATE("日期"), SIZE("大小"), COUNT("數量"), PATH("路徑") }
-enum class MediaSort(val label: String) { DATE_TAKEN("拍攝日期"), DATE_MODIFIED("修改日期"), NAME("名稱"), SIZE("大小") }
+enum class AlbumSort(private val labelRes: Int) {
+    NAME(R.string.name), DATE(R.string.date), SIZE(R.string.size), COUNT(R.string.count), PATH(R.string.path);
+
+    val label: String get() = tr(labelRes)
+}
+enum class MediaSort(private val labelRes: Int) {
+    DATE_TAKEN(R.string.date_taken), DATE_MODIFIED(R.string.date_modified), NAME(R.string.name), SIZE(R.string.size);
+
+    val label: String get() = tr(labelRes)
+}

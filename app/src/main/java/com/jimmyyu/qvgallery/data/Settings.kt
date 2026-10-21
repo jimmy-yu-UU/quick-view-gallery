@@ -1,5 +1,7 @@
 package com.jimmyyu.qvgallery.data
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import android.content.Context
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
@@ -14,13 +16,41 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-enum class ThemeMode(val label: String) { SYSTEM("跟隨系統"), LIGHT("淺色"), DARK("深色") }
-enum class AlbumViewMode(val label: String) { GRID("格狀"), LIST("清單") }
-enum class LockType(val label: String) { NONE("無"), PATTERN("圖形"), PIN("PIN 碼") }
-enum class LockScope(val label: String) { APP("開啟 App 時"), HIDDEN("僅隱藏相簿") }
-enum class SlideTransition(val label: String) { NONE("無"), FADE("淡入淡出"), SLIDE("滑動"), ZOOM("縮放"), KEN_BURNS("緩慢推近") }
-enum class ViewerBackground(val label: String) { BLACK("黑色"), THEME("跟隨主題"), WHITE("白色") }
-enum class StartPage(val label: String) { ALBUMS("相簿"), ALL("所有媒體") }
+enum class ThemeMode(private val labelRes: Int) {
+    SYSTEM(R.string.follow_system), LIGHT(R.string.light), DARK(R.string.dark);
+
+    val label: String get() = tr(labelRes)
+}
+enum class AlbumViewMode(private val labelRes: Int) {
+    GRID(R.string.grid), LIST(R.string.list);
+
+    val label: String get() = tr(labelRes)
+}
+enum class LockType(private val labelRes: Int) {
+    NONE(R.string.none), PATTERN(R.string.pattern), PIN(R.string.pin);
+
+    val label: String get() = tr(labelRes)
+}
+enum class LockScope(private val labelRes: Int) {
+    APP(R.string.scope_app), HIDDEN(R.string.scope_hidden);
+
+    val label: String get() = tr(labelRes)
+}
+enum class SlideTransition(private val labelRes: Int) {
+    NONE(R.string.none), FADE(R.string.tr_fade), SLIDE(R.string.tr_slide), ZOOM(R.string.tr_zoom), KEN_BURNS(R.string.tr_kenburns);
+
+    val label: String get() = tr(labelRes)
+}
+enum class ViewerBackground(private val labelRes: Int) {
+    BLACK(R.string.black), THEME(R.string.follow_theme), WHITE(R.string.white);
+
+    val label: String get() = tr(labelRes)
+}
+enum class StartPage(private val labelRes: Int) {
+    ALBUMS(R.string.albums), ALL(R.string.all_media);
+
+    val label: String get() = tr(labelRes)
+}
 
 data class AppSettings(
     // Interface

@@ -1,5 +1,7 @@
 package com.jimmyyu.qvgallery.ui
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -84,9 +86,11 @@ data class EditState(val rotation: Int = 0, val flipH: Boolean = false, val flip
     val isIdentity get() = rotation == 0 && !flipH && !flipV && crop == CropRect.FULL
 }
 
-private enum class Ratio(val label: String, val value: Float?) {
-    FREE("自由", null), ORIGINAL("原始", -1f), SQUARE("1:1", 1f), R43("4:3", 4f / 3f), R34("3:4", 3f / 4f),
-    R169("16:9", 16f / 9f), R916("9:16", 9f / 16f),
+private enum class Ratio(private val labelRes: Int?, private val fixedLabel: String?, val value: Float?) {
+    FREE(R.string.free, null, null), ORIGINAL(R.string.original, null, -1f), SQUARE(null, "1:1", 1f),
+    R43(null, "4:3", 4f / 3f), R34(null, "3:4", 3f / 4f), R169(null, "16:9", 16f / 9f), R916(null, "9:16", 9f / 16f);
+
+    val label: String get() = labelRes?.let { tr(it) } ?: fixedLabel.orEmpty()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -115,13 +119,13 @@ fun EditorScreen(vm: GalleryViewModel, item: MediaItem, onDone: (String?) -> Uni
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { if (state.isIdentity) onDone(null) else askDiscard = true }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, tr(R.string.back))
                     }
                 },
-                title = { Text("編輯") },
+                title = { Text(tr(R.string.edit)) },
                 actions = {
-                    IconButton(onClick = { state = EditState(); ratio = Ratio.FREE }) { Icon(Icons.Filled.Restore, "重設") }
-                    IconButton(enabled = !state.isIdentity && !saving, onClick = { askSave = true }) { Icon(Icons.Filled.Check, "儲存") }
+                    IconButton(onClick = { state = EditState(); ratio = Ratio.FREE }) { Icon(Icons.Filled.Restore, tr(R.string.reset)) }
+                    IconButton(enabled = !state.isIdentity && !saving, onClick = { askSave = true }) { Icon(Icons.Filled.Check, tr(R.string.save)) }
                 },
             )
         },
@@ -159,10 +163,10 @@ fun EditorScreen(vm: GalleryViewModel, item: MediaItem, onDone: (String?) -> Uni
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 IconButton(onClick = { state = state.copy(rotation = (state.rotation + 270) % 360, crop = CropRect.FULL) }) {
-                    Icon(Icons.AutoMirrored.Filled.RotateLeft, "向左旋轉", tint = Color.White)
+                    Icon(Icons.AutoMirrored.Filled.RotateLeft, tr(R.string.rotate_left), tint = Color.White)
                 }
                 IconButton(onClick = { state = state.copy(rotation = (state.rotation + 90) % 360, crop = CropRect.FULL) }) {
-                    Icon(Icons.AutoMirrored.Filled.RotateRight, "向右旋轉", tint = Color.White)
+                    Icon(Icons.AutoMirrored.Filled.RotateRight, tr(R.string.rotate_right), tint = Color.White)
                 }
                 // Flips are stored in original-image space, so on a sideways image the screen axes swap.
                 val sideways = state.rotation % 180 != 0
@@ -170,13 +174,13 @@ fun EditorScreen(vm: GalleryViewModel, item: MediaItem, onDone: (String?) -> Uni
                     state = (if (sideways) state.copy(flipV = !state.flipV) else state.copy(flipH = !state.flipH))
                         .copy(crop = state.crop.let { CropRect(1 - it.r, it.t, 1 - it.l, it.b) })
                 }) {
-                    Icon(Icons.Filled.Flip, "水平翻轉", tint = Color.White)
+                    Icon(Icons.Filled.Flip, tr(R.string.flip_horizontal), tint = Color.White)
                 }
                 IconButton(onClick = {
                     state = (if (sideways) state.copy(flipH = !state.flipH) else state.copy(flipV = !state.flipV))
                         .copy(crop = state.crop.let { CropRect(it.l, 1 - it.b, it.r, 1 - it.t) })
                 }) {
-                    Icon(Icons.Filled.Flip, "垂直翻轉", tint = Color.White, modifier = Modifier.rotate(90f))
+                    Icon(Icons.Filled.Flip, tr(R.string.flip_vertical), tint = Color.White, modifier = Modifier.rotate(90f))
                 }
             }
         }
@@ -205,10 +209,10 @@ fun EditorScreen(vm: GalleryViewModel, item: MediaItem, onDone: (String?) -> Uni
             if (ok) {
                 vm.fileOps.scan(listOf(target.absolutePath))
                 vm.reload()
-                vm.toast(if (overwrite) "已儲存" else "已另存為 ${target.name}")
+                vm.toast(if (overwrite) tr(R.string.saved) else tr(R.string.saved_as, target.name))
                 onDone(target.absolutePath)
             } else {
-                vm.toast("儲存失敗")
+                vm.toast(tr(R.string.save_failed))
             }
         }
     }
@@ -216,17 +220,17 @@ fun EditorScreen(vm: GalleryViewModel, item: MediaItem, onDone: (String?) -> Uni
     if (askSave) {
         AlertDialog(
             onDismissRequest = { askSave = false },
-            title = { Text("儲存變更") },
-            text = { Text("要另存為新檔案，還是覆蓋原始檔案？") },
-            confirmButton = { TextButton(onClick = { askSave = false; save(overwrite = false) }) { Text("另存新檔") } },
-            dismissButton = { TextButton(onClick = { askSave = false; save(overwrite = true) }) { Text("覆蓋原檔") } },
+            title = { Text(tr(R.string.save_changes)) },
+            text = { Text(tr(R.string.save_question)) },
+            confirmButton = { TextButton(onClick = { askSave = false; save(overwrite = false) }) { Text(tr(R.string.save_copy)) } },
+            dismissButton = { TextButton(onClick = { askSave = false; save(overwrite = true) }) { Text(tr(R.string.overwrite)) } },
         )
     }
     if (askDiscard) {
         ConfirmDialog(
-            title = "放棄變更？",
-            text = "尚未儲存的編輯將會遺失。",
-            confirm = "放棄",
+            title = tr(R.string.discard_changes),
+            text = tr(R.string.discard_body),
+            confirm = tr(R.string.discard),
             onConfirm = { onDone(null) },
             onDismiss = { askDiscard = false },
         )

@@ -1,5 +1,7 @@
 package com.jimmyyu.qvgallery.ui
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import android.app.Application
 import android.database.ContentObserver
 import android.os.Handler
@@ -172,7 +174,7 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     suspend fun delete(items: List<MediaItem>): List<MediaItem> {
         val r = fileOps.delete(items)
         removeLocally(items - r.failed.toSet())
-        if (r.done > 0) toast("已刪除 ${r.done} 個項目")
+        if (r.done > 0) toast(tr(R.string.deleted_n, r.done))
         return r.failed
     }
 
@@ -186,10 +188,8 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             val r = fileOps.copyOrMove(items, dest, move)
             if (move) removeLocally(items - r.failed.toSet())
-            toast(
-                (if (move) "已移動 " else "已複製 ") + "${r.done} 個項目" +
-                    if (r.failed.isNotEmpty()) "，${r.failed.size} 個失敗" else ""
-            )
+            val msg = if (move) tr(R.string.moved_n, r.done) else tr(R.string.copied_n, r.done)
+            toast(msg + if (r.failed.isNotEmpty()) tr(R.string.n_failed_suffix, r.failed.size) else "")
             reload()
             onDone()
         }
@@ -198,7 +198,7 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     fun rename(item: MediaItem, newName: String, onDone: (MediaItem?) -> Unit = {}) {
         viewModelScope.launch {
             val f = fileOps.rename(item, newName)
-            if (f == null) toast("重新命名失敗") else reload()
+            if (f == null) toast(tr(R.string.rename_failed)) else reload()
             onDone(f?.let { repo.fileItem(it, item.mimeType) })
         }
     }
@@ -207,7 +207,7 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             val f = fileOps.renameFolder(path, newName)
             if (f == null) {
-                toast("重新命名失敗")
+                toast(tr(R.string.rename_failed))
             } else {
                 updateSettings { s ->
                     fun Set<String>.swap() = if (path in this) this - path + f.absolutePath else this

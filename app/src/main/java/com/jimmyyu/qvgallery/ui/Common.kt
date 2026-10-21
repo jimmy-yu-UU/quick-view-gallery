@@ -1,6 +1,11 @@
 package com.jimmyyu.qvgallery.ui
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.os.Environment
 import android.os.storage.StorageManager
 import android.text.format.Formatter
@@ -157,7 +162,7 @@ fun MediaThumbnail(
 fun ConfirmDialog(
     title: String,
     text: String,
-    confirm: String = "確定",
+    confirm: String = tr(R.string.ok),
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -166,7 +171,7 @@ fun ConfirmDialog(
         title = { Text(title) },
         text = { Text(text) },
         confirmButton = { TextButton(onClick = { onDismiss(); onConfirm() }) { Text(confirm) } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(tr(R.string.cancel)) } },
     )
 }
 
@@ -174,7 +179,7 @@ fun ConfirmDialog(
 fun TextInputDialog(
     title: String,
     initial: String,
-    label: String = "名稱",
+    label: String = tr(R.string.name),
     selectBaseName: Boolean = true,
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit,
@@ -197,9 +202,9 @@ fun TextInputDialog(
             )
         },
         confirmButton = {
-            TextButton(enabled = valid, onClick = { onDismiss(); onConfirm(text.text.trim()) }) { Text("確定") }
+            TextButton(enabled = valid, onClick = { onDismiss(); onConfirm(text.text.trim()) }) { Text(tr(R.string.ok)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(tr(R.string.cancel)) } },
     )
 }
 
@@ -218,7 +223,7 @@ fun storageRoots(context: Context): List<StorageRoot> {
         )
     }
     return roots.ifEmpty {
-        listOf(StorageRoot(Environment.getExternalStorageDirectory().absolutePath, "內部儲存空間", false, false))
+        listOf(StorageRoot(Environment.getExternalStorageDirectory().absolutePath, tr(R.string.internal_storage), false, false))
     }
 }
 
@@ -245,7 +250,7 @@ fun FolderPickerDialog(
                     IconButton(onClick = {
                         val cur = browsing!!
                         browsing = if (roots.any { it.path == cur.absolutePath }) null else cur.parentFile
-                    }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "上一層") }
+                    }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, tr(R.string.up)) }
                 }
                 Column(Modifier.weight(1f)) {
                     Text(title)
@@ -259,7 +264,7 @@ fun FolderPickerDialog(
                     }
                 }
                 if (browsing != null) {
-                    IconButton(onClick = { creating = true }) { Icon(Icons.Filled.CreateNewFolder, "新增資料夾") }
+                    IconButton(onClick = { creating = true }) { Icon(Icons.Filled.CreateNewFolder, tr(R.string.new_folder)) }
                 }
             }
         },
@@ -267,7 +272,7 @@ fun FolderPickerDialog(
             val dir = browsing
             LazyColumn(Modifier.heightIn(max = 420.dp)) {
                 if (dir == null) {
-                    item { SectionLabel("儲存空間") }
+                    item { SectionLabel(tr(R.string.storage)) }
                     items(roots) { root ->
                         FolderRow(
                             icon = { Icon(if (root.usb) Icons.Filled.Usb else if (root.removable) Icons.Filled.SdStorage else Icons.Filled.Smartphone, null) },
@@ -277,7 +282,7 @@ fun FolderPickerDialog(
                         )
                     }
                     if (albums.isNotEmpty()) {
-                        item { HorizontalDivider(Modifier.padding(vertical = 4.dp)); SectionLabel("相簿") }
+                        item { HorizontalDivider(Modifier.padding(vertical = 4.dp)); SectionLabel(tr(R.string.albums)) }
                         items(albums) { path ->
                             FolderRow(
                                 icon = { Icon(Icons.Filled.Folder, null) },
@@ -288,10 +293,25 @@ fun FolderPickerDialog(
                         }
                     }
                 } else {
-                    val children = dir.listFiles()
+                    val listed = dir.listFiles()
+                    val children = listed
                         ?.filter { it.isDirectory && !it.name.startsWith('.') }
                         ?.sortedWith(compareBy(NaturalOrder) { it.name })
                         .orEmpty()
+                    if (listed == null) {
+                        item {
+                            Column(Modifier.padding(vertical = 8.dp)) {
+                                Text(tr(R.string.no_folder_access), color = MaterialTheme.colorScheme.error)
+                                TextButton(onClick = {
+                                    context.startActivity(
+                                        Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:${context.packageName}"))
+                                    )
+                                }) { Text(tr(R.string.grant_all_files)) }
+                            }
+                        }
+                    } else if (children.isEmpty()) {
+                        item { Text(tr(R.string.empty_folder), color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(vertical = 8.dp)) }
+                    }
                     items(children, key = { it.absolutePath }) { child ->
                         FolderRow(
                             icon = { Icon(Icons.Filled.Folder, null) },
@@ -305,15 +325,15 @@ fun FolderPickerDialog(
         },
         confirmButton = {
             if (browsing != null) {
-                TextButton(onClick = { val d = browsing!!; onDismiss(); onPick(d) }) { Text("選擇此資料夾") }
+                TextButton(onClick = { val d = browsing!!; onDismiss(); onPick(d) }) { Text(tr(R.string.select_this_folder)) }
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(tr(R.string.cancel)) } },
     )
 
     if (creating) {
         TextInputDialog(
-            title = "新增資料夾",
+            title = tr(R.string.new_folder),
             initial = "",
             selectBaseName = false,
             onConfirm = { name ->

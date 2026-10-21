@@ -1,5 +1,7 @@
 package com.jimmyyu.qvgallery.ui
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -151,13 +153,13 @@ fun AlbumsScreen(
                         modifier = Modifier.padding(horizontal = 12.dp),
                     )
                 }
-                item(Icons.Filled.PhotoLibrary, "相簿", selected = true) {}
-                item(Icons.Outlined.Collections, "所有媒體") { onOpenAlbum(AlbumKeys.ALL) }
-                item(Icons.Outlined.Photo, "所有相片") { onOpenAlbum(AlbumKeys.PHOTOS) }
-                item(Icons.Filled.Videocam, "所有影片") { onOpenAlbum(AlbumKeys.VIDEOS) }
+                item(Icons.Filled.PhotoLibrary, tr(R.string.albums), selected = true) {}
+                item(Icons.Outlined.Collections, tr(R.string.all_media)) { onOpenAlbum(AlbumKeys.ALL) }
+                item(Icons.Outlined.Photo, tr(R.string.all_photos)) { onOpenAlbum(AlbumKeys.PHOTOS) }
+                item(Icons.Filled.Videocam, tr(R.string.all_videos)) { onOpenAlbum(AlbumKeys.VIDEOS) }
                 HorizontalDivider(Modifier.padding(vertical = 8.dp, horizontal = 28.dp))
-                item(Icons.Filled.VisibilityOff, "隱藏的相簿") { onOpenHidden() }
-                item(Icons.Filled.Settings, "設定") { onOpenSettings() }
+                item(Icons.Filled.VisibilityOff, tr(R.string.hidden_albums)) { onOpenHidden() }
+                item(Icons.Filled.Settings, tr(R.string.settings)) { onOpenSettings() }
             }
         },
     ) {
@@ -180,41 +182,41 @@ fun AlbumsScreen(
                     when {
                         selecting -> TopAppBar(
                             colors = barColors,
-                            navigationIcon = { IconButton(onClick = { selection = emptySet() }) { Icon(Icons.Filled.Close, "取消") } },
-                            title = { Text("已選取 ${selection.size}") },
+                            navigationIcon = { IconButton(onClick = { selection = emptySet() }) { Icon(Icons.Filled.Close, tr(R.string.cancel)) } },
+                            title = { Text(tr(R.string.n_selected, selection.size)) },
                             actions = {
-                                IconButton(onClick = { selection = shown.map { it.path }.toSet() }) { Icon(Icons.Filled.SelectAll, "全選") }
-                                IconButton(onClick = { vm.togglePinned(selection); selection = emptySet() }) { Icon(Icons.Filled.PushPin, "釘選") }
+                                IconButton(onClick = { selection = shown.map { it.path }.toSet() }) { Icon(Icons.Filled.SelectAll, tr(R.string.select_all)) }
+                                IconButton(onClick = { vm.togglePinned(selection); selection = emptySet() }) { Icon(Icons.Filled.PushPin, tr(R.string.pin_to_top)) }
                                 IconButton(onClick = { vm.setHidden(selection, !hiddenMode); selection = emptySet() }) {
-                                    Icon(if (hiddenMode) Icons.Filled.Visibility else Icons.Filled.VisibilityOff, if (hiddenMode) "取消隱藏" else "隱藏")
+                                    Icon(if (hiddenMode) Icons.Filled.Visibility else Icons.Filled.VisibilityOff, if (hiddenMode) tr(R.string.unhide) else tr(R.string.hide))
                                 }
                                 var menu by remember { mutableStateOf(false) }
-                                IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, "更多") }
+                                IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, tr(R.string.more)) }
                                 DropdownMenu(menu, onDismissRequest = { menu = false }) {
                                     if (selection.size == 1) {
                                         DropdownMenuItem(
-                                            text = { Text("重新命名") },
+                                            text = { Text(tr(R.string.rename)) },
                                             leadingIcon = { Icon(Icons.Filled.DriveFileRenameOutline, null) },
                                             onClick = { menu = false; renaming = albums.firstOrNull { it.path in selection } },
                                         )
                                     }
                                     DropdownMenuItem(
-                                        text = { Text("移動內容到…") },
+                                        text = { Text(tr(R.string.move_content_to)) },
                                         leadingIcon = { Icon(Icons.AutoMirrored.Filled.DriveFileMove, null) },
                                         onClick = { menu = false; moveTarget = true },
                                     )
                                     DropdownMenuItem(
-                                        text = { Text("複製內容到…") },
+                                        text = { Text(tr(R.string.copy_content_to)) },
                                         leadingIcon = { Icon(Icons.Outlined.Image, null) },
                                         onClick = { menu = false; moveTarget = false },
                                     )
                                     DropdownMenuItem(
-                                        text = { Text("排除 (不再掃描)") },
+                                        text = { Text(tr(R.string.exclude_no_scan)) },
                                         leadingIcon = { Icon(Icons.Filled.VisibilityOff, null) },
                                         onClick = { menu = false; vm.setExcluded(selection, true); selection = emptySet() },
                                     )
                                     DropdownMenuItem(
-                                        text = { Text("刪除") },
+                                        text = { Text(tr(R.string.delete)) },
                                         leadingIcon = { Icon(Icons.Filled.Delete, null) },
                                         onClick = { menu = false; confirmDelete = true },
                                     )
@@ -223,14 +225,14 @@ fun AlbumsScreen(
                         )
                         query != null -> TopAppBar(
                             colors = barColors,
-                            navigationIcon = { IconButton(onClick = { query = null }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回") } },
+                            navigationIcon = { IconButton(onClick = { query = null }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, tr(R.string.back)) } },
                             title = {
                                 val focus = remember { FocusRequester() }
                                 LaunchedEffect(Unit) { focus.requestFocus() }
                                 TextField(
                                     value = query.orEmpty(),
                                     onValueChange = { query = it },
-                                    placeholder = { Text("搜尋相簿") },
+                                    placeholder = { Text(tr(R.string.search_albums)) },
                                     singleLine = true,
                                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                                     colors = TextFieldDefaults.colors(
@@ -245,20 +247,20 @@ fun AlbumsScreen(
                             colors = barColors,
                             navigationIcon = {
                                 if (hiddenMode) {
-                                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回") }
+                                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, tr(R.string.back)) }
                                 } else {
-                                    IconButton(onClick = { scope.launch { drawerState.open() } }) { Icon(Icons.Filled.Menu, "選單") }
+                                    IconButton(onClick = { scope.launch { drawerState.open() } }) { Icon(Icons.Filled.Menu, tr(R.string.menu)) }
                                 }
                             },
-                            title = { Text(if (hiddenMode) "隱藏的相簿" else "相簿") },
+                            title = { Text(if (hiddenMode) tr(R.string.hidden_albums) else tr(R.string.albums)) },
                             actions = {
-                                IconButton(onClick = { sortMenu = true }) { Icon(Icons.Filled.FilterList, "排序") }
+                                IconButton(onClick = { sortMenu = true }) { Icon(Icons.Filled.FilterList, tr(R.string.sort)) }
                                 AlbumSortMenu(sortMenu, settings, onDismiss = { sortMenu = false }, vm = vm)
-                                IconButton(onClick = { query = "" }) { Icon(Icons.Filled.Search, "搜尋") }
-                                IconButton(onClick = { moreMenu = true }) { Icon(Icons.Filled.MoreVert, "更多") }
+                                IconButton(onClick = { query = "" }) { Icon(Icons.Filled.Search, tr(R.string.search)) }
+                                IconButton(onClick = { moreMenu = true }) { Icon(Icons.Filled.MoreVert, tr(R.string.more)) }
                                 DropdownMenu(moreMenu, onDismissRequest = { moreMenu = false }) {
                                     DropdownMenuItem(
-                                        text = { Text(if (settings.albumViewMode == AlbumViewMode.GRID) "清單檢視" else "格狀檢視") },
+                                        text = { Text(if (settings.albumViewMode == AlbumViewMode.GRID) tr(R.string.list_view) else tr(R.string.grid_view)) },
                                         onClick = {
                                             moreMenu = false
                                             vm.updateSettings {
@@ -267,13 +269,13 @@ fun AlbumsScreen(
                                         },
                                     )
                                     DropdownMenuItem(
-                                        text = { Text("幻燈片播放全部") },
+                                        text = { Text(tr(R.string.slideshow_all)) },
                                         leadingIcon = { Icon(Icons.Filled.Slideshow, null) },
                                         onClick = { moreMenu = false; onSlideshow(AlbumKeys.ALL) },
                                     )
-                                    DropdownMenuItem(text = { Text("重新整理") }, onClick = { moreMenu = false; vm.reload() })
+                                    DropdownMenuItem(text = { Text(tr(R.string.refresh)) }, onClick = { moreMenu = false; vm.reload() })
                                     if (!hiddenMode) {
-                                        DropdownMenuItem(text = { Text("設定") }, onClick = { moreMenu = false; onOpenSettings() })
+                                        DropdownMenuItem(text = { Text(tr(R.string.settings)) }, onClick = { moreMenu = false; onOpenSettings() })
                                     }
                                 }
                             },
@@ -285,7 +287,7 @@ fun AlbumsScreen(
                     Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
                 } else if (shown.isEmpty()) {
                     Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                        Text(if (hiddenMode) "沒有隱藏的相簿\n在相簿上長按即可隱藏" else "沒有找到相片", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(if (hiddenMode) tr(R.string.no_hidden_albums) else tr(R.string.no_photos), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 } else {
                     val list = settings.albumViewMode == AlbumViewMode.LIST
@@ -314,7 +316,7 @@ fun AlbumsScreen(
                         }
                         item(span = { GridItemSpan(maxLineSpan) }) {
                             Text(
-                                "${shown.size} 個相簿 · ${shown.sumOf { it.count }} 個項目",
+                                tr(R.string.albums_footer, shown.size, shown.sumOf { it.count }),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = if (bg != null) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -329,9 +331,9 @@ fun AlbumsScreen(
     if (confirmDelete) {
         val count = vm.mediaInAlbums(selection).size
         ConfirmDialog(
-            title = "刪除 ${selection.size} 個相簿？",
-            text = "將永久刪除其中 $count 個檔案，無法復原。",
-            confirm = "刪除",
+            title = tr(R.string.delete_n_albums, selection.size),
+            text = tr(R.string.delete_n_albums_body, count),
+            confirm = tr(R.string.delete),
             onConfirm = {
                 val items = vm.mediaInAlbums(selection)
                 selection = emptySet()
@@ -342,7 +344,7 @@ fun AlbumsScreen(
     }
     renaming?.let { album ->
         TextInputDialog(
-            title = "重新命名相簿",
+            title = tr(R.string.rename_album),
             initial = album.name,
             selectBaseName = false,
             onConfirm = { vm.renameAlbum(album.path, it); selection = emptySet() },
@@ -351,7 +353,7 @@ fun AlbumsScreen(
     }
     moveTarget?.let { move ->
         FolderPickerDialog(
-            title = if (move) "移動到" else "複製到",
+            title = if (move) tr(R.string.move_to) else tr(R.string.copy_to),
             albums = vm.albums.value.map { it.path }.filter { it !in selection },
             onPick = { dest ->
                 val items = vm.mediaInAlbums(selection)
@@ -366,7 +368,7 @@ fun AlbumsScreen(
 @Composable
 private fun AlbumSortMenu(expanded: Boolean, settings: AppSettings, vm: GalleryViewModel, onDismiss: () -> Unit) {
     DropdownMenu(expanded, onDismissRequest = onDismiss) {
-        Text("相簿排序", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+        Text(tr(R.string.album_sort), style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
         AlbumSort.entries.forEach { sort ->
             DropdownMenuItem(
                 text = { Text(sort.label) },
@@ -376,12 +378,12 @@ private fun AlbumSortMenu(expanded: Boolean, settings: AppSettings, vm: GalleryV
         }
         HorizontalDivider()
         DropdownMenuItem(
-            text = { Text("遞增") },
+            text = { Text(tr(R.string.ascending)) },
             leadingIcon = { RadioButton(selected = settings.albumSortAsc, onClick = null) },
             onClick = { vm.updateSettings { it.copy(albumSortAsc = true) } },
         )
         DropdownMenuItem(
-            text = { Text("遞減") },
+            text = { Text(tr(R.string.descending)) },
             leadingIcon = { RadioButton(selected = !settings.albumSortAsc, onClick = null) },
             onClick = { vm.updateSettings { it.copy(albumSortAsc = false) } },
         )

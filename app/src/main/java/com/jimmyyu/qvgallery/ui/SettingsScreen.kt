@@ -1,8 +1,12 @@
 package com.jimmyyu.qvgallery.ui
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import android.content.Intent
 import android.net.Uri
+import android.app.LocaleManager
 import android.os.Build
+import android.os.LocaleList
 import android.os.Environment
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -86,14 +90,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-enum class SettingsSection(val title: String, val subtitle: String, val icon: ImageVector) {
-    INTERFACE("介面", "外觀與介面行為", Icons.Filled.ToggleOn),
-    ALBUMS("相簿", "掃描相簿、排序、顯示方式", Icons.Outlined.Image),
-    VIEW("檢視", "瀏覽行為、控制、圖片背景", Icons.Outlined.RemoveRedEye),
-    SECURITY("安全性", "設定保護密碼", Icons.Filled.Lock),
-    SLIDESHOW("幻燈片", "動畫與切換效果", Icons.Filled.Slideshow),
-    CACHE("快取", "快取載入與清除", Icons.Filled.Cached),
-    ABOUT("關於", "這個 App 的資訊", Icons.Outlined.Info),
+enum class SettingsSection(private val titleRes: Int, private val subtitleRes: Int, val icon: ImageVector) {
+    INTERFACE(R.string.sec_interface, R.string.sec_interface_sub, Icons.Filled.ToggleOn),
+    ALBUMS(R.string.albums, R.string.sec_albums_sub, Icons.Outlined.Image),
+    VIEW(R.string.sec_view, R.string.sec_view_sub, Icons.Outlined.RemoveRedEye),
+    SECURITY(R.string.sec_security, R.string.sec_security_sub, Icons.Filled.Lock),
+    SLIDESHOW(R.string.slideshow, R.string.sec_slideshow_sub, Icons.Filled.Slideshow),
+    CACHE(R.string.sec_cache, R.string.sec_cache_sub, Icons.Filled.Cached),
+    ABOUT(R.string.sec_about, R.string.sec_about_sub, Icons.Outlined.Info);
+
+    val title: String get() = tr(titleRes)
+    val subtitle: String get() = tr(subtitleRes)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,7 +109,7 @@ fun SettingsScaffold(title: String, onBack: () -> Unit, content: @Composable () 
     Scaffold(
         topBar = {
             TopAppBar(
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回") } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, tr(R.string.back)) } },
                 title = { Text(title) },
             )
         },
@@ -119,7 +126,7 @@ fun SettingsScaffold(title: String, onBack: () -> Unit, content: @Composable () 
 
 @Composable
 fun SettingsHome(onOpen: (SettingsSection) -> Unit, onBack: () -> Unit) {
-    SettingsScaffold("設定", onBack) {
+    SettingsScaffold(tr(R.string.settings), onBack) {
         SettingsSection.entries.forEach { s ->
             Pref(title = s.title, summary = s.subtitle, icon = s.icon, onClick = { onOpen(s) })
         }
@@ -147,37 +154,38 @@ private fun InterfaceSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -
     val pickBackground = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) vm.updateSettings { it.copy(backgroundImage = uri.toString()) }
     }
-    SettingsScaffold("介面", onBack) {
-        Header("主題")
-        ChoicePref("主題模式", s.themeMode, ThemeMode.entries, { it.label }) { v -> vm.updateSettings { it.copy(themeMode = v) } }
-        SwitchPref("純黑背景", "深色模式使用純黑色 (AMOLED)", s.amoled) { v -> vm.updateSettings { it.copy(amoled = v) } }
-        SwitchPref("Material You 動態配色", "跟隨系統桌布取色", s.dynamicColor) { v -> vm.updateSettings { it.copy(dynamicColor = v) } }
+    SettingsScaffold(tr(R.string.sec_interface), onBack) {
+        Header(tr(R.string.theme))
+        ChoicePref(tr(R.string.theme_mode), s.themeMode, ThemeMode.entries, { it.label }) { v -> vm.updateSettings { it.copy(themeMode = v) } }
+        SwitchPref(tr(R.string.amoled), tr(R.string.amoled_sub), s.amoled) { v -> vm.updateSettings { it.copy(amoled = v) } }
+        SwitchPref(tr(R.string.dynamic_color), tr(R.string.dynamic_color_sub), s.dynamicColor) { v -> vm.updateSettings { it.copy(dynamicColor = v) } }
         Pref(
-            "主題色",
-            if (s.dynamicColor) "關閉動態配色後可選擇" else "點擊選擇顏色",
+            tr(R.string.accent),
+            if (s.dynamicColor) tr(R.string.accent_disabled) else tr(R.string.accent_pick),
             enabled = !s.dynamicColor,
             trailing = { Box(Modifier.size(28.dp).clip(CircleShape).background(Color(s.accentColor.toInt()))) },
             onClick = { accentDialog = true },
         )
-        Header("相簿頁背景")
+        Header(tr(R.string.album_background))
         Pref(
-            "背景圖片",
-            if (s.backgroundImage == null) "未設定" else "已設定，點擊更換",
+            tr(R.string.background_image),
+            if (s.backgroundImage == null) tr(R.string.not_set) else tr(R.string.set_tap_change),
             onClick = { pickBackground.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
             trailing = if (s.backgroundImage != null) {
-                { IconButton(onClick = { vm.updateSettings { it.copy(backgroundImage = null) } }) { Icon(Icons.Filled.Close, "清除") } }
+                { IconButton(onClick = { vm.updateSettings { it.copy(backgroundImage = null) } }) { Icon(Icons.Filled.Close, tr(R.string.clear)) } }
             } else null,
         )
-        SliderPref("背景暗度", s.backgroundDim, 0f..0.9f, steps = 8, format = { "${(it * 100).toInt()}%" }) { v ->
+        SliderPref(tr(R.string.background_dim), s.backgroundDim, 0f..0.9f, steps = 8, format = { "${(it * 100).toInt()}%" }) { v ->
             vm.updateSettings { it.copy(backgroundDim = v) }
         }
-        Header("啟動")
-        ChoicePref("啟動時顯示", s.startPage, StartPage.entries, { it.label }) { v -> vm.updateSettings { it.copy(startPage = v) } }
+        LanguagePref()
+        Header(tr(R.string.startup))
+        ChoicePref(tr(R.string.start_page), s.startPage, StartPage.entries, { it.label }) { v -> vm.updateSettings { it.copy(startPage = v) } }
     }
     if (accentDialog) {
         AlertDialog(
             onDismissRequest = { accentDialog = false },
-            title = { Text("主題色") },
+            title = { Text(tr(R.string.accent)) },
             text = {
                 LazyVerticalGrid(GridCells.Fixed(6), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(AccentColors) { c ->
@@ -194,7 +202,7 @@ private fun InterfaceSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { accentDialog = false }) { Text("關閉") } },
+            confirmButton = { TextButton(onClick = { accentDialog = false }) { Text(tr(R.string.close)) } },
         )
     }
 }
@@ -202,196 +210,130 @@ private fun InterfaceSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -
 @Composable
 private fun AlbumSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Unit) {
     val context = LocalContext.current
-    var pickExtra by remember { mutableStateOf(false) }
     var manage by remember { mutableStateOf<String?>(null) }
-    SettingsScaffold("相簿", onBack) {
-        Header("顯示")
-        ChoicePref("相簿檢視", s.albumViewMode, AlbumViewMode.entries, { it.label }) { v -> vm.updateSettings { it.copy(albumViewMode = v) } }
-        ChoicePref("相簿每列數量", s.albumColumns, (1..5).toList(), { it.toString() }) { v -> vm.updateSettings { it.copy(albumColumns = v) } }
-        ChoicePref("相片每列數量", s.mediaColumns, (2..8).toList(), { it.toString() }) { v -> vm.updateSettings { it.copy(mediaColumns = v) } }
-        SwitchPref("顯示影片", "在相簿中包含影片", s.showVideos) { v -> vm.updateSettings { it.copy(showVideos = v) } }
-        SwitchPref("顯示相簿路徑", "清單檢視中顯示資料夾路徑", s.showAlbumPath) { v -> vm.updateSettings { it.copy(showAlbumPath = v) } }
-        Header("掃描")
-        Pref("額外掃描的資料夾", "${s.extraFolders.size} 個 · 用於含 .nomedia 的資料夾或 USB 隨身碟", onClick = { manage = "extra" })
-        Pref("排除的資料夾", "${s.excludedAlbums.size} 個", onClick = { manage = "excluded" })
-        Pref("隱藏的相簿", "${s.hiddenAlbums.size} 個", onClick = { manage = "hidden" })
+    var pickFor by remember { mutableStateOf<String?>(null) }
+    SettingsScaffold(tr(R.string.albums), onBack) {
+        Header(tr(R.string.display))
+        ChoicePref(tr(R.string.album_view), s.albumViewMode, AlbumViewMode.entries, { it.label }) { v -> vm.updateSettings { it.copy(albumViewMode = v) } }
+        ChoicePref(tr(R.string.album_columns), s.albumColumns, (1..5).toList(), { it.toString() }) { v -> vm.updateSettings { it.copy(albumColumns = v) } }
+        ChoicePref(tr(R.string.media_columns), s.mediaColumns, (2..8).toList(), { it.toString() }) { v -> vm.updateSettings { it.copy(mediaColumns = v) } }
+        SwitchPref(tr(R.string.show_videos), tr(R.string.show_videos_sub), s.showVideos) { v -> vm.updateSettings { it.copy(showVideos = v) } }
+        SwitchPref(tr(R.string.show_album_path), tr(R.string.show_album_path_sub), s.showAlbumPath) { v -> vm.updateSettings { it.copy(showAlbumPath = v) } }
+        Header(tr(R.string.scanning))
+        Pref(tr(R.string.extra_folders), tr(R.string.extra_folders_sub, s.extraFolders.size), onClick = { manage = "extra" })
+        Pref(tr(R.string.excluded_folders), tr(R.string.n_excluded, s.excludedAlbums.size), onClick = { manage = "excluded" })
+        Pref(tr(R.string.hidden_albums), tr(R.string.n_hidden, s.hiddenAlbums.size), onClick = { manage = "hidden" })
         if (!Environment.isExternalStorageManager()) {
-            Pref("授予「所有檔案存取權」", "移動、重新命名、掃描額外資料夾需要此權限", onClick = {
+            Pref(tr(R.string.grant_all_files), tr(R.string.grant_all_files_sub), onClick = {
                 context.startActivity(
                     Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:${context.packageName}"))
                 )
             })
         }
-        Pref("重新掃描", "立即重新讀取所有媒體", onClick = { vm.reload(); vm.toast("重新掃描中…") })
+        Pref(tr(R.string.rescan), tr(R.string.rescan_sub), onClick = { vm.reload(); vm.toast(tr(R.string.rescanning)) })
     }
-    if (pickExtra) {
+    pickFor?.let { kind ->
+        // Picking replaces the list dialog; it comes back afterwards so the result is visible.
+        val known = (vm.albums.value + vm.hiddenAlbums.value).map { it.path }
         FolderPickerDialog(
-            title = "選擇要掃描的資料夾",
-            albums = emptyList(),
-            onPick = { f -> vm.updateSettings { it.copy(extraFolders = it.extraFolders + f.absolutePath) } },
-            onDismiss = { pickExtra = false },
+            title = tr(
+                when (kind) {
+                    "extra" -> R.string.pick_scan_folder
+                    "excluded" -> R.string.add_excluded
+                    else -> R.string.add_hidden
+                }
+            ),
+            albums = when (kind) {
+                "extra" -> emptyList()
+                "excluded" -> known.filter { it !in s.excludedAlbums }
+                else -> known.filter { it !in s.hiddenAlbums }
+            },
+            onPick = { f ->
+                val path = f.absolutePath
+                vm.updateSettings {
+                    when (kind) {
+                        "extra" -> it.copy(extraFolders = it.extraFolders + path)
+                        "excluded" -> it.copy(excludedAlbums = it.excludedAlbums + path)
+                        else -> it.copy(hiddenAlbums = it.hiddenAlbums + path)
+                    }
+                }
+            },
+            onDismiss = { pickFor = null; manage = kind },
         )
     }
     manage?.let { kind ->
         val (title, set) = when (kind) {
-            "extra" -> "額外掃描的資料夾" to s.extraFolders
-            "excluded" -> "排除的資料夾" to s.excludedAlbums
-            else -> "隱藏的相簿" to s.hiddenAlbums
+            "extra" -> tr(R.string.extra_folders) to s.extraFolders
+            "excluded" -> tr(R.string.excluded_folders) to s.excludedAlbums
+            else -> tr(R.string.hidden_albums) to s.hiddenAlbums
         }
+        val help = tr(
+            when (kind) {
+                "extra" -> R.string.extra_help
+                "excluded" -> R.string.excluded_help
+                else -> R.string.hidden_help
+            }
+        )
         AlertDialog(
             onDismissRequest = { manage = null },
             title = { Text(title) },
             text = {
-                if (set.isEmpty()) Text("(無)")
-                LazyColumn(Modifier.heightIn(max = 400.dp)) {
-                    items(set.sorted()) { path ->
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(displayPath(path), Modifier.weight(1f).padding(vertical = 8.dp))
-                            IconButton(onClick = {
-                                vm.updateSettings {
-                                    when (kind) {
-                                        "extra" -> it.copy(extraFolders = it.extraFolders - path)
-                                        "excluded" -> it.copy(excludedAlbums = it.excludedAlbums - path)
-                                        else -> it.copy(hiddenAlbums = it.hiddenAlbums - path)
+                Column {
+                    Text(help, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(Modifier.size(8.dp))
+                    if (set.isEmpty()) Text(tr(R.string.none_paren), Modifier.padding(vertical = 8.dp))
+                    LazyColumn(Modifier.heightIn(max = 360.dp)) {
+                        items(set.sorted()) { path ->
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(displayPath(path), Modifier.weight(1f).padding(vertical = 8.dp))
+                                IconButton(onClick = {
+                                    vm.updateSettings {
+                                        when (kind) {
+                                            "extra" -> it.copy(extraFolders = it.extraFolders - path)
+                                            "excluded" -> it.copy(excludedAlbums = it.excludedAlbums - path)
+                                            else -> it.copy(hiddenAlbums = it.hiddenAlbums - path)
+                                        }
                                     }
-                                }
-                            }) { Icon(Icons.Filled.Close, "移除") }
+                                }) { Icon(Icons.Filled.Close, tr(R.string.remove)) }
+                            }
                         }
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { manage = null }) { Text("關閉") } },
-            dismissButton = if (kind == "extra") {
-                { TextButton(onClick = { pickExtra = true }) { Text("新增") } }
-            } else null,
+            confirmButton = { TextButton(onClick = { manage = null }) { Text(tr(R.string.close)) } },
+            dismissButton = { TextButton(onClick = { manage = null; pickFor = kind }) { Text(tr(R.string.add)) } },
         )
     }
 }
 
-@Composable
-private fun ViewSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Unit) {
-    SettingsScaffold("檢視", onBack) {
-        Header("外觀")
-        ChoicePref("圖片背景", s.viewerBackground, ViewerBackground.entries, { it.label }) { v -> vm.updateSettings { it.copy(viewerBackground = v) } }
-        SwitchPref("顯示資訊列", "底部顯示解析度、日期與縮放按鈕", s.showInfoBar) { v -> vm.updateSettings { it.copy(showInfoBar = v) } }
-        SwitchPref("開啟時隱藏工具列", "直接以全螢幕顯示圖片", s.hideBarsOnOpen) { v -> vm.updateSettings { it.copy(hideBarsOnOpen = v) } }
-        SliderPref("最大縮放倍數", s.maxZoom, 2f..20f, steps = 17, format = { "${it.toInt()}x" }) { v -> vm.updateSettings { it.copy(maxZoom = v) } }
-        Header("行為")
-        SwitchPref("保持螢幕開啟", "瀏覽時不自動關閉螢幕", s.keepScreenOn) { v -> vm.updateSettings { it.copy(keepScreenOn = v) } }
-        SwitchPref("最大亮度", "瀏覽時將螢幕亮度調到最高", s.maxBrightness) { v -> vm.updateSettings { it.copy(maxBrightness = v) } }
-        SwitchPref("音量鍵切換", "音量下 = 下一張，音量上 = 上一張", s.volumeKeysNavigate) { v -> vm.updateSettings { it.copy(volumeKeysNavigate = v) } }
-        SwitchPref("刪除前確認", null, s.confirmDelete) { v -> vm.updateSettings { it.copy(confirmDelete = v) } }
-        Header("影片")
-        SwitchPref("自動播放", "滑到影片時自動開始播放", s.autoPlayVideo) { v -> vm.updateSettings { it.copy(autoPlayVideo = v) } }
-        SwitchPref("循環播放", null, s.loopVideo) { v -> vm.updateSettings { it.copy(loopVideo = v) } }
-    }
-}
+private val languageTags = listOf("", "en", "zh-TW", "zh-CN")
 
+/** Per-app language (Android 13+), the same setting as System settings > Apps > Language. */
 @Composable
-private fun SecuritySettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Unit) {
-    var setupType by remember { mutableStateOf<LockType?>(null) }
-    var verifyThen by remember { mutableStateOf<(() -> Unit)?>(null) }
-    val pending = verifyThen
-    if (pending != null) {
-        LockScreen(
-            type = s.lockType,
-            biometric = false,
-            title = "輸入目前的密碼",
-            onCancel = { verifyThen = null },
-            check = { LockManager.verify(it, s) },
-            onUnlocked = { verifyThen = null; pending() },
-        )
-        return
-    }
-    setupType?.let { type ->
-        SetupLockScreen(
-            type = type,
-            onDone = { secret ->
-                val salt = LockManager.newSalt()
-                val hash = LockManager.hash(secret, salt)
-                vm.updateSettings { it.copy(lockType = type, lockSalt = salt, lockHash = hash) }
-                LockManager.markUnlocked()
-                setupType = null
-                vm.toast("已設定密碼")
-            },
-            onCancel = { setupType = null },
-        )
-        return
-    }
-    val hasLock = s.lockType != LockType.NONE && s.lockHash.isNotEmpty()
-    fun guarded(action: () -> Unit) = if (hasLock) verifyThen = action else action()
-    SettingsScaffold("安全性", onBack) {
-        Header("密碼保護")
-        ChoicePref("鎖定方式", s.lockType, LockType.entries, { it.label }) { v ->
-            guarded {
-                if (v == LockType.NONE) vm.updateSettings { it.copy(lockType = LockType.NONE, lockHash = "", lockSalt = "") }
-                else setupType = v
-            }
-        }
-        if (hasLock) {
-            ChoicePref("保護範圍", s.lockScope, LockScope.entries, { it.label }) { v -> guarded { vm.updateSettings { it.copy(lockScope = v) } } }
-            SwitchPref("生物辨識解鎖", "使用指紋或臉部解鎖", s.biometric) { v -> vm.updateSettings { it.copy(biometric = v) } }
-            ChoicePref(
-                "離開後重新鎖定",
-                s.relockSeconds,
-                listOf(0, 30, 60, 300, 1800),
-                { if (it == 0) "立即" else if (it < 60) "$it 秒" else "${it / 60} 分鐘" },
-            ) { v -> vm.updateSettings { it.copy(relockSeconds = v) } }
-            Pref("立即鎖定", null, onClick = { LockManager.lock(); vm.toast("已鎖定") })
-        }
-        Text(
-            "「僅隱藏相簿」：開啟 App 不需密碼，查看隱藏的相簿時才需要解鎖。\n「開啟 App 時」：每次開啟 App 都需要解鎖。",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
-        )
-    }
-}
-
-@Composable
-private fun SlideshowSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Unit) {
-    SettingsScaffold("幻燈片", onBack) {
-        SliderPref("每張停留時間", s.slideInterval.toFloat(), 1f..30f, steps = 28, format = { "${it.toInt()} 秒" }) { v ->
-            vm.updateSettings { it.copy(slideInterval = v.toInt()) }
-        }
-        ChoicePref("切換效果", s.slideTransition, SlideTransition.entries, { it.label }) { v -> vm.updateSettings { it.copy(slideTransition = v) } }
-        SwitchPref("隨機順序", null, s.slideShuffle) { v -> vm.updateSettings { it.copy(slideShuffle = v) } }
-        SwitchPref("循環播放", "播完後從頭開始", s.slideLoop) { v -> vm.updateSettings { it.copy(slideLoop = v) } }
-    }
-}
-
-@Composable
-private fun CacheSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Unit) {
+private fun LanguagePref() {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var size by remember { mutableLongStateOf(-1L) }
-    fun refresh() = scope.launch { size = withContext(Dispatchers.IO) { context.cacheDir.walkTopDown().filter { it.isFile }.sumOf { it.length() } } }
-    androidx.compose.runtime.LaunchedEffect(Unit) { refresh() }
-    SettingsScaffold("快取", onBack) {
-        Pref("目前快取大小", if (size < 0) "計算中…" else formatSize(context, size))
-        ChoicePref("圖片快取上限", s.diskCacheMb, listOf(128, 256, 512, 1024, 2048), { "$it MB" }) { v ->
-            vm.updateSettings { it.copy(diskCacheMb = v) }
-            vm.toast("重新啟動 App 後生效")
-        }
-        Pref("清除快取", "刪除縮圖與圖片快取", onClick = {
-            scope.launch {
-                context.imageLoader.memoryCache?.clear()
-                context.imageLoader.diskCache?.clear()
-                withContext(Dispatchers.IO) { context.cacheDir.listFiles()?.forEach { it.deleteRecursively() } }
-                refresh()
-                vm.toast("快取已清除")
-            }
-        })
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        Pref(tr(R.string.language), tr(R.string.language_unsupported))
+        return
     }
-}
-
-@Composable
-private fun AboutPage(onBack: () -> Unit) {
-    SettingsScaffold("關於", onBack) {
-        Pref("QV Gallery", "版本 ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-        Pref("說明", "受 QuickPic 啟發、為 64 位元 Android 重新撰寫的輕量圖片瀏覽器。無廣告、離線運作。")
-        Pref("裝置", "${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}")
-        Pref("開源元件", "Jetpack Compose、Coil、Telephoto、Media3 (Apache 2.0)")
+    val manager = context.getSystemService(LocaleManager::class.java)
+    val current = manager.applicationLocales.takeIf { !it.isEmpty }?.get(0)
+    val currentTag = when {
+        current == null -> ""
+        current.language == "zh" && (current.country == "CN" || current.script == "Hans") -> "zh-CN"
+        current.language == "zh" -> "zh-TW"
+        else -> "en"
+    }
+    ChoicePref(tr(R.string.language), currentTag, languageTags, { tag ->
+        when (tag) {
+            "" -> tr(R.string.follow_system)
+            "en" -> "English"
+            "zh-TW" -> "繁體中文"
+            else -> "简体中文"
+        }
+    }) { tag ->
+        // The activity is recreated by the system with the new locale.
+        manager.applicationLocales = if (tag.isEmpty()) LocaleList.getEmptyLocaleList() else LocaleList.forLanguageTags(tag)
     }
 }
 
@@ -470,7 +412,7 @@ fun <T> ChoicePref(title: String, value: T, options: List<T>, label: (T) -> Stri
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { open = false }) { Text("取消") } },
+            confirmButton = { TextButton(onClick = { open = false }) { Text(tr(R.string.cancel)) } },
         )
     }
 }

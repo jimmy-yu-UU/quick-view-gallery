@@ -1,5 +1,7 @@
 package com.jimmyyu.qvgallery.ui.viewer
 
+import com.jimmyyu.qvgallery.tr
+import com.jimmyyu.qvgallery.R
 import android.app.Activity
 import android.content.Intent
 import android.view.KeyEvent
@@ -233,7 +235,7 @@ fun ViewerScreen(
                     .padding(horizontal = 4.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回", tint = Color.White) }
+                IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, tr(R.string.back), tint = Color.White) }
                 Text(
                     current?.name.orEmpty(),
                     color = Color.White,
@@ -244,30 +246,30 @@ fun ViewerScreen(
                 )
                 if (current != null) {
                     if (canModify && !current.isVideo) {
-                        IconButton(onClick = { onEdit(current) }) { Icon(Icons.Filled.Edit, "編輯", tint = Color.White) }
+                        IconButton(onClick = { onEdit(current) }) { Icon(Icons.Filled.Edit, tr(R.string.edit), tint = Color.White) }
                     }
                     if (canModify) {
-                        IconButton(onClick = { deleter(listOf(current)) {} }) { Icon(Icons.Filled.Delete, "刪除", tint = Color.White) }
+                        IconButton(onClick = { deleter(listOf(current)) {} }) { Icon(Icons.Filled.Delete, tr(R.string.delete), tint = Color.White) }
                     }
                     IconButton(onClick = { context.startActivity(vm.fileOps.shareIntent(listOf(current))) }) {
-                        Icon(Icons.Filled.Share, "分享", tint = Color.White)
+                        Icon(Icons.Filled.Share, tr(R.string.share), tint = Color.White)
                     }
                     Box {
-                        IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, "更多", tint = Color.White) }
+                        IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, tr(R.string.more), tint = Color.White) }
                         DropdownMenu(menu, onDismissRequest = { menu = false }) {
                             DropdownMenuItem(
-                                text = { Text("詳細資訊") },
+                                text = { Text(tr(R.string.details)) },
                                 leadingIcon = { Icon(Icons.Outlined.Info, null) },
                                 onClick = { menu = false; details = current },
                             )
                             DropdownMenuItem(
-                                text = { Text("幻燈片") },
+                                text = { Text(tr(R.string.slideshow)) },
                                 leadingIcon = { Icon(Icons.Filled.Slideshow, null) },
                                 onClick = { menu = false; onSlideshow(pager.currentPage) },
                             )
                             if (canModify && !current.isVideo) {
                                 DropdownMenuItem(
-                                    text = { Text("向右旋轉 90°") },
+                                    text = { Text(tr(R.string.rotate_right_90)) },
                                     leadingIcon = { Icon(Icons.AutoMirrored.Filled.RotateRight, null) },
                                     onClick = {
                                         menu = false
@@ -279,24 +281,24 @@ fun ViewerScreen(
                             }
                             if (canModify) {
                                 DropdownMenuItem(
-                                    text = { Text("重新命名") },
+                                    text = { Text(tr(R.string.rename)) },
                                     leadingIcon = { Icon(Icons.Filled.DriveFileRenameOutline, null) },
                                     onClick = { menu = false; renaming = current },
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("移動到…") },
+                                    text = { Text(tr(R.string.move_to_ellipsis)) },
                                     leadingIcon = { Icon(Icons.AutoMirrored.Filled.DriveFileMove, null) },
                                     onClick = { menu = false; moveTarget = true },
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("複製到…") },
+                                    text = { Text(tr(R.string.copy_to_ellipsis)) },
                                     leadingIcon = { Icon(Icons.Filled.ContentCopy, null) },
                                     onClick = { menu = false; moveTarget = false },
                                 )
                             }
                             if (!current.isVideo) {
                                 DropdownMenuItem(
-                                    text = { Text("設為桌布 / 聯絡人相片") },
+                                    text = { Text(tr(R.string.set_as)) },
                                     leadingIcon = { Icon(Icons.Filled.Wallpaper, null) },
                                     onClick = {
                                         menu = false
@@ -304,12 +306,12 @@ fun ViewerScreen(
                                             .setDataAndType(vm.fileOps.shareUri(current), current.mimeType)
                                             .putExtra("mimeType", current.mimeType)
                                             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                        context.startActivity(Intent.createChooser(intent, "設定為"))
+                                        context.startActivity(Intent.createChooser(intent, tr(R.string.set_as_title)))
                                     },
                                 )
                             }
                             DropdownMenuItem(
-                                text = { Text("用其他 App 開啟") },
+                                text = { Text(tr(R.string.open_with)) },
                                 leadingIcon = { Icon(Icons.AutoMirrored.Filled.OpenInNew, null) },
                                 onClick = {
                                     menu = false
@@ -336,15 +338,15 @@ fun ViewerScreen(
                         .padding(horizontal = 4.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    IconButton(onClick = { details = current }) { Icon(Icons.Outlined.Info, "詳細資訊", tint = Color.White) }
+                    IconButton(onClick = { details = current }) { Icon(Icons.Outlined.Info, tr(R.string.details), tint = Color.White) }
                     Column(Modifier.weight(1f)) {
                         val res = if (current.width > 0) "${current.width}×${current.height}" else ""
                         Text("$res   ${pager.currentPage + 1}/${items.size}", color = Color.White, fontSize = 12.sp)
                         Text(formatDate(current.dateTaken), color = Color.White.copy(alpha = 0.8f), fontSize = 12.sp)
                     }
-                    IconButton(onClick = { scope.launch { zoomState?.zoomBy(1.5f) } }) { Icon(Icons.Filled.ZoomIn, "放大", tint = Color.White) }
+                    IconButton(onClick = { scope.launch { zoomState?.zoomBy(1.5f) } }) { Icon(Icons.Filled.ZoomIn, tr(R.string.zoom_in), tint = Color.White) }
                     Spacer(Modifier.width(4.dp))
-                    IconButton(onClick = { scope.launch { zoomState?.zoomBy(1 / 1.5f) } }) { Icon(Icons.Filled.ZoomOut, "縮小", tint = Color.White) }
+                    IconButton(onClick = { scope.launch { zoomState?.zoomBy(1 / 1.5f) } }) { Icon(Icons.Filled.ZoomOut, tr(R.string.zoom_out), tint = Color.White) }
                 }
             }
         }
@@ -353,7 +355,7 @@ fun ViewerScreen(
     details?.let { DetailsDialog(it, onDismiss = { details = null }) }
     renaming?.let { item ->
         TextInputDialog(
-            title = "重新命名",
+            title = tr(R.string.rename),
             initial = item.name,
             onConfirm = { name -> vm.rename(item, name) { renamed -> renamed?.let { currentPath = it.path } } },
             onDismiss = { renaming = null },
@@ -363,7 +365,7 @@ fun ViewerScreen(
         val item = current
         if (item != null) {
             FolderPickerDialog(
-                title = if (move) "移動到" else "複製到",
+                title = if (move) tr(R.string.move_to) else tr(R.string.copy_to),
                 albums = vm.albums.value.map { it.path }.filter { it != item.folder },
                 onPick = { dest -> vm.copyOrMove(listOf(item), dest, move) },
                 onDismiss = { moveTarget = null },
