@@ -336,12 +336,13 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
         val name = rawName.replace(Regex("[\\u0000-\\u001f<>:\"|?*]"), "_").ifEmpty { "file" }
         val mime = MediaTypes.mimeFor(name) ?: return json(out, 415, JSONObject().put("error", "only photos and videos"))
         val length = req.contentLength
+        if (length <= 0) return json(out, 400, JSONObject().put("error", "empty body or missing Content-Length"))
         val isVideo = mime.startsWith("video/")
         val collection = if (isVideo) MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
         else MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
         val values = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-            put(MediaStore.MediaColumns.MIME_TYPE, if (mime.startsWith("image/x-raw")) "image/*" else mime)
+            // No MIME_TYPE: MediaStore derives it from the extension, which also covers RAW formats.
             put(MediaStore.MediaColumns.RELATIVE_PATH, RECEIVE_DIR)
             put(MediaStore.MediaColumns.IS_PENDING, 1)
         }
