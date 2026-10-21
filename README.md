@@ -21,3 +21,9 @@ Every push to `main` is built by GitHub Actions and published as a new release.
 
 QV Gallery is released under the [MIT License](LICENSE).
 It uses Jetpack Compose, Coil, Telephoto and Media3, which are licensed under the Apache License 2.0.
+
+## Wi-Fi transfer
+
+- **Phone ↔ phone**: open *Wi-Fi transfer > Receive* on one phone; on the other, pick files and choose it under *Send*, then enter the 6-digit pairing code.
+- **Phone → computer**: start receiving, open the shown address (or scan the QR code) in a browser on the same network, enter the pairing code, then browse, preview, download (single files or ZIP) and upload.
+- Received files go to `Pictures/QV Transfer`. Hidden and excluded albums are never shared. Traffic stays on the local network (plain HTTP).

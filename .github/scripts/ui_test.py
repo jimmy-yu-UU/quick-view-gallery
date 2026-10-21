@@ -488,6 +488,7 @@ def main():
         shot("transfer_received_list")
         tap("停止接收", wait=2)
         back()
+        back()  # transfer screen was opened from the Wallpapers album
         time.sleep(2)
         if not find("QV Transfer"):
             failures.append("  !! QV Transfer album missing after receiving")
