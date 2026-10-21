@@ -281,4 +281,12 @@
     <string name="updates_help">Gli aggiornamenti vengono scaricati da GitHub Releases e installati dal programma di installazione pacchetti di Android.</string>
     <string name="update_not_found">Nessuna versione pubblicata trovata (il repository potrebbe non essere ancora pubblico)</string>
     <string name="includes_subfolders">Si applica anche a tutte le sottocartelle.</string>
+    <string name="items_count">Elementi</string>
+    <string name="photos">Foto</string>
+    <string name="total_size">Dimensione totale</string>
+    <string name="date_range">Intervallo di date</string>
+    <string name="in_folders">Cartelle</string>
+    <string name="albums_count">Album</string>
+    <string name="latest_item">Elemento più recente</string>
+    <string name="storage_location">Memoria</string>
 </resources>

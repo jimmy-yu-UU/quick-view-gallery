@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Slideshow
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -129,6 +130,7 @@ fun AlbumScreen(
     var sortMenu by remember { mutableStateOf(false) }
     var moreMenu by remember { mutableStateOf(false) }
     var moveTarget by remember { mutableStateOf<Boolean?>(null) }
+    var showDetails by remember { mutableStateOf(false) }
     val deleter = rememberDeleter(vm, settings)
     val gridState = rememberLazyGridState()
     val selecting = selection.isNotEmpty()
@@ -148,6 +150,11 @@ fun AlbumScreen(
                         var menu by remember { mutableStateOf(false) }
                         IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, tr(R.string.more)) }
                         DropdownMenu(menu, onDismissRequest = { menu = false }) {
+                            DropdownMenuItem(
+                                text = { Text(tr(R.string.details)) },
+                                leadingIcon = { Icon(Icons.Outlined.Info, null) },
+                                onClick = { menu = false; showDetails = true },
+                            )
                             DropdownMenuItem(
                                 text = { Text(tr(R.string.move_to_ellipsis)) },
                                 leadingIcon = { Icon(Icons.AutoMirrored.Filled.DriveFileMove, null) },
@@ -256,6 +263,9 @@ fun AlbumScreen(
         }
     }
 
+    if (showDetails) {
+        MediaSelectionDetailsDialog(selectedItems(), onDismiss = { showDetails = false })
+    }
     moveTarget?.let { move ->
         FolderPickerDialog(
             title = if (move) tr(R.string.move_to) else tr(R.string.copy_to),

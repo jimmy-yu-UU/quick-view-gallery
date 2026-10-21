@@ -281,4 +281,12 @@
     <string name="updates_help">Bản cập nhật được tải xuống từ GitHub Releases và được trình cài đặt gói của Android cài đặt.</string>
     <string name="update_not_found">Không tìm thấy bản phát hành (kho lưu trữ có thể chưa công khai)</string>
     <string name="includes_subfolders">Cài đặt này cũng áp dụng cho tất cả thư mục con.</string>
+    <string name="items_count">Số mục</string>
+    <string name="photos">Ảnh</string>
+    <string name="total_size">Tổng dung lượng</string>
+    <string name="date_range">Khoảng thời gian</string>
+    <string name="in_folders">Thư mục</string>
+    <string name="albums_count">Số album</string>
+    <string name="latest_item">Mục mới nhất</string>
+    <string name="storage_location">Bộ nhớ</string>
 </resources>

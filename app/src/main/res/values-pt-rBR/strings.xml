@@ -281,4 +281,12 @@
     <string name="updates_help">As atualizações são baixadas do GitHub Releases e instaladas pelo instalador de pacotes do Android.</string>
     <string name="update_not_found">Nenhuma versão publicada encontrada (o repositório pode ainda não ser público)</string>
     <string name="includes_subfolders">Isso também se aplica a todas as subpastas.</string>
+    <string name="items_count">Itens</string>
+    <string name="photos">Fotos</string>
+    <string name="total_size">Tamanho total</string>
+    <string name="date_range">Período</string>
+    <string name="in_folders">Pastas</string>
+    <string name="albums_count">Álbuns</string>
+    <string name="latest_item">Item mais recente</string>
+    <string name="storage_location">Armazenamento</string>
 </resources>

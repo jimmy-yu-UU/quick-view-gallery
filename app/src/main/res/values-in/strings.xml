@@ -281,4 +281,12 @@
     <string name="updates_help">Update didownload dari GitHub Releases dan diinstal oleh penginstal paket Android.</string>
     <string name="update_not_found">Tidak ada rilis yang ditemukan (repositori mungkin belum publik)</string>
     <string name="includes_subfolders">Ini juga berlaku untuk semua subfoldernya.</string>
+    <string name="items_count">Jumlah item</string>
+    <string name="photos">Foto</string>
+    <string name="total_size">Ukuran total</string>
+    <string name="date_range">Rentang tanggal</string>
+    <string name="in_folders">Folder</string>
+    <string name="albums_count">Jumlah album</string>
+    <string name="latest_item">Item terbaru</string>
+    <string name="storage_location">Penyimpanan</string>
 </resources>

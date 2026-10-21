@@ -281,4 +281,12 @@
     <string name="updates_help">ระบบจะดาวน์โหลดการอัปเดตจาก GitHub Releases และติดตั้งด้วยโปรแกรมติดตั้งแพ็กเกจของ Android</string>
     <string name="update_not_found">ไม่พบรุ่นที่เผยแพร่ (ที่เก็บอาจยังไม่เป็นสาธารณะ)</string>
     <string name="includes_subfolders">การตั้งค่านี้มีผลกับโฟลเดอร์ย่อยทั้งหมดด้วย</string>
+    <string name="items_count">จำนวนรายการ</string>
+    <string name="photos">รูปภาพ</string>
+    <string name="total_size">ขนาดรวม</string>
+    <string name="date_range">ช่วงวันที่</string>
+    <string name="in_folders">โฟลเดอร์</string>
+    <string name="albums_count">จำนวนอัลบั้ม</string>
+    <string name="latest_item">รายการล่าสุด</string>
+    <string name="storage_location">พื้นที่เก็บข้อมูล</string>
 </resources>

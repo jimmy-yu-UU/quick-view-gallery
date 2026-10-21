@@ -281,4 +281,12 @@
     <string name="updates_help">Обновления скачиваются из GitHub Releases и устанавливаются установщиком пакетов Android.</string>
     <string name="update_not_found">Опубликованная версия не найдена (возможно, репозиторий ещё не публичный)</string>
     <string name="includes_subfolders">Также применяется ко всем вложенным папкам.</string>
+    <string name="items_count">Объектов</string>
+    <string name="photos">Фото</string>
+    <string name="total_size">Общий размер</string>
+    <string name="date_range">Период</string>
+    <string name="in_folders">Папки</string>
+    <string name="albums_count">Альбомов</string>
+    <string name="latest_item">Самый новый</string>
+    <string name="storage_location">Хранилище</string>
 </resources>

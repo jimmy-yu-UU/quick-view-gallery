@@ -281,4 +281,12 @@
     <string name="updates_help">Les mises à jour sont téléchargées depuis GitHub Releases et installées par le programme d\'installation de packages Android.</string>
     <string name="update_not_found">Aucune version publiée trouvée (le dépôt n\'est peut-être pas encore public)</string>
     <string name="includes_subfolders">S\'applique aussi à tous ses sous-dossiers.</string>
+    <string name="items_count">Éléments</string>
+    <string name="photos">Photos</string>
+    <string name="total_size">Taille totale</string>
+    <string name="date_range">Période</string>
+    <string name="in_folders">Dossiers</string>
+    <string name="albums_count">Albums</string>
+    <string name="latest_item">Élément le plus récent</string>
+    <string name="storage_location">Stockage</string>
 </resources>

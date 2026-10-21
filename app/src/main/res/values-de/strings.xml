@@ -281,4 +281,12 @@
     <string name="updates_help">Updates werden von GitHub Releases heruntergeladen und vom Android-Paketinstaller installiert.</string>
     <string name="update_not_found">Keine veröffentlichte Version gefunden (das Repository ist möglicherweise noch nicht öffentlich)</string>
     <string name="includes_subfolders">Gilt auch für alle Unterordner.</string>
+    <string name="items_count">Elemente</string>
+    <string name="photos">Fotos</string>
+    <string name="total_size">Gesamtgröße</string>
+    <string name="date_range">Zeitraum</string>
+    <string name="in_folders">Ordner</string>
+    <string name="albums_count">Alben</string>
+    <string name="latest_item">Neuestes Element</string>
+    <string name="storage_location">Speicherort</string>
 </resources>

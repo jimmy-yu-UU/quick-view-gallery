@@ -281,4 +281,12 @@
     <string name="updates_help">Güncellemeler GitHub Releases\'tan indirilir ve Android paket yükleyicisi tarafından yüklenir.</string>
     <string name="update_not_found">Yayınlanmış sürüm bulunamadı (depo henüz herkese açık olmayabilir)</string>
     <string name="includes_subfolders">Bu ayar tüm alt klasörlere de uygulanır.</string>
+    <string name="items_count">Öğe sayısı</string>
+    <string name="photos">Fotoğraflar</string>
+    <string name="total_size">Toplam boyut</string>
+    <string name="date_range">Tarih aralığı</string>
+    <string name="in_folders">Klasörler</string>
+    <string name="albums_count">Albüm sayısı</string>
+    <string name="latest_item">En yeni öğe</string>
+    <string name="storage_location">Depolama</string>
 </resources>

@@ -281,4 +281,12 @@
     <string name="updates_help">업데이트는 GitHub Releases에서 다운로드되며 Android 패키지 설치 프로그램으로 설치됩니다.</string>
     <string name="update_not_found">게시된 릴리스를 찾을 수 없습니다(저장소가 아직 공개되지 않았을 수 있음)</string>
     <string name="includes_subfolders">이 설정은 모든 하위 폴더에도 적용됩니다.</string>
+    <string name="items_count">항목 수</string>
+    <string name="photos">사진</string>
+    <string name="total_size">전체 크기</string>
+    <string name="date_range">날짜 범위</string>
+    <string name="in_folders">폴더</string>
+    <string name="albums_count">앨범 수</string>
+    <string name="latest_item">최신 항목</string>
+    <string name="storage_location">저장 위치</string>
 </resources>

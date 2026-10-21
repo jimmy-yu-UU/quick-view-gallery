@@ -44,6 +44,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Collections
 import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Photo
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
@@ -120,6 +121,7 @@ fun AlbumsScreen(
     var confirmDelete by remember { mutableStateOf(false) }
     var renaming by remember { mutableStateOf<Album?>(null) }
     var moveTarget by remember { mutableStateOf<Boolean?>(null) }
+    var showDetails by remember { mutableStateOf(false) }
 
     val shown = remember(albums, query) {
         val q = query?.trim().orEmpty()
@@ -193,6 +195,11 @@ fun AlbumsScreen(
                                 var menu by remember { mutableStateOf(false) }
                                 IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, tr(R.string.more)) }
                                 DropdownMenu(menu, onDismissRequest = { menu = false }) {
+                                    DropdownMenuItem(
+                                        text = { Text(tr(R.string.details)) },
+                                        leadingIcon = { Icon(Icons.Outlined.Info, null) },
+                                        onClick = { menu = false; showDetails = true },
+                                    )
                                     if (selection.size == 1) {
                                         DropdownMenuItem(
                                             text = { Text(tr(R.string.rename)) },
@@ -328,6 +335,9 @@ fun AlbumsScreen(
         }
     }
 
+    if (showDetails) {
+        AlbumSelectionDetailsDialog(albums.filter { it.path in selection }, onDismiss = { showDetails = false })
+    }
     if (confirmDelete) {
         val count = vm.mediaInAlbums(selection).size
         ConfirmDialog(

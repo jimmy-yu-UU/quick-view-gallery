@@ -281,4 +281,12 @@
     <string name="updates_help">يتم تنزيل التحديثات من GitHub Releases وتثبيتها باستخدام أداة تثبيت الحِزم في Android.</string>
     <string name="update_not_found">لم يتم العثور على إصدار منشور (قد لا يكون المستودع عامًا بعد)</string>
     <string name="includes_subfolders">ينطبق هذا أيضًا على جميع المجلدات الفرعية.</string>
+    <string name="items_count">العناصر</string>
+    <string name="photos">الصور</string>
+    <string name="total_size">الحجم الإجمالي</string>
+    <string name="date_range">النطاق الزمني</string>
+    <string name="in_folders">المجلدات</string>
+    <string name="albums_count">الألبومات</string>
+    <string name="latest_item">أحدث عنصر</string>
+    <string name="storage_location">مكان التخزين</string>
 </resources>

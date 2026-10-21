@@ -281,4 +281,12 @@
     <string name="updates_help">अपडेट GitHub Releases से डाउनलोड किए जाते हैं और Android पैकेज इंस्टॉलर से इंस्टॉल किए जाते हैं.</string>
     <string name="update_not_found">कोई प्रकाशित रिलीज़ नहीं मिली (रिपॉज़िटरी शायद अभी सार्वजनिक नहीं है)</string>
     <string name="includes_subfolders">यह इसके सभी सबफ़ोल्डर पर भी लागू होता है.</string>
+    <string name="items_count">आइटम</string>
+    <string name="photos">फ़ोटो</string>
+    <string name="total_size">कुल आकार</string>
+    <string name="date_range">तारीख सीमा</string>
+    <string name="in_folders">फ़ोल्डर</string>
+    <string name="albums_count">एल्बम</string>
+    <string name="latest_item">सबसे नया आइटम</string>
+    <string name="storage_location">स्टोरेज</string>
 </resources>

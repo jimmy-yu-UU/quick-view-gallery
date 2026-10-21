@@ -282,4 +282,12 @@
     <string name="updates_help">Updates are downloaded from GitHub Releases and installed by the Android package installer.</string>
     <string name="update_not_found">No published release found (the repository may not be public yet)</string>
     <string name="includes_subfolders">This also applies to all of its subfolders.</string>
+    <string name="items_count">Items</string>
+    <string name="photos">Photos</string>
+    <string name="total_size">Total size</string>
+    <string name="date_range">Date range</string>
+    <string name="in_folders">Folders</string>
+    <string name="albums_count">Albums</string>
+    <string name="latest_item">Newest item</string>
+    <string name="storage_location">Storage</string>
 </resources>

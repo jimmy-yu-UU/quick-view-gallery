@@ -281,4 +281,12 @@
     <string name="updates_help">更新檔從 GitHub Releases 下載，下載完成後由 Android 系統安裝程式進行安裝。</string>
     <string name="update_not_found">找不到已發佈的版本（Repo 可能尚未公開）</string>
     <string name="includes_subfolders">此設定亦會套用到其下所有子資料夾。</string>
+    <string name="items_count">項目數量</string>
+    <string name="photos">相片</string>
+    <string name="total_size">總大小</string>
+    <string name="date_range">日期範圍</string>
+    <string name="in_folders">所在資料夾</string>
+    <string name="albums_count">相簿數量</string>
+    <string name="latest_item">最新項目</string>
+    <string name="storage_location">儲存位置</string>
 </resources>
