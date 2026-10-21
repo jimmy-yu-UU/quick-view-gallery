@@ -86,9 +86,9 @@ fun LockScreen(
     val canBiometric = biometric && activity != null &&
         BiometricManager.from(context).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
     fun promptBiometric() {
-        if (!canBiometric) return
+        if (!canBiometric || activity == null) return
         val prompt = BiometricPrompt(
-            activity!!,
+            activity,
             ContextCompat.getMainExecutor(context),
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) = onUnlocked()

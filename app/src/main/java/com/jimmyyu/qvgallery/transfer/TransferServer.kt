@@ -125,7 +125,7 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
             if (b < 0) return if (buf.size() == 0) null else buf.toString(Charsets.UTF_8.name())
             if (b == '\n'.code) break
             if (b != '\r'.code) buf.write(b)
-            if (buf.size() > 16 * 1024) throw IllegalStateException("header too long")
+            check(buf.size() <= 16 * 1024) { "header too long" }
         }
         return buf.toString(Charsets.UTF_8.name())
     }
@@ -300,7 +300,7 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
             status = 206
         }
         val length = end - start + 1
-        val extra = mutableMapOf("Content-Disposition" to disposition, "Accept-Ranges" to "bytes")
+        val extra = mutableMapOf(CONTENT_DISPOSITION to disposition, "Accept-Ranges" to "bytes")
         if (status == 206) extra["Content-Range"] = "bytes $start-$end/$total"
         head(out, status, item.mimeType, length, extra)
         if (req.method == "HEAD") return
@@ -327,7 +327,7 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
         if (items.isEmpty()) return json(out, 404, JSONObject())
         val name = (req.query["album"]?.substringAfterLast('/') ?: "QV Gallery") + ".zip"
         // Close-delimited body: no Content-Length since the archive is built on the fly.
-        head(out, 200, "application/zip", null, mapOf("Content-Disposition" to "attachment; filename*=UTF-8''" + encodeRfc5987(name)))
+        head(out, 200, "application/zip", null, mapOf(CONTENT_DISPOSITION to "attachment; filename*=UTF-8''" + encodeRfc5987(name)))
         val zip = ZipOutputStream(out)
         zip.setLevel(Deflater.NO_COMPRESSION) // Photos and videos are already compressed.
         val used = HashSet<String>()
@@ -362,18 +362,18 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
         val f = TransferState.outbox.value.getOrNull(i) ?: return json(out, 404, JSONObject())
         val mime = MediaTypes.mimeFor(f.name) ?: "application/octet-stream"
         val disposition = (if (req.query["dl"] == "1") "attachment" else "inline") + "; filename*=UTF-8''" + encodeRfc5987(f.name)
-        head(out, 200, mime, f.size.takeIf { it > 0 }, mapOf("Content-Disposition" to disposition))
+        head(out, 200, mime, f.size.takeIf { it > 0 }, mapOf(CONTENT_DISPOSITION to disposition))
         app.contentResolver.openInputStream(f.uri)?.use { it.copyTo(out, 256 * 1024) }
         if (req.query["dl"] == "1") {
             TransferState.markDownloaded(listOf(i))
-            onReceived(TransferRecord(f.name, f.size, incoming = false, peer = browserName(req.headers["user-agent"].orEmpty())))
+            onReceived(TransferRecord(f.name, f.size, incoming = false, peer = browserName(req.headers[USER_AGENT].orEmpty())))
         }
     }
 
     private fun outboxZip(req: Request, out: OutputStream) {
         val files = TransferState.outbox.value
         if (files.isEmpty()) return json(out, 404, JSONObject())
-        head(out, 200, "application/zip", null, mapOf("Content-Disposition" to "attachment; filename*=UTF-8''" + encodeRfc5987("QV Gallery.zip")))
+        head(out, 200, "application/zip", null, mapOf(CONTENT_DISPOSITION to "attachment; filename*=UTF-8''" + encodeRfc5987("QV Gallery.zip")))
         val zip = ZipOutputStream(out)
         zip.setLevel(Deflater.NO_COMPRESSION)
         val used = HashSet<String>()
@@ -387,7 +387,7 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
         }
         zip.finish()
         TransferState.markDownloaded(files.indices.toList())
-        val peer = browserName(req.headers["user-agent"].orEmpty())
+        val peer = browserName(req.headers[USER_AGENT].orEmpty())
         files.forEach { onReceived(TransferRecord(it.name, it.size, incoming = false, peer = peer)) }
     }
 
@@ -417,7 +417,7 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
         }
         app.contentResolver.update(uri, ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }, null, null)
         cached = null
-        onReceived(TransferRecord(name, length, incoming = true, peer = req.headers["x-qv-device"] ?: req.headers["user-agent"]?.let { browserName(it) }))
+        onReceived(TransferRecord(name, length, incoming = true, peer = req.headers["x-qv-device"] ?: req.headers[USER_AGENT]?.let { browserName(it) }))
         json(out, 200, JSONObject().put("ok", true))
     }
 
@@ -468,6 +468,8 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
     companion object {
         private const val TAG = "TransferServer"
         const val PREFERRED_PORT = 8899
+        private const val CONTENT_DISPOSITION = "Content-Disposition"
+        private const val USER_AGENT = "user-agent"
         const val RECEIVE_DIR = "Pictures/QV Transfer"
         private const val MAX_ATTEMPTS = 5
         private const val LOCK_MS = 60_000L

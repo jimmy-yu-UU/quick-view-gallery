@@ -69,11 +69,11 @@ class FileOps(private val context: Context) {
                     continue
                 }
                 copyContent(item, target)
-                target.setLastModified(item.dateModified)
+                if (!target.setLastModified(item.dateModified)) Log.d(TAG, "could not keep the date of ${target.name}")
                 touched += target.absolutePath
                 if (move) {
                     if (item.id >= 0) runCatching { context.contentResolver.delete(item.uri, null, null) }
-                    item.file.delete()
+                    if (item.file.exists() && !item.file.delete()) Log.w(TAG, "moved but could not remove ${item.path}")
                     touched += item.path
                 }
             } catch (e: Exception) {
@@ -119,10 +119,10 @@ class FileOps(private val context: Context) {
         val tmp = File(target.parentFile, ".${target.name}.tmp")
         val ok = runCatching {
             tmp.outputStream().use { bitmap.compress(format, quality, it) }
-            if (target.exists()) target.delete()
+            check(!target.exists() || target.delete()) { "cannot replace ${target.name}" }
             tmp.renameTo(target)
         }.getOrDefault(false)
-        if (!ok) tmp.delete()
+        if (!ok && tmp.exists() && !tmp.delete()) Log.w(TAG, "could not remove ${tmp.name}")
         if (ok) scan(listOf(target.absolutePath))
         ok
     }

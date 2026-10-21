@@ -29,8 +29,8 @@ class Advertiser(context: Context) {
         val l = object : NsdManager.RegistrationListener {
             override fun onServiceRegistered(info: NsdServiceInfo) { registeredName = info.serviceName }
             override fun onRegistrationFailed(info: NsdServiceInfo, error: Int) { Log.w(TAG, "register failed $error") }
-            override fun onServiceUnregistered(info: NsdServiceInfo) {}
-            override fun onUnregistrationFailed(info: NsdServiceInfo, error: Int) {}
+            override fun onServiceUnregistered(info: NsdServiceInfo) = Unit // Not needed: only registration/discovery results matter here.
+            override fun onUnregistrationFailed(info: NsdServiceInfo, error: Int) = Unit // Not needed: only registration/discovery results matter here.
         }
         listener = l
         nsd.registerService(info, NsdManager.PROTOCOL_DNS_SD, l)
@@ -61,10 +61,10 @@ class Browser(context: Context) {
         stop()
         _peers.value = emptyList()
         val l = object : NsdManager.DiscoveryListener {
-            override fun onDiscoveryStarted(type: String) {}
-            override fun onDiscoveryStopped(type: String) {}
+            override fun onDiscoveryStarted(type: String) = Unit // Not needed: only registration/discovery results matter here.
+            override fun onDiscoveryStopped(type: String) = Unit // Not needed: only registration/discovery results matter here.
             override fun onStartDiscoveryFailed(type: String, error: Int) { Log.w(TAG, "discovery failed $error") }
-            override fun onStopDiscoveryFailed(type: String, error: Int) {}
+            override fun onStopDiscoveryFailed(type: String, error: Int) = Unit // Not needed: only registration/discovery results matter here.
             override fun onServiceFound(info: NsdServiceInfo) {
                 if (info.serviceName == ownName) return
                 queue.add(info)

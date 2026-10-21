@@ -170,8 +170,7 @@ fun ViewerScreen(
     val volumeNav by rememberUpdatedState(settings.volumeKeysNavigate)
     DisposableEffect(pager) {
         KeyEvents.handler = { code ->
-            if (!volumeNav) false
-            else when (code) {
+            volumeNav && when (code) {
                 KeyEvent.KEYCODE_VOLUME_DOWN -> { scope.launch { pager.animateScrollToPage((pager.currentPage + 1).coerceAtMost(pager.pageCount - 1)) }; true }
                 KeyEvent.KEYCODE_VOLUME_UP -> { scope.launch { pager.animateScrollToPage((pager.currentPage - 1).coerceAtLeast(0)) }; true }
                 else -> false

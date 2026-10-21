@@ -397,7 +397,7 @@ private fun orientedSize(context: Context, item: MediaItem): Pair<Int, Int> {
     val src = ImageDecoder.createSource(context.contentResolver, item.uri)
     // Decoding just the header: throw from the listener once the size is known.
     runCatching {
-        ImageDecoder.decodeBitmap(src) { decoder, info, _ ->
+        ImageDecoder.decodeBitmap(src) { _, info, _ ->
             size = info.size.width to info.size.height
             throw StopDecode()
         }

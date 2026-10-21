@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -46,10 +46,10 @@
 <body>
 <div id="login">
   <h2>QV Gallery</h2>
-  <div class="dim" id="t-code-hint"></div>
-  <input id="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" autofocus>
+  <label class="dim" id="t-code-hint" for="code">Pairing code</label>
+  <input id="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
   <div class="msg" id="loginMsg"></div>
-  <button id="loginBtn"></button>
+  <button id="loginBtn">Connect</button>
 </div>
 <div id="app" style="display:none">
   <header>
@@ -58,23 +58,23 @@
     <button class="ghost" id="selAllBtn" style="display:none"></button>
     <button id="dlBtn" style="display:none"></button>
     <button id="upBtn"></button>
-    <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display:none">
+    <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display:none" aria-label="Upload">
   </header>
   <main>
-    <section id="outbox"><h2><span id="outboxTitle"></span><a class="btn" id="outboxZip"></a></h2><div class="files" id="outboxFiles"></div></section>
+    <section id="outbox"><h2><span id="outboxTitle">Files from the phone</span><a class="btn" id="outboxZip" href="/api/outbox/zip">ZIP</a></h2><div class="files" id="outboxFiles"></div></section>
     <div class="dim" id="sub"></div><div class="grid" id="grid"></div>
   </main>
 </div>
 <div id="viewer">
-  <div class="bar"><button class="ghost" id="vClose">✕</button><span id="vName"></span><a class="btn" id="vDl"></a></div>
+  <div class="bar"><button class="ghost" id="vClose">✕</button><span id="vName"></span><a class="btn" id="vDl" href="#">Download</a></div>
   <button class="nav" id="vPrev" style="left:0">‹</button>
   <div id="vBody"></div>
   <button class="nav" id="vNext" style="right:0">›</button>
 </div>
 <div id="drop"></div>
 <div id="uploads"></div>
-<form id="zipForm" method="POST" action="/api/zip" style="display:none"><input name="paths"></form>
-<script>
+<form id="zipForm" method="POST" action="/api/zip" style="display:none"><input type="hidden" name="paths"></form>
+<script type="module">
 const I18N = {
   en: { codeHint:"Enter the 6-digit pairing code shown on the phone", login:"Connect", wrong:"Wrong code", locked:"Too many attempts, try again in a minute", fail:"Connection failed",
         albums:"Albums", items:n=>`${n} items`, upload:"Upload", download:sel=>sel?`Download ${sel} (ZIP)`:"Download album (ZIP)", selectAll:"Select all", none:"Select none",
@@ -94,7 +94,13 @@ const I18N = {
         outbox:(n,from)=>`${from} から ${n} 件のファイルが届いています`, all:"すべてダウンロード (ZIP)", got:"ダウンロード済み" },
 };
 const lang = (navigator.language || "en");
-const T = I18N[lang] || I18N[lang.startsWith("zh") ? (/(CN|SG|Hans)/i.test(lang) ? "zh-CN" : "zh-TW") : lang.split("-")[0]] || I18N.en;
+document.documentElement.lang = lang;
+function pickLanguage(tag) {
+  if (I18N[tag]) return tag;
+  if (tag.startsWith("zh")) return /(CN|SG|Hans)/i.test(tag) ? "zh-CN" : "zh-TW";
+  return tag.split("-")[0];
+}
+const T = I18N[pickLanguage(lang)] || I18N.en;
 const $ = id => document.getElementById(id);
 let token = sessionStorage.getItem("qvt") || "";
 let album = null, items = [], selected = new Set(), current = -1;
@@ -103,7 +109,7 @@ $("t-code-hint").textContent = T.codeHint; $("loginBtn").textContent = T.login; 
 $("drop").textContent = T.drop; $("vDl").textContent = T.save;
 
 async function api(path, opts = {}) {
-  opts.headers = Object.assign({ "X-QV-Token": token }, opts.headers || {});
+  opts.headers = { "X-QV-Token": token, ...(opts.headers || {}) };
   const r = await fetch(path, opts);
   if (r.status === 401) { showLogin(); throw new Error("unauthorized"); }
   return r;
@@ -117,7 +123,10 @@ async function login() {
     if (r.status === 429) { $("loginMsg").textContent = T.locked; return; }
     const j = await r.json(); token = j.token; sessionStorage.setItem("qvt", token);
     $("login").style.display = "none"; $("app").style.display = "block"; showAlbums();
-  } catch (e) { $("loginMsg").textContent = T.fail; }
+  } catch (e) {
+    console.warn(e);
+    $("loginMsg").textContent = T.fail;
+  }
 }
 $("loginBtn").onclick = login;
 $("code").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
@@ -130,7 +139,11 @@ let outboxKey = "";
 async function refreshOutbox() {
   if (!token) return;
   let j;
-  try { j = await (await api("/api/outbox")).json(); } catch (e) { return; }
+  try {
+    j = await (await api("/api/outbox")).json();
+  } catch (e) {
+    return; // Offline or logged out; the next poll tries again.
+  }
   const key = JSON.stringify(j.files.map(f => [f.name, f.downloaded]));
   if (key === outboxKey) return;
   outboxKey = key;
@@ -214,7 +227,9 @@ $("vPrev").onclick = () => current > 0 && openViewer(current - 1);
 $("vNext").onclick = () => current < items.length - 1 && openViewer(current + 1);
 document.addEventListener("keydown", e => {
   if ($("viewer").style.display !== "flex") return;
-  if (e.key === "Escape") $("vClose").onclick(); if (e.key === "ArrowLeft") $("vPrev").onclick(); if (e.key === "ArrowRight") $("vNext").onclick();
+  if (e.key === "Escape") $("vClose").onclick();
+  else if (e.key === "ArrowLeft") $("vPrev").onclick();
+  else if (e.key === "ArrowRight") $("vNext").onclick();
 });
 
 // Uploads: raw PUT per file so the phone can stream straight to storage.
@@ -233,7 +248,8 @@ async function uploadAll(files) {
     row.innerHTML = `<div></div><progress max="100" value="0"></progress>`;
     row.firstChild.textContent = `${T.uploading}: ${f.name}`;
     $("uploads").prepend(row);
-    const ok = await new Promise(res => {
+    // One upload at a time keeps the phone's storage writes sequential.
+    const ok = await new Promise(res => { // NOSONAR
       const x = new XMLHttpRequest();
       x.open("PUT", "/api/upload?name=" + encodeURIComponent(f.name));
       x.setRequestHeader("X-QV-Token", token);
@@ -246,7 +262,17 @@ async function uploadAll(files) {
   }
 }
 
-if (token) { api("/api/albums").then(() => { $("login").style.display = "none"; $("app").style.display = "block"; showAlbums(); }).catch(showLogin); }
+// Resume a session from this tab if the token is still valid.
+if (token) {
+  try {
+    await api("/api/albums");
+    $("login").style.display = "none"; $("app").style.display = "block"; showAlbums();
+  } catch (e) {
+    showLogin();
+  }
+} else {
+  $("code").focus();
+}
 </script>
 </body>
 </html>

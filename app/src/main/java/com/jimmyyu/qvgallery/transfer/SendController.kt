@@ -110,7 +110,7 @@ class SendController(private val context: Context, private val scope: CoroutineS
             resolver.openInputStream(f.uri)!!.use { i -> tmp.outputStream().use { i.copyTo(it) } }
             tmp.inputStream().use { client.upload(token, me, f.name, tmp.length(), it, onProgress) }
         } finally {
-            tmp.delete()
+            if (!tmp.delete()) tmp.deleteOnExit()
         }
     }
 

@@ -86,7 +86,7 @@ fun UpdateDialog(info: ReleaseInfo, onSkip: () -> Unit, onDismiss: () -> Unit) {
                         Spacer(Modifier.height(12.dp))
                         Text(tr(R.string.installing_hint), style = MaterialTheme.typography.bodySmall)
                     }
-                    null -> {}
+                    null -> Unit // Not downloading yet: nothing extra to show.
                 }
             }
         },
