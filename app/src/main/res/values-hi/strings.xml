@@ -259,4 +259,24 @@
     <string name="excluded_help">बाहर रखे गए फ़ोल्डर, एल्बम या सभी मीडिया में नहीं दिखते.</string>
     <string name="hidden_help">छिपे हुए एल्बम सिर्फ़ \"छिपे हुए एल्बम\" में दिखते हैं. पासवर्ड सेट होने पर उन्हें अनलॉक करना पड़ता है.</string>
     <string name="extra_help">जिन फ़ोल्डर को MediaStore छोड़ देता है (जैसे, .nomedia वाले) या USB ड्राइव को सीधे स्कैन करने के लिए यहां जोड़ा जा सकता है.</string>
+    <string name="sec_updates">अपडेट</string>
+    <string name="sec_updates_sub">नए वर्शन की जांच, अपने-आप जांच</string>
+    <string name="update_available">नया वर्शन उपलब्ध है: %1$s</string>
+    <string name="current_version">मौजूदा वर्शन: %1$s</string>
+    <string name="downloading">डाउनलोड हो रहा है…</string>
+    <string name="download_failed">डाउनलोड नहीं हो सका. इसके बजाय, इसे ब्राउज़र में डाउनलोड किया जा सकता है.</string>
+    <string name="download_done">डाउनलोड हो गया. अगर इंस्टॉलर नहीं खुला, तो \"अनजान ऐप्लिकेशन इंस्टॉल करें\" की अनुमति दें और फिर से इंस्टॉल करें पर टैप करें.</string>
+    <string name="download_and_update">डाउनलोड और अपडेट करें</string>
+    <string name="cancel_download">डाउनलोड रद्द करें</string>
+    <string name="install">इंस्टॉल करें</string>
+    <string name="open_in_browser">ब्राउज़र में खोलें</string>
+    <string name="skip_version">इस वर्शन को छोड़ें</string>
+    <string name="later">बाद में</string>
+    <string name="checking">जांच की जा रही है…</string>
+    <string name="check_now">अपडेट के लिए अभी जांच करें</string>
+    <string name="update_check_failed">अपडेट की जांच नहीं की जा सकी. अपना कनेक्शन जांचें.</string>
+    <string name="up_to_date">आपके पास सबसे नया वर्शन है</string>
+    <string name="auto_check_updates">अपडेट के लिए अपने-आप जांच करें</string>
+    <string name="auto_check_updates_sub">ऐप्लिकेशन खुलने पर नए वर्शन की जांच करें</string>
+    <string name="updates_help">अपडेट GitHub Releases से डाउनलोड किए जाते हैं और Android पैकेज इंस्टॉलर से इंस्टॉल किए जाते हैं.</string>
 </resources>

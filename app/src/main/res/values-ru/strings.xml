@@ -259,4 +259,24 @@
     <string name="excluded_help">Исключённые папки не отображаются ни в альбомах, ни в разделе «Все медиафайлы».</string>
     <string name="hidden_help">Скрытые альбомы отображаются только в разделе «Скрытые альбомы» и требуют разблокировки, если задан пароль.</string>
     <string name="extra_help">Здесь можно добавить папки, которые MediaStore пропускает (например, с .nomedia), или USB-накопители, чтобы сканировать их напрямую.</string>
+    <string name="sec_updates">Обновления</string>
+    <string name="sec_updates_sub">Проверка новых версий, автоматическая проверка</string>
+    <string name="update_available">Доступна новая версия: %1$s</string>
+    <string name="current_version">Текущая версия: %1$s</string>
+    <string name="downloading">Скачивание…</string>
+    <string name="download_failed">Не удалось скачать. Вы можете скачать обновление в браузере.</string>
+    <string name="download_done">Скачано. Если установщик не открылся, разрешите «Установку неизвестных приложений» и снова нажмите «Установить».</string>
+    <string name="download_and_update">Скачать и обновить</string>
+    <string name="cancel_download">Отменить скачивание</string>
+    <string name="install">Установить</string>
+    <string name="open_in_browser">Открыть в браузере</string>
+    <string name="skip_version">Пропустить эту версию</string>
+    <string name="later">Позже</string>
+    <string name="checking">Проверка…</string>
+    <string name="check_now">Проверить обновления</string>
+    <string name="update_check_failed">Не удалось проверить обновления. Проверьте подключение к Интернету.</string>
+    <string name="up_to_date">У вас последняя версия</string>
+    <string name="auto_check_updates">Проверять обновления автоматически</string>
+    <string name="auto_check_updates_sub">Проверять наличие новой версии при запуске приложения</string>
+    <string name="updates_help">Обновления скачиваются из GitHub Releases и устанавливаются установщиком пакетов Android.</string>
 </resources>

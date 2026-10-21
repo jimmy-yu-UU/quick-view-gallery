@@ -259,4 +259,24 @@
     <string name="excluded_help">Ausgeschlossene Ordner erscheinen weder in Alben noch unter Alle Medien.</string>
     <string name="hidden_help">Ausgeblendete Alben erscheinen nur unter Ausgeblendete Alben und müssen entsperrt werden, wenn ein Passwort festgelegt ist.</string>
     <string name="extra_help">Ordner, die MediaStore überspringt (z. B. mit .nomedia), oder USB-Laufwerke können hier hinzugefügt werden, um sie direkt zu scannen.</string>
+    <string name="sec_updates">Updates</string>
+    <string name="sec_updates_sub">Nach neuen Versionen suchen, automatische Prüfung</string>
+    <string name="update_available">Neue Version verfügbar: %1$s</string>
+    <string name="current_version">Aktuelle Version: %1$s</string>
+    <string name="downloading">Wird heruntergeladen…</string>
+    <string name="download_failed">Download fehlgeschlagen. Du kannst sie stattdessen im Browser herunterladen.</string>
+    <string name="download_done">Heruntergeladen. Falls das Installationsprogramm nicht geöffnet wurde, erlaube „Unbekannte Apps installieren“ und tippe noch einmal auf Installieren.</string>
+    <string name="download_and_update">Herunterladen und aktualisieren</string>
+    <string name="cancel_download">Download abbrechen</string>
+    <string name="install">Installieren</string>
+    <string name="open_in_browser">Im Browser öffnen</string>
+    <string name="skip_version">Diese Version überspringen</string>
+    <string name="later">Später</string>
+    <string name="checking">Wird geprüft…</string>
+    <string name="check_now">Jetzt nach Updates suchen</string>
+    <string name="update_check_failed">Suche nach Updates fehlgeschlagen. Prüfe deine Verbindung.</string>
+    <string name="up_to_date">Du hast die neueste Version</string>
+    <string name="auto_check_updates">Automatisch nach Updates suchen</string>
+    <string name="auto_check_updates_sub">Beim Öffnen der App nach einer neuen Version suchen</string>
+    <string name="updates_help">Updates werden von GitHub Releases heruntergeladen und vom Android-Paketinstaller installiert.</string>
 </resources>

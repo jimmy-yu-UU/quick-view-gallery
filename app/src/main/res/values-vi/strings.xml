@@ -259,4 +259,24 @@
     <string name="excluded_help">Thư mục bị loại trừ sẽ không xuất hiện trong album hoặc trong Tất cả nội dung.</string>
     <string name="hidden_help">Album ẩn chỉ hiển thị trong mục Album ẩn và cần mở khóa khi đã đặt mật khẩu.</string>
     <string name="extra_help">Có thể thêm tại đây các thư mục MediaStore bỏ qua (ví dụ: có .nomedia) hoặc ổ USB để quét trực tiếp.</string>
+    <string name="sec_updates">Cập nhật</string>
+    <string name="sec_updates_sub">Kiểm tra phiên bản mới, tự động kiểm tra</string>
+    <string name="update_available">Đã có phiên bản mới: %1$s</string>
+    <string name="current_version">Phiên bản hiện tại: %1$s</string>
+    <string name="downloading">Đang tải xuống…</string>
+    <string name="download_failed">Không tải xuống được. Bạn có thể tải xuống trong trình duyệt.</string>
+    <string name="download_done">Đã tải xuống. Nếu trình cài đặt không mở, hãy cho phép \"Cài đặt ứng dụng không rõ nguồn gốc\" rồi nhấn lại vào Cài đặt.</string>
+    <string name="download_and_update">Tải xuống và cập nhật</string>
+    <string name="cancel_download">Hủy tải xuống</string>
+    <string name="install">Cài đặt</string>
+    <string name="open_in_browser">Mở trong trình duyệt</string>
+    <string name="skip_version">Bỏ qua phiên bản này</string>
+    <string name="later">Để sau</string>
+    <string name="checking">Đang kiểm tra…</string>
+    <string name="check_now">Kiểm tra bản cập nhật ngay</string>
+    <string name="update_check_failed">Không kiểm tra được bản cập nhật. Hãy kiểm tra kết nối mạng.</string>
+    <string name="up_to_date">Bạn đang dùng phiên bản mới nhất</string>
+    <string name="auto_check_updates">Tự động kiểm tra bản cập nhật</string>
+    <string name="auto_check_updates_sub">Kiểm tra phiên bản mới khi mở ứng dụng</string>
+    <string name="updates_help">Bản cập nhật được tải xuống từ GitHub Releases và được trình cài đặt gói của Android cài đặt.</string>
 </resources>

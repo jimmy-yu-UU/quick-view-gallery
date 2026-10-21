@@ -259,4 +259,24 @@
     <string name="excluded_help">除外したフォルダは、アルバムや「すべてのメディア」に表示されません。</string>
     <string name="hidden_help">非表示のアルバムは「非表示のアルバム」にのみ表示され、パスワードを設定している場合はロック解除が必要です。</string>
     <string name="extra_help">MediaStore が読み込まないフォルダ（.nomedia を含むフォルダなど）や USB ドライブをここに追加すると、直接スキャンできます。</string>
+    <string name="sec_updates">アップデート</string>
+    <string name="sec_updates_sub">新しいバージョンの確認、自動確認</string>
+    <string name="update_available">新しいバージョンがあります: %1$s</string>
+    <string name="current_version">現在のバージョン: %1$s</string>
+    <string name="downloading">ダウンロード中…</string>
+    <string name="download_failed">ダウンロードに失敗しました。代わりにブラウザでダウンロードできます。</string>
+    <string name="download_done">ダウンロードしました。インストーラが開かない場合は、「不明なアプリのインストール」を許可してから、もう一度 [インストール] をタップしてください。</string>
+    <string name="download_and_update">ダウンロードしてアップデート</string>
+    <string name="cancel_download">ダウンロードをキャンセル</string>
+    <string name="install">インストール</string>
+    <string name="open_in_browser">ブラウザで開く</string>
+    <string name="skip_version">このバージョンをスキップ</string>
+    <string name="later">後で</string>
+    <string name="checking">確認中…</string>
+    <string name="check_now">今すぐアップデートを確認</string>
+    <string name="update_check_failed">アップデートを確認できませんでした。接続を確認してください。</string>
+    <string name="up_to_date">最新バージョンです</string>
+    <string name="auto_check_updates">アップデートを自動的に確認</string>
+    <string name="auto_check_updates_sub">アプリを開いたときに新しいバージョンを確認します</string>
+    <string name="updates_help">アップデートは GitHub Releases からダウンロードされ、Android のパッケージ インストーラによってインストールされます。</string>
 </resources>

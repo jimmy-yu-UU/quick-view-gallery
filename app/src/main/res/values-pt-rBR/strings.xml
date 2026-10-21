@@ -259,4 +259,24 @@
     <string name="excluded_help">As pastas ignoradas não aparecem nos álbuns nem em Todas as mídias.</string>
     <string name="hidden_help">Os álbuns ocultos só aparecem em Álbuns ocultos e precisam ser desbloqueados quando há uma senha definida.</string>
     <string name="extra_help">Adicione aqui pastas ignoradas pelo MediaStore (por exemplo, com .nomedia) ou drives USB para que sejam verificados diretamente.</string>
+    <string name="sec_updates">Atualizações</string>
+    <string name="sec_updates_sub">Verificar novas versões, verificação automática</string>
+    <string name="update_available">Nova versão disponível: %1$s</string>
+    <string name="current_version">Versão atual: %1$s</string>
+    <string name="downloading">Fazendo o download…</string>
+    <string name="download_failed">Falha no download. Você pode fazer o download pelo navegador.</string>
+    <string name="download_done">Download concluído. Se o instalador não abriu, permita \"Instalar apps desconhecidos\" e toque em Instalar novamente.</string>
+    <string name="download_and_update">Fazer o download e atualizar</string>
+    <string name="cancel_download">Cancelar download</string>
+    <string name="install">Instalar</string>
+    <string name="open_in_browser">Abrir no navegador</string>
+    <string name="skip_version">Pular esta versão</string>
+    <string name="later">Mais tarde</string>
+    <string name="checking">Verificando…</string>
+    <string name="check_now">Verificar atualizações agora</string>
+    <string name="update_check_failed">Não foi possível verificar se há atualizações. Verifique sua conexão.</string>
+    <string name="up_to_date">Você tem a versão mais recente</string>
+    <string name="auto_check_updates">Verificar atualizações automaticamente</string>
+    <string name="auto_check_updates_sub">Verificar se há uma nova versão ao abrir o app</string>
+    <string name="updates_help">As atualizações são baixadas do GitHub Releases e instaladas pelo instalador de pacotes do Android.</string>
 </resources>

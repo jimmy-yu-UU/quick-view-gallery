@@ -259,4 +259,24 @@
     <string name="excluded_help">Hariç tutulan klasörler albümlerde veya Tüm medya\'da görünmez.</string>
     <string name="hidden_help">Gizli albümler yalnızca Gizli albümler altında gösterilir ve şifre ayarlıysa kilit açılması gerekir.</string>
     <string name="extra_help">MediaStore\'un atladığı klasörler (ör. .nomedia içerenler) veya USB sürücüler doğrudan taranmak üzere buraya eklenebilir.</string>
+    <string name="sec_updates">Güncellemeler</string>
+    <string name="sec_updates_sub">Yeni sürümleri denetle, otomatik denetim</string>
+    <string name="update_available">Yeni sürüm mevcut: %1$s</string>
+    <string name="current_version">Geçerli sürüm: %1$s</string>
+    <string name="downloading">İndiriliyor…</string>
+    <string name="download_failed">İndirme başarısız oldu. Bunun yerine tarayıcıda indirebilirsiniz.</string>
+    <string name="download_done">İndirildi. Yükleyici açılmadıysa \"Bilinmeyen uygulamaları yükle\" iznini verin ve tekrar Yükle\'ye dokunun.</string>
+    <string name="download_and_update">İndir ve güncelle</string>
+    <string name="cancel_download">İndirmeyi iptal et</string>
+    <string name="install">Yükle</string>
+    <string name="open_in_browser">Tarayıcıda aç</string>
+    <string name="skip_version">Bu sürümü atla</string>
+    <string name="later">Daha sonra</string>
+    <string name="checking">Denetleniyor…</string>
+    <string name="check_now">Güncellemeleri şimdi denetle</string>
+    <string name="update_check_failed">Güncellemeler denetlenemedi. Bağlantınızı kontrol edin.</string>
+    <string name="up_to_date">En son sürümü kullanıyorsunuz</string>
+    <string name="auto_check_updates">Güncellemeleri otomatik olarak denetle</string>
+    <string name="auto_check_updates_sub">Uygulama açıldığında yeni sürüm olup olmadığını denetle</string>
+    <string name="updates_help">Güncellemeler GitHub Releases\'tan indirilir ve Android paket yükleyicisi tarafından yüklenir.</string>
 </resources>

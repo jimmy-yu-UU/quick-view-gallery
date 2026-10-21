@@ -259,4 +259,24 @@
     <string name="excluded_help">Les dossiers exclus n\'apparaissent ni dans les albums, ni dans Tous les contenus.</string>
     <string name="hidden_help">Les albums masqués n\'apparaissent que dans Albums masqués et doivent être déverrouillés si un mot de passe est défini.</string>
     <string name="extra_help">Vous pouvez ajouter ici les dossiers ignorés par MediaStore (par exemple avec .nomedia) ou les clés USB pour qu\'ils soient analysés directement.</string>
+    <string name="sec_updates">Mises à jour</string>
+    <string name="sec_updates_sub">Rechercher de nouvelles versions, vérification automatique</string>
+    <string name="update_available">Nouvelle version disponible : %1$s</string>
+    <string name="current_version">Version actuelle : %1$s</string>
+    <string name="downloading">Téléchargement…</string>
+    <string name="download_failed">Échec du téléchargement. Vous pouvez la télécharger dans le navigateur.</string>
+    <string name="download_done">Téléchargement terminé. Si le programme d\'installation ne s\'est pas ouvert, autorisez « Installer des applis inconnues », puis appuyez de nouveau sur Installer.</string>
+    <string name="download_and_update">Télécharger et mettre à jour</string>
+    <string name="cancel_download">Annuler le téléchargement</string>
+    <string name="install">Installer</string>
+    <string name="open_in_browser">Ouvrir dans le navigateur</string>
+    <string name="skip_version">Ignorer cette version</string>
+    <string name="later">Plus tard</string>
+    <string name="checking">Vérification…</string>
+    <string name="check_now">Rechercher des mises à jour</string>
+    <string name="update_check_failed">Impossible de rechercher des mises à jour. Vérifiez votre connexion.</string>
+    <string name="up_to_date">Vous disposez de la dernière version</string>
+    <string name="auto_check_updates">Rechercher automatiquement les mises à jour</string>
+    <string name="auto_check_updates_sub">Rechercher une nouvelle version à l\'ouverture de l\'application</string>
+    <string name="updates_help">Les mises à jour sont téléchargées depuis GitHub Releases et installées par le programme d\'installation de packages Android.</string>
 </resources>

@@ -259,4 +259,24 @@
     <string name="excluded_help">Le cartelle escluse non vengono mostrate negli album né in Tutti i contenuti.</string>
     <string name="hidden_help">Gli album nascosti vengono mostrati solo in Album nascosti e richiedono lo sblocco se è impostata una password.</string>
     <string name="extra_help">Qui puoi aggiungere le cartelle ignorate da MediaStore (ad es. con .nomedia) o le unità USB per analizzarle direttamente.</string>
+    <string name="sec_updates">Aggiornamenti</string>
+    <string name="sec_updates_sub">Verifica nuove versioni, controlli automatici</string>
+    <string name="update_available">Nuova versione disponibile: %1$s</string>
+    <string name="current_version">Versione attuale: %1$s</string>
+    <string name="downloading">Download in corso…</string>
+    <string name="download_failed">Download non riuscito. Puoi scaricarla dal browser.</string>
+    <string name="download_done">Download completato. Se il programma di installazione non si è aperto, consenti \"Installa app sconosciute\" e tocca di nuovo Installa.</string>
+    <string name="download_and_update">Scarica e aggiorna</string>
+    <string name="cancel_download">Annulla download</string>
+    <string name="install">Installa</string>
+    <string name="open_in_browser">Apri nel browser</string>
+    <string name="skip_version">Salta questa versione</string>
+    <string name="later">Più tardi</string>
+    <string name="checking">Verifica in corso…</string>
+    <string name="check_now">Verifica aggiornamenti ora</string>
+    <string name="update_check_failed">Impossibile verificare la disponibilità di aggiornamenti. Controlla la connessione.</string>
+    <string name="up_to_date">Hai la versione più recente</string>
+    <string name="auto_check_updates">Verifica automaticamente gli aggiornamenti</string>
+    <string name="auto_check_updates_sub">Verifica la presenza di una nuova versione all\'apertura dell\'app</string>
+    <string name="updates_help">Gli aggiornamenti vengono scaricati da GitHub Releases e installati dal programma di installazione pacchetti di Android.</string>
 </resources>

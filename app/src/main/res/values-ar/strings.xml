@@ -259,4 +259,24 @@
     <string name="excluded_help">لا تظهر المجلدات المستبعدة في الألبومات أو في \"كل الوسائط\".</string>
     <string name="hidden_help">لا تظهر الألبومات المخفية إلا ضمن \"الألبومات المخفية\"، ويلزم فتح قفلها عند ضبط كلمة مرور.</string>
     <string name="extra_help">يمكن إضافة المجلدات التي يتخطاها MediaStore (مثل التي تحتوي على .nomedia) أو محركات أقراص USB هنا لفحصها مباشرةً.</string>
+    <string name="sec_updates">التحديثات</string>
+    <string name="sec_updates_sub">البحث عن إصدارات جديدة، والبحث التلقائي</string>
+    <string name="update_available">يتوفّر إصدار جديد: %1$s</string>
+    <string name="current_version">الإصدار الحالي: %1$s</string>
+    <string name="downloading">جارٍ التنزيل…</string>
+    <string name="download_failed">تعذّر التنزيل. يمكنك تنزيله من المتصفّح بدلاً من ذلك.</string>
+    <string name="download_done">اكتمل التنزيل. إذا لم يتم فتح أداة التثبيت، اسمح بـ \"تثبيت التطبيقات غير المعروفة\" ثم انقر على \"تثبيت\" مرة أخرى.</string>
+    <string name="download_and_update">التنزيل والتحديث</string>
+    <string name="cancel_download">إلغاء التنزيل</string>
+    <string name="install">تثبيت</string>
+    <string name="open_in_browser">فتح في المتصفّح</string>
+    <string name="skip_version">تخطّي هذا الإصدار</string>
+    <string name="later">لاحقًا</string>
+    <string name="checking">جارٍ البحث…</string>
+    <string name="check_now">البحث عن تحديثات الآن</string>
+    <string name="update_check_failed">تعذّر البحث عن تحديثات. تحقّق من الاتصال.</string>
+    <string name="up_to_date">لديك أحدث إصدار</string>
+    <string name="auto_check_updates">البحث عن التحديثات تلقائيًا</string>
+    <string name="auto_check_updates_sub">البحث عن إصدار جديد عند فتح التطبيق</string>
+    <string name="updates_help">يتم تنزيل التحديثات من GitHub Releases وتثبيتها باستخدام أداة تثبيت الحِزم في Android.</string>
 </resources>

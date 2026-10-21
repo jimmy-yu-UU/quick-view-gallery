@@ -259,4 +259,24 @@
     <string name="excluded_help">โฟลเดอร์ที่ยกเว้นจะไม่ปรากฏในอัลบั้มหรือในสื่อทั้งหมด</string>
     <string name="hidden_help">อัลบั้มที่ซ่อนจะแสดงเฉพาะในส่วนอัลบั้มที่ซ่อน และต้องปลดล็อกเมื่อตั้งรหัสผ่านไว้</string>
     <string name="extra_help">คุณเพิ่มโฟลเดอร์ที่ MediaStore ข้ามไป (เช่น โฟลเดอร์ที่มี .nomedia) หรือไดรฟ์ USB ได้ที่นี่เพื่อสแกนโดยตรง</string>
+    <string name="sec_updates">การอัปเดต</string>
+    <string name="sec_updates_sub">ตรวจหาเวอร์ชันใหม่ ตรวจสอบอัตโนมัติ</string>
+    <string name="update_available">มีเวอร์ชันใหม่: %1$s</string>
+    <string name="current_version">เวอร์ชันปัจจุบัน: %1$s</string>
+    <string name="downloading">กำลังดาวน์โหลด…</string>
+    <string name="download_failed">ดาวน์โหลดไม่สำเร็จ คุณสามารถดาวน์โหลดในเบราว์เซอร์แทนได้</string>
+    <string name="download_done">ดาวน์โหลดแล้ว หากโปรแกรมติดตั้งไม่เปิดขึ้น ให้อนุญาต \"ติดตั้งแอปที่ไม่รู้จัก\" แล้วแตะติดตั้งอีกครั้ง</string>
+    <string name="download_and_update">ดาวน์โหลดและอัปเดต</string>
+    <string name="cancel_download">ยกเลิกการดาวน์โหลด</string>
+    <string name="install">ติดตั้ง</string>
+    <string name="open_in_browser">เปิดในเบราว์เซอร์</string>
+    <string name="skip_version">ข้ามเวอร์ชันนี้</string>
+    <string name="later">ไว้ทีหลัง</string>
+    <string name="checking">กำลังตรวจสอบ…</string>
+    <string name="check_now">ตรวจหาการอัปเดตเลย</string>
+    <string name="update_check_failed">ตรวจหาการอัปเดตไม่ได้ โปรดตรวจสอบการเชื่อมต่อ</string>
+    <string name="up_to_date">คุณใช้เวอร์ชันล่าสุดแล้ว</string>
+    <string name="auto_check_updates">ตรวจหาการอัปเดตโดยอัตโนมัติ</string>
+    <string name="auto_check_updates_sub">ตรวจหาเวอร์ชันใหม่เมื่อเปิดแอป</string>
+    <string name="updates_help">ระบบจะดาวน์โหลดการอัปเดตจาก GitHub Releases และติดตั้งด้วยโปรแกรมติดตั้งแพ็กเกจของ Android</string>
 </resources>

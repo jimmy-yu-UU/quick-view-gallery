@@ -259,4 +259,24 @@
     <string name="excluded_help">排除的資料夾不會出現在相簿與「所有媒體」中。</string>
     <string name="hidden_help">隱藏的相簿只會在「隱藏的相簿」中顯示，設定密碼後需要解鎖。</string>
     <string name="extra_help">MediaStore 不會索引的資料夾 (例如含 .nomedia) 或 USB 儲存裝置，可加入這裡直接掃描。</string>
+    <string name="sec_updates">更新</string>
+    <string name="sec_updates_sub">檢查新版本與自動更新</string>
+    <string name="update_available">有新版本：%1$s</string>
+    <string name="current_version">目前版本：%1$s</string>
+    <string name="downloading">下載中…</string>
+    <string name="download_failed">下載失敗，可改用瀏覽器下載。</string>
+    <string name="download_done">下載完成。如未有出現安裝畫面，請允許「安裝不明應用程式」後再按一次安裝。</string>
+    <string name="download_and_update">下載並更新</string>
+    <string name="cancel_download">取消下載</string>
+    <string name="install">安裝</string>
+    <string name="open_in_browser">在瀏覽器中開啟</string>
+    <string name="skip_version">略過此版本</string>
+    <string name="later">稍後</string>
+    <string name="checking">檢查中…</string>
+    <string name="check_now">立即檢查更新</string>
+    <string name="update_check_failed">無法檢查更新，請檢查網絡連線</string>
+    <string name="up_to_date">已是最新版本</string>
+    <string name="auto_check_updates">自動檢查更新</string>
+    <string name="auto_check_updates_sub">開啟 App 時檢查有沒有新版本</string>
+    <string name="updates_help">更新檔從 GitHub Releases 下載，下載完成後由 Android 系統安裝程式進行安裝。</string>
 </resources>

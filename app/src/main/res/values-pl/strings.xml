@@ -259,4 +259,24 @@
     <string name="excluded_help">Wykluczone foldery nie są widoczne w albumach ani w sekcji Wszystkie multimedia.</string>
     <string name="hidden_help">Ukryte albumy są widoczne tylko w sekcji Ukryte albumy i wymagają odblokowania, gdy ustawione jest hasło.</string>
     <string name="extra_help">Foldery pomijane przez MediaStore (np. z plikiem .nomedia) lub dyski USB można dodać tutaj, aby były skanowane bezpośrednio.</string>
+    <string name="sec_updates">Aktualizacje</string>
+    <string name="sec_updates_sub">Sprawdzanie nowych wersji, automatyczne sprawdzanie</string>
+    <string name="update_available">Dostępna nowa wersja: %1$s</string>
+    <string name="current_version">Obecna wersja: %1$s</string>
+    <string name="downloading">Pobieranie…</string>
+    <string name="download_failed">Nie udało się pobrać. Możesz pobrać ją w przeglądarce.</string>
+    <string name="download_done">Pobrano. Jeśli instalator się nie otworzył, zezwól na „Instalowanie nieznanych aplikacji” i ponownie kliknij Zainstaluj.</string>
+    <string name="download_and_update">Pobierz i zaktualizuj</string>
+    <string name="cancel_download">Anuluj pobieranie</string>
+    <string name="install">Zainstaluj</string>
+    <string name="open_in_browser">Otwórz w przeglądarce</string>
+    <string name="skip_version">Pomiń tę wersję</string>
+    <string name="later">Później</string>
+    <string name="checking">Sprawdzam…</string>
+    <string name="check_now">Sprawdź dostępność aktualizacji</string>
+    <string name="update_check_failed">Nie udało się sprawdzić aktualizacji. Sprawdź połączenie.</string>
+    <string name="up_to_date">Masz najnowszą wersję</string>
+    <string name="auto_check_updates">Automatycznie sprawdzaj aktualizacje</string>
+    <string name="auto_check_updates_sub">Sprawdzaj dostępność nowej wersji przy otwieraniu aplikacji</string>
+    <string name="updates_help">Aktualizacje są pobierane z GitHub Releases i instalowane przez instalator pakietów Androida.</string>
 </resources>

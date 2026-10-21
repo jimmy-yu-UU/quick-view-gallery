@@ -259,4 +259,24 @@
     <string name="excluded_help">Folder yang dikecualikan tidak muncul di album atau di Semua media.</string>
     <string name="hidden_help">Album tersembunyi hanya muncul di Album tersembunyi dan perlu dibuka kuncinya jika sandi telah disetel.</string>
     <string name="extra_help">Folder yang dilewati MediaStore (misalnya yang berisi .nomedia) atau drive USB dapat ditambahkan di sini agar dipindai secara langsung.</string>
+    <string name="sec_updates">Update</string>
+    <string name="sec_updates_sub">Periksa versi baru, pemeriksaan otomatis</string>
+    <string name="update_available">Versi baru tersedia: %1$s</string>
+    <string name="current_version">Versi saat ini: %1$s</string>
+    <string name="downloading">Mendownload…</string>
+    <string name="download_failed">Download gagal. Anda dapat mendownloadnya di browser.</string>
+    <string name="download_done">Sudah didownload. Jika penginstal tidak terbuka, izinkan \"Instal aplikasi yang tidak dikenal\" dan ketuk Instal lagi.</string>
+    <string name="download_and_update">Download dan update</string>
+    <string name="cancel_download">Batalkan download</string>
+    <string name="install">Instal</string>
+    <string name="open_in_browser">Buka di browser</string>
+    <string name="skip_version">Lewati versi ini</string>
+    <string name="later">Nanti</string>
+    <string name="checking">Memeriksa…</string>
+    <string name="check_now">Periksa update sekarang</string>
+    <string name="update_check_failed">Tidak dapat memeriksa update. Periksa koneksi Anda.</string>
+    <string name="up_to_date">Anda menggunakan versi terbaru</string>
+    <string name="auto_check_updates">Periksa update secara otomatis</string>
+    <string name="auto_check_updates_sub">Periksa versi baru saat aplikasi dibuka</string>
+    <string name="updates_help">Update didownload dari GitHub Releases dan diinstal oleh penginstal paket Android.</string>
 </resources>
