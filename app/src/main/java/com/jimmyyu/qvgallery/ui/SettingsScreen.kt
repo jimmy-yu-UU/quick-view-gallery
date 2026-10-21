@@ -306,6 +306,133 @@ private fun AlbumSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Un
     }
 }
 
+@Composable
+private fun ViewSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Unit) {
+    SettingsScaffold(tr(R.string.sec_view), onBack) {
+        Header(tr(R.string.appearance))
+        ChoicePref(tr(R.string.viewer_background), s.viewerBackground, ViewerBackground.entries, { it.label }) { v -> vm.updateSettings { it.copy(viewerBackground = v) } }
+        SwitchPref(tr(R.string.show_info_bar), tr(R.string.show_info_bar_sub), s.showInfoBar) { v -> vm.updateSettings { it.copy(showInfoBar = v) } }
+        SwitchPref(tr(R.string.hide_bars_on_open), tr(R.string.hide_bars_on_open_sub), s.hideBarsOnOpen) { v -> vm.updateSettings { it.copy(hideBarsOnOpen = v) } }
+        SliderPref(tr(R.string.max_zoom), s.maxZoom, 2f..20f, steps = 17, format = { "${it.toInt()}x" }) { v -> vm.updateSettings { it.copy(maxZoom = v) } }
+        Header(tr(R.string.behavior))
+        SwitchPref(tr(R.string.keep_screen_on), tr(R.string.keep_screen_on_sub), s.keepScreenOn) { v -> vm.updateSettings { it.copy(keepScreenOn = v) } }
+        SwitchPref(tr(R.string.max_brightness), tr(R.string.max_brightness_sub), s.maxBrightness) { v -> vm.updateSettings { it.copy(maxBrightness = v) } }
+        SwitchPref(tr(R.string.volume_keys), tr(R.string.volume_keys_sub), s.volumeKeysNavigate) { v -> vm.updateSettings { it.copy(volumeKeysNavigate = v) } }
+        SwitchPref(tr(R.string.confirm_delete), null, s.confirmDelete) { v -> vm.updateSettings { it.copy(confirmDelete = v) } }
+        Header(tr(R.string.videos))
+        SwitchPref(tr(R.string.autoplay), tr(R.string.autoplay_sub), s.autoPlayVideo) { v -> vm.updateSettings { it.copy(autoPlayVideo = v) } }
+        SwitchPref(tr(R.string.loop), null, s.loopVideo) { v -> vm.updateSettings { it.copy(loopVideo = v) } }
+    }
+}
+
+@Composable
+private fun SecuritySettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Unit) {
+    var setupType by remember { mutableStateOf<LockType?>(null) }
+    var verifyThen by remember { mutableStateOf<(() -> Unit)?>(null) }
+    val pending = verifyThen
+    if (pending != null) {
+        LockScreen(
+            type = s.lockType,
+            biometric = false,
+            title = tr(R.string.enter_current_password),
+            onCancel = { verifyThen = null },
+            check = { LockManager.verify(it, s) },
+            onUnlocked = { verifyThen = null; pending() },
+        )
+        return
+    }
+    setupType?.let { type ->
+        SetupLockScreen(
+            type = type,
+            onDone = { secret ->
+                val salt = LockManager.newSalt()
+                val hash = LockManager.hash(secret, salt)
+                vm.updateSettings { it.copy(lockType = type, lockSalt = salt, lockHash = hash) }
+                LockManager.markUnlocked()
+                setupType = null
+                vm.toast(tr(R.string.password_set))
+            },
+            onCancel = { setupType = null },
+        )
+        return
+    }
+    val hasLock = s.lockType != LockType.NONE && s.lockHash.isNotEmpty()
+    fun guarded(action: () -> Unit) = if (hasLock) verifyThen = action else action()
+    SettingsScaffold(tr(R.string.sec_security), onBack) {
+        Header(tr(R.string.password_protection))
+        ChoicePref(tr(R.string.lock_type), s.lockType, LockType.entries, { it.label }) { v ->
+            guarded {
+                if (v == LockType.NONE) vm.updateSettings { it.copy(lockType = LockType.NONE, lockHash = "", lockSalt = "") }
+                else setupType = v
+            }
+        }
+        if (hasLock) {
+            ChoicePref(tr(R.string.lock_scope), s.lockScope, LockScope.entries, { it.label }) { v -> guarded { vm.updateSettings { it.copy(lockScope = v) } } }
+            SwitchPref(tr(R.string.biometric_unlock), tr(R.string.biometric_unlock_sub), s.biometric) { v -> vm.updateSettings { it.copy(biometric = v) } }
+            ChoicePref(
+                tr(R.string.relock_after),
+                s.relockSeconds,
+                listOf(0, 30, 60, 300, 1800),
+                { if (it == 0) tr(R.string.immediately) else if (it < 60) tr(R.string.n_seconds, it) else tr(R.string.n_minutes, it / 60) },
+            ) { v -> vm.updateSettings { it.copy(relockSeconds = v) } }
+            Pref(tr(R.string.lock_now), null, onClick = { LockManager.lock(); vm.toast(tr(R.string.locked)) })
+        }
+        Text(
+            tr(R.string.lock_scope_help),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+        )
+    }
+}
+
+@Composable
+private fun SlideshowSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Unit) {
+    SettingsScaffold(tr(R.string.slideshow), onBack) {
+        SliderPref(tr(R.string.slide_duration), s.slideInterval.toFloat(), 1f..30f, steps = 28, format = { tr(R.string.n_seconds_short, it.toInt()) }) { v ->
+            vm.updateSettings { it.copy(slideInterval = v.toInt()) }
+        }
+        ChoicePref(tr(R.string.transition), s.slideTransition, SlideTransition.entries, { it.label }) { v -> vm.updateSettings { it.copy(slideTransition = v) } }
+        SwitchPref(tr(R.string.shuffle), null, s.slideShuffle) { v -> vm.updateSettings { it.copy(slideShuffle = v) } }
+        SwitchPref(tr(R.string.loop), tr(R.string.loop_sub), s.slideLoop) { v -> vm.updateSettings { it.copy(slideLoop = v) } }
+    }
+}
+
+@Composable
+private fun CacheSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Unit) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var size by remember { mutableLongStateOf(-1L) }
+    fun refresh() = scope.launch { size = withContext(Dispatchers.IO) { context.cacheDir.walkTopDown().filter { it.isFile }.sumOf { it.length() } } }
+    androidx.compose.runtime.LaunchedEffect(Unit) { refresh() }
+    SettingsScaffold(tr(R.string.sec_cache), onBack) {
+        Pref(tr(R.string.cache_size), if (size < 0) tr(R.string.calculating) else formatSize(context, size))
+        ChoicePref(tr(R.string.cache_limit), s.diskCacheMb, listOf(128, 256, 512, 1024, 2048), { "$it MB" }) { v ->
+            vm.updateSettings { it.copy(diskCacheMb = v) }
+            vm.toast(tr(R.string.restart_to_apply))
+        }
+        Pref(tr(R.string.clear_cache), tr(R.string.clear_cache_sub), onClick = {
+            scope.launch {
+                context.imageLoader.memoryCache?.clear()
+                context.imageLoader.diskCache?.clear()
+                withContext(Dispatchers.IO) { context.cacheDir.listFiles()?.forEach { it.deleteRecursively() } }
+                refresh()
+                vm.toast(tr(R.string.cache_cleared))
+            }
+        })
+    }
+}
+
+@Composable
+private fun AboutPage(onBack: () -> Unit) {
+    SettingsScaffold(tr(R.string.sec_about), onBack) {
+        Pref("QV Gallery", tr(R.string.version_fmt, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE))
+        Pref(tr(R.string.description), tr(R.string.about_body))
+        Pref(tr(R.string.device), "${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}")
+        Pref(tr(R.string.open_source), "Jetpack Compose, Coil, Telephoto, Media3 (Apache 2.0)")
+    }
+}
+
 private val languageTags = listOf("", "en", "zh-TW", "zh-CN")
 
 /** Per-app language (Android 13+), the same setting as System settings > Apps > Language. */
