@@ -14,6 +14,7 @@ import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.Locale
 
 data class ReleaseInfo(
     val versionCode: Int,
@@ -75,12 +76,21 @@ object UpdateChecker {
     /** Tags are "v1.0.<build number>" and the build number is the versionCode. */
     fun versionCodeOf(tag: String): Int = Regex("(\\d+)$").find(tag)?.value?.toIntOrNull() ?: 0
 
-    /** Release notes as plain text: drop markdown markers and the commit footer. */
-    fun plainNotes(notes: String): String = notes.lines()
-        .takeWhile { it.trim() != "---" }
-        .map { it.replace(Regex("^#+\\s*"), "") }
-        .joinToString("\n")
-        .trim()
+    /**
+     * Release notes as plain text in the app's language: the "## 更新內容" section for Chinese,
+     * "## What's new" otherwise; markdown markers and the commit footer are dropped.
+     */
+    fun plainNotes(notes: String, chinese: Boolean = Locale.getDefault().language == "zh"): String {
+        val body = notes.lines().takeWhile { it.trim() != "---" }
+        val zhStart = body.indexOfFirst { it.startsWith("## 更新內容") }
+        val enStart = body.indexOfFirst { it.startsWith("## What") }
+        val section = when {
+            zhStart < 0 || enStart < 0 -> body
+            chinese -> body.subList(zhStart + 1, if (enStart > zhStart) enStart else body.size)
+            else -> body.subList(enStart + 1, if (zhStart > enStart) zhStart else body.size)
+        }
+        return section.map { it.replace(Regex("^#+\\s*"), "") }.joinToString("\n").trim()
+    }
 }
 
 /** Downloads the APK with the system DownloadManager into app-private storage and launches the installer. */
