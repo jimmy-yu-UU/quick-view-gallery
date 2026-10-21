@@ -433,7 +433,28 @@ private fun AboutPage(onBack: () -> Unit) {
     }
 }
 
-private val languageTags = listOf("", "en", "zh-TW", "zh-CN")
+/** Languages with translations, shown in their own names. Empty tag = follow the system. */
+private val languages = listOf(
+    "en" to "English",
+    "zh-TW" to "繁體中文 (台灣)",
+    "zh-HK" to "繁體中文 (香港)",
+    "zh-CN" to "简体中文",
+    "ja" to "日本語",
+    "ko" to "한국어",
+    "es" to "Español",
+    "pt-BR" to "Português (Brasil)",
+    "fr" to "Français",
+    "de" to "Deutsch",
+    "it" to "Italiano",
+    "ru" to "Русский",
+    "pl" to "Polski",
+    "tr" to "Türkçe",
+    "vi" to "Tiếng Việt",
+    "th" to "ไทย",
+    "id" to "Bahasa Indonesia",
+    "hi" to "हिन्दी",
+    "ar" to "العربية",
+)
 
 /** Per-app language (Android 13+), the same setting as System settings > Apps > Language. */
 @Composable
@@ -445,21 +466,21 @@ private fun LanguagePref() {
     }
     val manager = context.getSystemService(LocaleManager::class.java)
     val current = manager.applicationLocales.takeIf { !it.isEmpty }?.get(0)
-    val currentTag = when {
-        current == null -> ""
-        current.language == "zh" && (current.country == "CN" || current.script == "Hans") -> "zh-CN"
-        current.language == "zh" -> "zh-TW"
-        else -> "en"
-    }
-    ChoicePref(tr(R.string.language), currentTag, languageTags, { tag ->
-        when (tag) {
-            "" -> tr(R.string.follow_system)
-            "en" -> "English"
-            "zh-TW" -> "繁體中文"
-            else -> "简体中文"
-        }
+    val currentTag = current?.let { locale ->
+        val tag = locale.toLanguageTag()
+        languages.firstOrNull { it.first.equals(tag, ignoreCase = true) }?.first
+            ?: when {
+                locale.language == "zh" && (locale.country == "CN" || locale.script == "Hans") -> "zh-CN"
+                locale.language == "zh" && locale.country == "HK" -> "zh-HK"
+                locale.language == "zh" -> "zh-TW"
+                else -> languages.firstOrNull { it.first.substringBefore('-') == locale.language }?.first
+            }
+    } ?: ""
+    val names = languages.toMap()
+    ChoicePref(tr(R.string.language), currentTag, listOf("") + languages.map { it.first }, { tag ->
+        if (tag.isEmpty()) tr(R.string.follow_system) else names[tag] ?: tag
     }) { tag ->
-        // The activity is recreated by the system with the new locale.
+        // The system recreates the activity with the new locale.
         manager.applicationLocales = if (tag.isEmpty()) LocaleList.getEmptyLocaleList() else LocaleList.forLanguageTags(tag)
     }
 }

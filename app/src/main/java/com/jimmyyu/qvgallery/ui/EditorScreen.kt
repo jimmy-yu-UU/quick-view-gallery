@@ -162,10 +162,10 @@ fun EditorScreen(vm: GalleryViewModel, item: MediaItem, onDone: (String?) -> Uni
                 Modifier.fillMaxWidth().navigationBarsPadding().padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                IconButton(onClick = { state = state.copy(rotation = (state.rotation + 270) % 360, crop = CropRect.FULL) }) {
+                IconButton(onClick = { state = rotated(state, 270, ratio, preview) }) {
                     Icon(Icons.AutoMirrored.Filled.RotateLeft, tr(R.string.rotate_left), tint = Color.White)
                 }
-                IconButton(onClick = { state = state.copy(rotation = (state.rotation + 90) % 360, crop = CropRect.FULL) }) {
+                IconButton(onClick = { state = rotated(state, 90, ratio, preview) }) {
                     Icon(Icons.AutoMirrored.Filled.RotateRight, tr(R.string.rotate_right), tint = Color.White)
                 }
                 // Flips are stored in original-image space, so on a sideways image the screen axes swap.
@@ -340,6 +340,19 @@ private fun dragCrop(c: CropRect, mode: Int, dx: Float, dy: Float, ratio: Float?
         }
     }
     return CropRect(l, t, r, b)
+}
+
+/** Rotates and resets the crop, re-applying a fixed aspect ratio to the new orientation. */
+private fun rotated(state: EditState, by: Int, ratio: Ratio, preview: Bitmap?): EditState {
+    val rotation = (state.rotation + by) % 360
+    val crop = run {
+        val bmp = preview ?: return@run CropRect.FULL
+        val sideways = rotation % 180 != 0
+        val imageAspect = if (sideways) bmp.height.toFloat() / bmp.width else bmp.width.toFloat() / bmp.height
+        val value = ratio.value?.let { if (it < 0) imageAspect else it } ?: return@run CropRect.FULL
+        fitRatio(value, imageAspect)
+    }
+    return state.copy(rotation = rotation, crop = crop)
 }
 
 /** Largest centred crop with the given aspect. */

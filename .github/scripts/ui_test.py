@@ -173,6 +173,8 @@ def main():
     push_media()
     adb("install", "-r", "-g", apk, check=True, timeout=300)
     sh(f"appops set --uid {PKG} MANAGE_EXTERNAL_STORAGE allow")
+    # Skip Android's one-time "Viewing full screen" hint, which would cover the app.
+    sh("settings put secure immersive_mode_confirmations confirmed")
     adb("logcat", "-c")
     W, H = screen_size()
     log(f"screen {W}x{H}")
@@ -366,7 +368,7 @@ def main():
     out = sh("content query --uri content://media/external/images/media --projection _id:_data --where \"_data LIKE '%wall_3.jpg'\"")
     m = re.search(r"_id=(\d+)", out)
     if m:
-        sh(f"am start -W -a android.intent.action.VIEW -d content://media/external/images/media/{m.group(1)} -t image/jpeg")
+        sh(f"am start -W -n {PKG}/.ViewActivity -a android.intent.action.VIEW -d content://media/external/images/media/{m.group(1)} -t image/jpeg")
         time.sleep(4)
         shot("external_view")
         sh(f"input swipe {int(W * 0.8)} {H // 2} {int(W * 0.2)} {H // 2} 250")
