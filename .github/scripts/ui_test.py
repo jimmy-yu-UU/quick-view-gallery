@@ -173,6 +173,8 @@ def main():
     push_media()
     adb("install", "-r", "-g", apk, check=True, timeout=300)
     sh(f"appops set --uid {PKG} MANAGE_EXTERNAL_STORAGE allow")
+    # The script looks for Traditional Chinese labels; the emulator itself runs in English.
+    sh(f"cmd locale set-app-locales {PKG} --locales zh-TW")
     # Skip Android's one-time "Viewing full screen" hint, which would cover the app.
     sh("settings put secure immersive_mode_confirmations confirmed")
     adb("logcat", "-c")
