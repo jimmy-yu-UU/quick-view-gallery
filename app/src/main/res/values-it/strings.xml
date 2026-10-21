@@ -290,4 +290,7 @@
     <string name="storage_location">Memoria</string>
     <string name="installing_hint">Download completato, installazione in corso. L\'app si chiude al termine dell\'aggiornamento; riaprila. Se compare una schermata di installazione, tocca Installa.</string>
     <string name="install_failed">Installazione non riuscita: %1$s</string>
+    <string name="tap_for_version_notes">Tocca per vedere le novità di questa versione</string>
+    <string name="version_notes_title">Novità della versione %1$s</string>
+    <string name="no_version_notes">Questa versione non ha note di rilascio.</string>
 </resources>

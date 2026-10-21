@@ -52,6 +52,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -261,54 +263,58 @@ private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings) {
     }
 
     NavHost(nav, startDestination = Routes.ALBUMS) {
-        composable(Routes.ALBUMS) {
+        composable(Routes.ALBUMS) { entry ->
+            val n = rememberSafeNav(nav, entry)
             AlbumsScreen(
                 vm = vm,
                 settings = s,
                 hiddenMode = false,
-                onOpenAlbum = { nav.navigate(Routes.album(it)) },
-                onOpenSettings = { nav.navigate(Routes.SETTINGS) },
-                onOpenHidden = { nav.navigate(Routes.HIDDEN) },
-                onSlideshow = { nav.navigate(Routes.slideshow(it, 0)) },
+                onOpenAlbum = { n.go(Routes.album(it)) },
+                onOpenSettings = { n.go(Routes.SETTINGS) },
+                onOpenHidden = { n.go(Routes.HIDDEN) },
+                onSlideshow = { n.go(Routes.slideshow(it, 0)) },
                 onBack = {},
             )
         }
-        composable(Routes.HIDDEN) {
-            HiddenGate(s, onCancel = { nav.popBackStack() }) {
+        composable(Routes.HIDDEN) { entry ->
+            val n = rememberSafeNav(nav, entry)
+            HiddenGate(s, onCancel = { n.back() }) {
                 AlbumsScreen(
                     vm = vm,
                     settings = s,
                     hiddenMode = true,
-                    onOpenAlbum = { nav.navigate(Routes.album(it)) },
-                    onOpenSettings = { nav.navigate(Routes.SETTINGS) },
+                    onOpenAlbum = { n.go(Routes.album(it)) },
+                    onOpenSettings = { n.go(Routes.SETTINGS) },
                     onOpenHidden = {},
-                    onSlideshow = { nav.navigate(Routes.slideshow(it, 0)) },
-                    onBack = { nav.popBackStack() },
+                    onSlideshow = { n.go(Routes.slideshow(it, 0)) },
+                    onBack = { n.back() },
                 )
             }
         }
         composable(Routes.ALBUM, arguments = listOf(keyArg)) { entry ->
+            val n = rememberSafeNav(nav, entry)
             val key = entry.arguments?.getString("key").orEmpty()
             val content = @Composable {
                 AlbumScreen(
                     vm = vm,
                     settings = s,
                     albumKey = key,
-                    onOpen = { nav.navigate(Routes.viewer(key, it)) },
-                    onSlideshow = { nav.navigate(Routes.slideshow(key, 0)) },
-                    onBack = { nav.popBackStack() },
+                    onOpen = { n.go(Routes.viewer(key, it)) },
+                    onSlideshow = { n.go(Routes.slideshow(key, 0)) },
+                    onBack = { n.back() },
                 )
             }
-            if (isUnderAny(key, s.hiddenAlbums)) HiddenGate(s, onCancel = { nav.popBackStack() }) { content() } else content()
+            if (isUnderAny(key, s.hiddenAlbums)) HiddenGate(s, onCancel = { n.back() }) { content() } else content()
         }
         composable(Routes.VIEWER, arguments = listOf(keyArg, indexArg)) { entry ->
+            val n = rememberSafeNav(nav, entry)
             val key = entry.arguments?.getString("key").orEmpty()
             val index = entry.arguments?.getInt("index") ?: 0
             val flow = remember(key) { vm.mediaFor(key) }
             val items by flow.collectAsState(initial = remember(key) { vm.snapshotFor(key) })
             val jumpTo by entry.savedStateHandle.getStateFlow<String?>("jumpTo", null).collectAsState()
             if (items.isEmpty()) {
-                LaunchedEffect(Unit) { if (!vm.loading.value) nav.popBackStack() }
+                LaunchedEffect(Unit) { if (!vm.loading.value) n.back() }
                 return@composable
             }
             ViewerScreen(
@@ -318,39 +324,63 @@ private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings) {
                 startPath = null,
                 startIndex = index,
                 canModify = true,
-                onBack = { nav.popBackStack() },
-                onEdit = { nav.navigate(Routes.editor(it.path)) },
-                onSlideshow = { nav.navigate(Routes.slideshow(key, it)) },
+                onBack = { n.back() },
+                onEdit = { n.go(Routes.editor(it.path)) },
+                onSlideshow = { n.go(Routes.slideshow(key, it)) },
                 jumpTo = jumpTo,
                 onJumped = { entry.savedStateHandle["jumpTo"] = null },
             )
         }
         composable(Routes.EDITOR, arguments = listOf(navArgument("path") { type = NavType.StringType })) { entry ->
+            val n = rememberSafeNav(nav, entry)
             val path = entry.arguments?.getString("path").orEmpty()
             val item = remember(path) { findItem(vm, path, context) }
             EditorScreen(vm, item, onDone = { saved ->
                 if (saved != null) nav.previousBackStackEntry?.savedStateHandle?.set("jumpTo", saved)
-                nav.popBackStack()
+                n.back()
             })
         }
         composable(Routes.SLIDESHOW, arguments = listOf(keyArg, indexArg)) { entry ->
+            val n = rememberSafeNav(nav, entry)
             val key = entry.arguments?.getString("key").orEmpty()
             val index = entry.arguments?.getInt("index") ?: 0
             val items = remember(key) { vm.snapshotFor(key) }
             SlideshowScreen(s, items, index, onExit = { last ->
                 nav.previousBackStackEntry?.savedStateHandle?.set("jumpTo", last)
-                nav.popBackStack()
+                n.back()
             })
         }
-        composable(Routes.SETTINGS) {
-            SettingsHome(onOpen = { nav.navigate("settings/${it.name}") }, onBack = { nav.popBackStack() })
+        composable(Routes.SETTINGS) { entry ->
+            val n = rememberSafeNav(nav, entry)
+            SettingsHome(onOpen = { n.go("settings/${it.name}") }, onBack = { n.back() })
         }
         composable(Routes.SETTINGS_PAGE, arguments = listOf(navArgument("section") { type = NavType.StringType })) { entry ->
+            val n = rememberSafeNav(nav, entry)
             val section = SettingsSection.valueOf(entry.arguments?.getString("section") ?: SettingsSection.INTERFACE.name)
-            SettingsPage(section, vm, s, onBack = { nav.popBackStack() })
+            SettingsPage(section, vm, s, onBack = { n.back() })
         }
     }
 }
+
+/**
+ * Navigation calls made by one destination. They only act while that destination is the current one,
+ * so a double tap or a tap during a transition can't navigate twice, and back never pops the
+ * root screen (which would leave an empty, black NavHost).
+ */
+private class SafeNav(private val nav: NavHostController, private val entry: NavBackStackEntry) {
+    private val isCurrent get() = nav.currentBackStackEntry?.id == entry.id
+
+    fun go(route: String) {
+        if (isCurrent) nav.navigate(route) { launchSingleTop = true }
+    }
+
+    fun back() {
+        if (isCurrent && nav.previousBackStackEntry != null) nav.popBackStack()
+    }
+}
+
+@Composable
+private fun rememberSafeNav(nav: NavHostController, entry: NavBackStackEntry) = remember(entry) { SafeNav(nav, entry) }
 
 /** Requires unlocking before showing hidden albums when a password is set. */
 @Composable

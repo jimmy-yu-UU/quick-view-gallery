@@ -290,4 +290,7 @@
     <string name="storage_location">저장 위치</string>
     <string name="installing_hint">다운로드 완료, 설치 중입니다. 업데이트가 끝나면 앱이 닫히니 다시 열어 주세요. 설치 화면이 나타나면 \'설치\'를 탭하세요.</string>
     <string name="install_failed">설치 실패: %1$s</string>
+    <string name="tap_for_version_notes">탭하여 이 버전의 새로운 기능 보기</string>
+    <string name="version_notes_title">%1$s의 새로운 기능</string>
+    <string name="no_version_notes">이 버전에는 릴리스 노트가 없습니다.</string>
 </resources>

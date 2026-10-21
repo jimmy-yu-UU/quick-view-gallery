@@ -290,4 +290,7 @@
     <string name="storage_location">Pamięć</string>
     <string name="installing_hint">Pobrano, trwa instalacja. Po aktualizacji aplikacja się zamknie — otwórz ją ponownie. Jeśli pojawi się ekran instalacji, kliknij „Zainstaluj”.</string>
     <string name="install_failed">Instalacja nie powiodła się: %1$s</string>
+    <string name="tap_for_version_notes">Kliknij, aby zobaczyć nowości w tej wersji</string>
+    <string name="version_notes_title">Nowości w wersji %1$s</string>
+    <string name="no_version_notes">Ta wersja nie ma informacji o zmianach.</string>
 </resources>

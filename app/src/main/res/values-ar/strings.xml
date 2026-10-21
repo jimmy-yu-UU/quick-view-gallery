@@ -290,4 +290,7 @@
     <string name="storage_location">مكان التخزين</string>
     <string name="installing_hint">اكتمل التنزيل، جارٍ التثبيت. سيُغلق التطبيق عند انتهاء التحديث؛ افتحه مرة أخرى. إذا ظهرت شاشة التثبيت، فانقر على تثبيت.</string>
     <string name="install_failed">تعذّر التثبيت: %1$s</string>
+    <string name="tap_for_version_notes">انقر لمعرفة الجديد في هذا الإصدار</string>
+    <string name="version_notes_title">الجديد في الإصدار %1$s</string>
+    <string name="no_version_notes">لا توجد ملاحظات إصدار لهذا الإصدار.</string>
 </resources>

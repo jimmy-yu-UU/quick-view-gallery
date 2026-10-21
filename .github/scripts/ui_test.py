@@ -325,6 +325,21 @@ def main():
         time.sleep(2)
         shot("after_hide")
 
+    # Stress: switch drawer destinations and press back several times in a row.
+    # A double back used to pop the root screen and leave a black, frozen app.
+    for i, dest in enumerate(["所有媒體", "所有相片", "所有影片", "所有媒體", "設定", "隱藏的相簿"] * 2):
+        tap("選單", wait=0.8)
+        tap(dest, exact=True, wait=0.3, required=False)
+        sh("input keyevent KEYCODE_BACK; input keyevent KEYCODE_BACK; input keyevent KEYCODE_BACK")
+        time.sleep(1.2)
+        sh(f"am start -n {PKG}/.MainActivity")  # back from the root may have left the app
+        time.sleep(1.5)
+        if not find("相簿", exact=True):
+            failures.append(f"  !! albums screen missing after drawer stress round {i}")
+            shot(f"stress_fail_{i}")
+            break
+    shot("after_drawer_stress")
+
     # Drawer
     tap("選單")
     shot("drawer")
@@ -337,9 +352,13 @@ def main():
     tap("選單")
     tap("設定", exact=True)
     shot("settings")
-    for page in ["介面", "相簿", "檢視", "安全性", "幻燈片", "快取", "關於"]:
+    for page in ["介面", "相簿", "檢視", "安全性", "幻燈片", "快取", "更新", "關於"]:
         if tap(page, exact=True, wait=1.5, required=False):
             shot(f"settings_{page}")
+            if page == "關於":
+                tap("QV Gallery", exact=True)
+                shot("about_version_notes")
+                tap("關閉")
             back()
 
     # Set a PIN, then hidden albums should require it

@@ -290,4 +290,7 @@
     <string name="storage_location">Bộ nhớ</string>
     <string name="installing_hint">Đã tải xong, đang cài đặt. Ứng dụng sẽ tự đóng khi cập nhật xong; hãy mở lại. Nếu màn hình cài đặt xuất hiện, hãy nhấn Cài đặt.</string>
     <string name="install_failed">Cài đặt không thành công: %1$s</string>
+    <string name="tap_for_version_notes">Nhấn để xem điểm mới trong phiên bản này</string>
+    <string name="version_notes_title">Điểm mới trong phiên bản %1$s</string>
+    <string name="no_version_notes">Phiên bản này không có ghi chú phát hành.</string>
 </resources>

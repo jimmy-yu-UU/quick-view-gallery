@@ -290,4 +290,7 @@
     <string name="storage_location">พื้นที่เก็บข้อมูล</string>
     <string name="installing_hint">ดาวน์โหลดเสร็จแล้ว กำลังติดตั้ง แอปจะปิดเมื่ออัปเดตเสร็จ โปรดเปิดใหม่อีกครั้ง หากมีหน้าจอติดตั้งปรากฏขึ้น ให้แตะติดตั้ง</string>
     <string name="install_failed">ติดตั้งไม่สำเร็จ: %1$s</string>
+    <string name="tap_for_version_notes">แตะเพื่อดูสิ่งใหม่ในเวอร์ชันนี้</string>
+    <string name="version_notes_title">มีอะไรใหม่ในเวอร์ชัน %1$s</string>
+    <string name="no_version_notes">เวอร์ชันนี้ไม่มีบันทึกประจำรุ่น</string>
 </resources>

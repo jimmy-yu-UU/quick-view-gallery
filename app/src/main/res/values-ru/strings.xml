@@ -290,4 +290,7 @@
     <string name="storage_location">Хранилище</string>
     <string name="installing_hint">Загрузка завершена, идёт установка. После обновления приложение закроется — просто откройте его снова. Если появится экран установки, нажмите «Установить».</string>
     <string name="install_failed">Ошибка установки: %1$s</string>
+    <string name="tap_for_version_notes">Нажмите, чтобы узнать, что нового в этой версии</string>
+    <string name="version_notes_title">Что нового в версии %1$s</string>
+    <string name="no_version_notes">У этой версии нет описания изменений.</string>
 </resources>

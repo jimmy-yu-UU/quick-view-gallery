@@ -290,4 +290,7 @@
     <string name="storage_location">保存場所</string>
     <string name="installing_hint">ダウンロード完了、インストール中です。更新が終わるとアプリが閉じるので、もう一度開いてください。インストール画面が表示された場合は「インストール」をタップしてください。</string>
     <string name="install_failed">インストールに失敗しました: %1$s</string>
+    <string name="tap_for_version_notes">タップしてこのバージョンの新機能を表示</string>
+    <string name="version_notes_title">%1$s の新機能</string>
+    <string name="no_version_notes">このバージョンにはリリースノートがありません。</string>
 </resources>

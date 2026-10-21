@@ -290,4 +290,7 @@
     <string name="storage_location">Stockage</string>
     <string name="installing_hint">Téléchargé, installation en cours. L\'application se ferme une fois la mise à jour terminée ; rouvrez-la. Si un écran d\'installation apparaît, appuyez sur Installer.</string>
     <string name="install_failed">Échec de l\'installation : %1$s</string>
+    <string name="tap_for_version_notes">Appuyez pour voir les nouveautés de cette version</string>
+    <string name="version_notes_title">Nouveautés de la version %1$s</string>
+    <string name="no_version_notes">Cette version n\'a pas de notes de version.</string>
 </resources>

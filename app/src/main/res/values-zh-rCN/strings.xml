@@ -290,4 +290,7 @@
     <string name="storage_location">存储位置</string>
     <string name="installing_hint">下载完成，正在安装。更新完成后应用会自动关闭，请重新打开。如果出现安装界面，请点“安装”。</string>
     <string name="install_failed">安装失败：%1$s</string>
+    <string name="tap_for_version_notes">点击查看此版本的更新内容</string>
+    <string name="version_notes_title">版本 %1$s 更新内容</string>
+    <string name="no_version_notes">这个版本没有附带更新说明。</string>
 </resources>

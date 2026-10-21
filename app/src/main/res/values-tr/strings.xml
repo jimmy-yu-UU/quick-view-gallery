@@ -290,4 +290,7 @@
     <string name="storage_location">Depolama</string>
     <string name="installing_hint">İndirildi, yükleniyor. Güncelleme bitince uygulama kapanır; yeniden açın. Bir yükleme ekranı görünürse Yükle\'ye dokunun.</string>
     <string name="install_failed">Yükleme başarısız: %1$s</string>
+    <string name="tap_for_version_notes">Bu sürümdeki yenilikleri görmek için dokunun</string>
+    <string name="version_notes_title">%1$s sürümündeki yenilikler</string>
+    <string name="no_version_notes">Bu sürümün sürüm notu yok.</string>
 </resources>

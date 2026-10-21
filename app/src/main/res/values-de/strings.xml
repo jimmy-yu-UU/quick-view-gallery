@@ -290,4 +290,7 @@
     <string name="storage_location">Speicherort</string>
     <string name="installing_hint">Heruntergeladen, wird installiert. Die App wird nach dem Update geschlossen; öffne sie einfach erneut. Falls ein Installationsbildschirm erscheint, tippe auf „Installieren“.</string>
     <string name="install_failed">Installation fehlgeschlagen: %1$s</string>
+    <string name="tap_for_version_notes">Tippen, um die Neuerungen dieser Version anzuzeigen</string>
+    <string name="version_notes_title">Neu in Version %1$s</string>
+    <string name="no_version_notes">Diese Version hat keine Versionshinweise.</string>
 </resources>

@@ -477,12 +477,40 @@ private fun UpdateSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> U
 
 @Composable
 private fun AboutPage(onBack: () -> Unit) {
+    val context = LocalContext.current
+    var showNotes by remember { mutableStateOf(false) }
     SettingsScaffold(tr(R.string.sec_about), onBack) {
-        Pref("QV Gallery", tr(R.string.version_fmt, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE))
+        Pref(
+            "QV Gallery",
+            tr(R.string.version_fmt, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE) + "\n" + tr(R.string.tap_for_version_notes),
+            trailing = { Icon(Icons.Outlined.Info, null) },
+            onClick = { showNotes = true },
+        )
         Pref(tr(R.string.description), tr(R.string.about_body))
         Pref(tr(R.string.device), "${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}")
         Pref("License", "MIT")
         Pref(tr(R.string.open_source), "Jetpack Compose, Coil, Telephoto, Media3 (Apache 2.0)")
+    }
+    if (showNotes) {
+        // Notes of the running version, bundled into the APK by the release build.
+        val notes = remember {
+            runCatching { context.assets.open("release_notes.md").bufferedReader().use { it.readText() } }
+                .map { UpdateChecker.plainNotes(it) }
+                .getOrNull()
+                ?.takeIf { it.isNotBlank() }
+        }
+        AlertDialog(
+            onDismissRequest = { showNotes = false },
+            title = { Text(tr(R.string.version_notes_title, BuildConfig.VERSION_NAME)) },
+            text = {
+                Text(
+                    notes ?: tr(R.string.no_version_notes),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState()),
+                )
+            },
+            confirmButton = { TextButton(onClick = { showNotes = false }) { Text(tr(R.string.close)) } },
+        )
     }
 }
 

@@ -290,4 +290,7 @@
     <string name="storage_location">Penyimpanan</string>
     <string name="installing_hint">Selesai diunduh, sedang memasang. Aplikasi akan tertutup setelah update selesai; buka kembali. Jika muncul layar pemasangan, ketuk Instal.</string>
     <string name="install_failed">Gagal memasang: %1$s</string>
+    <string name="tap_for_version_notes">Ketuk untuk melihat yang baru di versi ini</string>
+    <string name="version_notes_title">Yang baru di versi %1$s</string>
+    <string name="no_version_notes">Versi ini tidak memiliki catatan rilis.</string>
 </resources>

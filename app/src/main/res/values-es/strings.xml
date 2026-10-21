@@ -290,4 +290,7 @@
     <string name="storage_location">Almacenamiento</string>
     <string name="installing_hint">Descargado, instalando. La app se cerrará al terminar la actualización; vuelve a abrirla. Si aparece una pantalla de instalación, toca Instalar.</string>
     <string name="install_failed">Error al instalar: %1$s</string>
+    <string name="tap_for_version_notes">Toca para ver las novedades de esta versión</string>
+    <string name="version_notes_title">Novedades de la versión %1$s</string>
+    <string name="no_version_notes">Esta versión no tiene notas de la versión.</string>
 </resources>
