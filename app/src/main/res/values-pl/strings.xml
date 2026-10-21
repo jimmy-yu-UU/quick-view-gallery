@@ -326,4 +326,10 @@
     <string name="no_network">Brak połączenia z Wi-Fi. Połącz się z siecią Wi-Fi lub włącz hotspot.</string>
     <string name="n_received">Odebrano: %1$s</string>
     <string name="received_location">Odebrane pliki są zapisywane w %1$s</string>
+    <string name="auto_stop_hint">Odbieranie zatrzyma się automatycznie po wyjściu z tego ekranu, jeśli nic nie jest przesyłane.</string>
+    <string name="computer_browser">Komputer (przeglądarka)</string>
+    <string name="computer_browser_sub">Pobierz te pliki w przeglądarce na komputerze w tej samej sieci</string>
+    <string name="send_to_computer">Wyślij na komputer</string>
+    <string name="send_to_computer_hint">Na komputerze otwórz poniższy adres w przeglądarce lub zeskanuj kod QR, a potem wpisz kod parowania, aby pobrać pliki.</string>
+    <string name="computer_downloaded">Pobrane przez komputer: %1$s / %2$s</string>
 </resources>

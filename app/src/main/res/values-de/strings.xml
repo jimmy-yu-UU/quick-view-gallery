@@ -326,4 +326,10 @@
     <string name="no_network">Keine WLAN-Verbindung. Verbinde dich mit einem WLAN oder aktiviere einen Hotspot.</string>
     <string name="n_received">%1$s empfangen</string>
     <string name="received_location">Empfangene Dateien werden in %1$s gespeichert</string>
+    <string name="auto_stop_hint">Der Empfang endet automatisch, wenn du diesen Bildschirm verlässt und nichts übertragen wird.</string>
+    <string name="computer_browser">Computer (Browser)</string>
+    <string name="computer_browser_sub">Diese Dateien im Browser eines Computers im selben Netzwerk herunterladen</string>
+    <string name="send_to_computer">An Computer senden</string>
+    <string name="send_to_computer_hint">Öffne auf dem Computer die Adresse unten im Browser oder scanne den QR-Code und gib den Kopplungscode ein, um die Dateien herunterzuladen.</string>
+    <string name="computer_downloaded">Vom Computer heruntergeladen: %1$s / %2$s</string>
 </resources>

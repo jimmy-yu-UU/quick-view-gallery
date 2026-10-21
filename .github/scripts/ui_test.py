@@ -203,6 +203,7 @@ def main():
     # Skip Android's one-time "Viewing full screen" hint, which would cover the app.
     sh("settings put secure immersive_mode_confirmations confirmed")
     adb("logcat", "-c")
+    sh("svc power stayon true")  # screen-off would count as leaving the transfer screen
     W, H = screen_size()
     log(f"screen {W}x{H}")
 
@@ -477,6 +478,25 @@ def main():
         tap("更多")
         tap("傳送到附近裝置", wait=2)
         shot("transfer_queue")
+        # Phone -> computer: offer the queued file, then download it like a browser would.
+        tap("電腦 (瀏覽器)", exact=True, wait=3)
+        shot("transfer_computer_dialog")
+        try:
+            import json, urllib.request
+            base = "http://127.0.0.1:18899"
+            tok = json.loads(urllib.request.urlopen(urllib.request.Request(base + "/api/login", data=json.dumps({"code": code}).encode(), headers={"Content-Type": "application/json"}), timeout=20).read())["token"]
+            ob = json.loads(urllib.request.urlopen(urllib.request.Request(base + "/api/outbox", headers={"X-QV-Token": tok}), timeout=20).read())
+            data = urllib.request.urlopen(urllib.request.Request(base + "/api/outbox/file?i=0&dl=1", headers={"X-QV-Token": tok}), timeout=60).read()
+            log(f"outbox: {len(ob['files'])} file(s), downloaded {len(data)} bytes")
+            if not ob["files"] or len(data) != ob["files"][0]["size"]:
+                failures.append("  !! outbox download mismatch")
+        except Exception as e:
+            failures.append(f"  !! outbox test failed: {e!r}")
+        time.sleep(2)
+        shot("transfer_computer_downloaded")
+        if not find("1 / 1"):
+            failures.append("  !! computer download count not shown")
+        tap("關閉", exact=True)
         tap("輸入位址")
         type_into_field("127.0.0.1:8899")
         tap("確定", exact=True, wait=3)
@@ -484,12 +504,22 @@ def main():
         shot("transfer_code_dialog")
         tap("傳送", exact=True, wait=6)
         shot("transfer_sent")
-        tap("接收", exact=True)
+        # Swipe to the Receive tab instead of tapping it.
+        sh(f"input swipe {int(W * 0.85)} {H // 2} {int(W * 0.15)} {H // 2} 250")
+        time.sleep(1.5)
         shot("transfer_received_list")
-        tap("停止接收", wait=2)
+        if not find("停止接收"):
+            failures.append("  !! swiping did not switch to the Receive tab")
+        # Leave without stopping: the receiver must shut itself down once idle.
         back()
         back()  # transfer screen was opened from the Wallpapers album
-        time.sleep(2)
+        time.sleep(14)
+        try:
+            import urllib.request
+            urllib.request.urlopen("http://127.0.0.1:18899/api/info", timeout=5).read()
+            failures.append("  !! receiver still running after leaving the transfer screen")
+        except Exception:
+            log("receiver stopped after leaving the screen")
         if not find("QV Transfer"):
             failures.append("  !! QV Transfer album missing after receiving")
         shot("albums_with_qv_transfer")
@@ -513,6 +543,8 @@ def main():
     with open(os.path.join(OUT, "result.txt"), "w") as f:
         f.write("\n".join(failures) if failures else "OK")
     log("failures:\n" + "\n".join(failures))
+    if failures:
+        sys.exit(1)  # fail the job so release.yml doesn't publish this build
 
 
 if __name__ == "__main__":

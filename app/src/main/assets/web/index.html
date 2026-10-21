@@ -35,6 +35,12 @@
   #uploads { position:fixed; right:12px; bottom:12px; width:300px; max-height:50vh; overflow:auto; background:var(--card); border-radius:12px; box-shadow:0 2px 12px #0006; padding:10px; display:none; z-index:8; }
   #uploads .row { font-size:13px; margin:6px 0; }
   progress { width:100%; height:6px; }
+  #outbox { display:none; background:var(--card); border-radius:12px; padding:14px; margin-bottom:12px; }
+  #outbox h2 { font-size:16px; margin:0 0 10px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  #outbox h2 span { flex:1; }
+  #outbox .files { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:6px; }
+  #outbox a.tile { display:block; color:inherit; text-decoration:none; }
+  #outbox .done { position:absolute; top:6px; right:6px; background:var(--accent); color:#fff; border-radius:10px; font-size:11px; padding:1px 6px; }
 </style>
 </head>
 <body>
@@ -54,7 +60,10 @@
     <button id="upBtn"></button>
     <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display:none">
   </header>
-  <main><div class="dim" id="sub"></div><div class="grid" id="grid"></div></main>
+  <main>
+    <section id="outbox"><h2><span id="outboxTitle"></span><a class="btn" id="outboxZip"></a></h2><div class="files" id="outboxFiles"></div></section>
+    <div class="dim" id="sub"></div><div class="grid" id="grid"></div>
+  </main>
 </div>
 <div id="viewer">
   <div class="bar"><button class="ghost" id="vClose">✕</button><span id="vName"></span><a class="btn" id="vDl"></a></div>
@@ -69,16 +78,20 @@
 const I18N = {
   en: { codeHint:"Enter the 6-digit pairing code shown on the phone", login:"Connect", wrong:"Wrong code", locked:"Too many attempts, try again in a minute", fail:"Connection failed",
         albums:"Albums", items:n=>`${n} items`, upload:"Upload", download:sel=>sel?`Download ${sel} (ZIP)`:"Download album (ZIP)", selectAll:"Select all", none:"Select none",
-        drop:"Drop photos or videos to upload", uploading:"Uploading", done:"Done", failed:"Failed", save:"Download", empty:"No photos here" },
+        drop:"Drop photos or videos to upload", uploading:"Uploading", done:"Done", failed:"Failed", save:"Download", empty:"No photos here",
+        outbox:(n,from)=>`${from} sent you ${n} file(s)`, all:"Download all (ZIP)", got:"Downloaded" },
   "zh-TW": { codeHint:"請輸入手機上顯示的 6 位數配對碼", login:"連線", wrong:"配對碼錯誤", locked:"嘗試次數過多，請一分鐘後再試", fail:"連線失敗",
         albums:"相簿", items:n=>`${n} 個項目`, upload:"上傳", download:sel=>sel?`下載 ${sel} 個 (ZIP)`:"下載整本相簿 (ZIP)", selectAll:"全選", none:"取消全選",
-        drop:"放開以上傳相片或影片", uploading:"上傳中", done:"完成", failed:"失敗", save:"下載", empty:"這裡沒有相片" },
+        drop:"放開以上傳相片或影片", uploading:"上傳中", done:"完成", failed:"失敗", save:"下載", empty:"這裡沒有相片",
+        outbox:(n,from)=>`${from} 傳來 ${n} 個檔案`, all:"全部下載 (ZIP)", got:"已下載" },
   "zh-CN": { codeHint:"请输入手机上显示的 6 位配对码", login:"连接", wrong:"配对码错误", locked:"尝试次数过多，请一分钟后再试", fail:"连接失败",
         albums:"相册", items:n=>`${n} 个项目`, upload:"上传", download:sel=>sel?`下载 ${sel} 个 (ZIP)`:"下载整个相册 (ZIP)", selectAll:"全选", none:"取消全选",
-        drop:"松开以上传照片或视频", uploading:"上传中", done:"完成", failed:"失败", save:"下载", empty:"这里没有照片" },
+        drop:"松开以上传照片或视频", uploading:"上传中", done:"完成", failed:"失败", save:"下载", empty:"这里没有照片",
+        outbox:(n,from)=>`${from} 发来 ${n} 个文件`, all:"全部下载 (ZIP)", got:"已下载" },
   ja: { codeHint:"スマートフォンに表示されている 6 桁のペア設定コードを入力してください", login:"接続", wrong:"コードが違います", locked:"試行回数が多すぎます。1 分後にお試しください", fail:"接続できませんでした",
         albums:"アルバム", items:n=>`${n} 件`, upload:"アップロード", download:sel=>sel?`${sel} 件をダウンロード (ZIP)`:"アルバムをダウンロード (ZIP)", selectAll:"すべて選択", none:"選択解除",
-        drop:"ドロップして写真や動画をアップロード", uploading:"アップロード中", done:"完了", failed:"失敗", save:"ダウンロード", empty:"写真がありません" },
+        drop:"ドロップして写真や動画をアップロード", uploading:"アップロード中", done:"完了", failed:"失敗", save:"ダウンロード", empty:"写真がありません",
+        outbox:(n,from)=>`${from} から ${n} 件のファイルが届いています`, all:"すべてダウンロード (ZIP)", got:"ダウンロード済み" },
 };
 const lang = (navigator.language || "en");
 const T = I18N[lang] || I18N[lang.startsWith("zh") ? (/(CN|SG|Hans)/i.test(lang) ? "zh-CN" : "zh-TW") : lang.split("-")[0]] || I18N.en;
@@ -112,7 +125,34 @@ $("code").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
 const thumb = p => "/api/thumb?path=" + encodeURIComponent(p) + "&t=" + token;
 const fileUrl = (p, dl) => "/api/file?path=" + encodeURIComponent(p) + (dl ? "&dl=1" : "") + "&t=" + token;
 
+// Files the phone chose to send to this computer ("Send > Computer").
+let outboxKey = "";
+async function refreshOutbox() {
+  if (!token) return;
+  let j;
+  try { j = await (await api("/api/outbox")).json(); } catch (e) { return; }
+  const key = JSON.stringify(j.files.map(f => [f.name, f.downloaded]));
+  if (key === outboxKey) return;
+  outboxKey = key;
+  $("outbox").style.display = j.files.length && !album ? "block" : "none";
+  $("outboxTitle").textContent = T.outbox(j.files.length, j.from);
+  $("outboxZip").textContent = T.all;
+  $("outboxZip").href = "/api/outbox/zip?t=" + token;
+  $("outboxFiles").innerHTML = "";
+  for (const f of j.files) {
+    const a = document.createElement("a"); a.className = "tile";
+    a.href = "/api/outbox/file?i=" + f.i + "&dl=1&t=" + token;
+    a.innerHTML = (f.video ? `<span class="cap"></span>` : `<img loading="lazy" src="/api/outbox/file?i=${f.i}&t=${token}">`)
+      + `<div class="cap"></div>` + (f.downloaded ? `<span class="done"></span>` : "");
+    a.querySelector("div.cap").textContent = f.name;
+    if (f.downloaded) a.querySelector(".done").textContent = T.got;
+    $("outboxFiles").appendChild(a);
+  }
+}
+setInterval(refreshOutbox, 3000);
+
 async function showAlbums() {
+  outboxKey = ""; refreshOutbox();
   album = null; selected.clear(); updateBar();
   $("title").textContent = T.albums; $("backBtn").style.display = "none";
   const list = await (await api("/api/albums")).json();
@@ -128,6 +168,7 @@ async function showAlbums() {
 }
 async function openAlbum(a) {
   album = a; selected.clear();
+  $("outbox").style.display = "none";
   $("title").textContent = a.name; $("backBtn").style.display = "";
   items = await (await api("/api/media?album=" + encodeURIComponent(a.path))).json();
   $("sub").textContent = items.length ? T.items(items.length) : T.empty;

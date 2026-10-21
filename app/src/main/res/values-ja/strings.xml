@@ -326,4 +326,10 @@
     <string name="no_network">Wi-Fi に接続されていません。Wi-Fi に接続するか、アクセス ポイントをオンにしてください。</string>
     <string name="n_received">%1$s 件受信</string>
     <string name="received_location">受信したファイルは %1$s に保存されます</string>
+    <string name="auto_stop_hint">この画面を離れると、転送中でなければ受信は自動的に停止します。</string>
+    <string name="computer_browser">パソコン（ブラウザ）</string>
+    <string name="computer_browser_sub">同じネットワークのパソコンでブラウザからダウンロード</string>
+    <string name="send_to_computer">パソコンに送信</string>
+    <string name="send_to_computer_hint">パソコンのブラウザで下のアドレスを開くか QR コードをスキャンし、ペア設定コードを入力するとファイルをダウンロードできます。</string>
+    <string name="computer_downloaded">パソコンでダウンロード済み: %1$s / %2$s</string>
 </resources>

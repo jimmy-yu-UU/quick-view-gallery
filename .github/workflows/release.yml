@@ -1,0 +1,88 @@
+name: release
+# Publishes a build only after its UI test passed and the SonarCloud quality gate is green.
+on:
+  workflow_run:
+    workflows: [ui-test]
+    types: [completed]
+
+permissions:
+  contents: write
+  actions: read
+  checks: read
+
+jobs:
+  release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find the build of this commit
+        id: build
+        run: |
+          RUN=$(gh api "repos/${{ github.repository }}/actions/workflows/build.yml/runs?head_sha=$SHA&status=success" --jq '.workflow_runs[0].id')
+          MSG=$(gh api "repos/${{ github.repository }}/commits/$SHA" --jq '.commit.message')
+          echo "run=$RUN" >> "$GITHUB_OUTPUT"
+          if echo "$MSG" | grep -q '\[wip\]'; then echo "wip=true" >> "$GITHUB_OUTPUT"; fi
+          echo "build run: $RUN"
+
+      - name: Wait for SonarCloud quality gate
+        if: steps.build.outputs.wip != 'true'
+        run: |
+          for i in $(seq 1 80); do
+            R=$(gh api "repos/${{ github.repository }}/commits/$SHA/check-runs" \
+                --jq '[.check_runs[] | select(.name | startswith("SonarCloud"))][0] | "\(.status) \(.conclusion)"')
+            echo "SonarCloud: $R"
+            case "$R" in
+              "completed success") exit 0 ;;
+              completed*) echo "::error::SonarCloud quality gate did not pass ($R); not releasing."; exit 1 ;;
+            esac
+            sleep 15
+          done
+          echo "::error::SonarCloud result did not arrive in time; not releasing."
+          exit 1
+
+      # So the problems can be read and fixed: dump SonarCloud's open issues to the ci-sonar branch.
+      - name: Export SonarCloud issues
+        if: always() && steps.build.outputs.wip != 'true'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          [ -n "$SONAR_TOKEN" ] || { echo "SONAR_TOKEN not set; skipping issue export"; exit 0; }
+          mkdir -p sonar && cd sonar
+          KEY="jimmy-yu-UU_quick-view-gallery"
+          curl -sf -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?componentKeys=$KEY&branch=main&resolved=false&ps=500" > issues.json || echo '{}' > issues.json
+          curl -sf -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$KEY&branch=main" > gate.json || echo '{}' > gate.json
+          python3 ../.github/scripts/sonar_issues.py
+          echo "sha=$SHA" > status.txt
+          git init -q && git add -A
+          git -c user.name=ci -c user.email=ci@local commit -qm "sonar issues for $SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" HEAD:ci-sonar
+
+      - uses: actions/download-artifact@v4
+        if: steps.build.outputs.wip != 'true'
+        with:
+          name: apk
+          run-id: ${{ steps.build.outputs.run }}
+          github-token: ${{ github.token }}
+
+      - uses: actions/download-artifact@v4
+        if: steps.build.outputs.wip != 'true'
+        with:
+          name: release-meta
+          run-id: ${{ steps.build.outputs.run }}
+          github-token: ${{ github.token }}
+
+      - name: Publish release
+        if: steps.build.outputs.wip != 'true'
+        run: |
+          VERSION=$(cat version.txt)
+          if [ "$(cat signed.txt)" != "true" ]; then echo "::error::Build was not signed with the release key."; exit 1; fi
+          if gh release view "v$VERSION" -R "${{ github.repository }}" >/dev/null 2>&1; then echo "v$VERSION already released"; exit 0; fi
+          cp app-release.apk "QVGallery-$VERSION.apk"
+          gh release create "v$VERSION" "QVGallery-$VERSION.apk" -R "${{ github.repository }}" \
+            --target "$SHA" --title "QV Gallery $VERSION" --notes-file notes.md --latest

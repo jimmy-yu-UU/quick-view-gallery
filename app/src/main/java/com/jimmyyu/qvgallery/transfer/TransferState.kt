@@ -2,7 +2,9 @@ package com.jimmyyu.qvgallery.transfer
 
 import android.content.Context
 import android.os.Build
+import android.os.SystemClock
 import android.provider.Settings
+import java.util.concurrent.atomic.AtomicInteger
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,8 +40,47 @@ object TransferState {
 
     internal var running: TransferServer? = null
 
+    // ---- Activity tracking for auto-stop ----
+
+    private val activeRequests = AtomicInteger(0)
+    @Volatile private var lastActivity = 0L
+
+    /** True while the transfer screen is not on screen; the service then stops once nothing is transferring. */
+    @Volatile var stopWhenIdle = false
+
+    internal fun requestStarted() {
+        activeRequests.incrementAndGet()
+        lastActivity = SystemClock.elapsedRealtime()
+    }
+
+    internal fun requestFinished() {
+        activeRequests.decrementAndGet()
+        lastActivity = SystemClock.elapsedRealtime()
+    }
+
+    /** No request in flight and none for a few seconds (uploads/downloads come in quick succession). */
+    fun isIdle(): Boolean = activeRequests.get() == 0 && SystemClock.elapsedRealtime() - lastActivity > IDLE_GRACE_MS
+
+    private const val IDLE_GRACE_MS = 8_000L
+
+    // ---- Outbox: files the phone offers to a computer's browser ----
+
+    private val _outbox = MutableStateFlow<List<SendFile>>(emptyList())
+    val outbox: StateFlow<List<SendFile>> = _outbox.asStateFlow()
+
+    private val _outboxDownloaded = MutableStateFlow<Set<Int>>(emptySet())
+    val outboxDownloaded: StateFlow<Set<Int>> = _outboxDownloaded.asStateFlow()
+
+    fun offer(files: List<SendFile>) {
+        _outbox.value = files
+        _outboxDownloaded.value = emptySet()
+    }
+
+    internal fun markDownloaded(indices: Collection<Int>) = _outboxDownloaded.update { it + indices }
+
     internal fun setServer(info: ServerInfo?) {
         _server.value = info
+        if (info == null) offer(emptyList())
     }
 
     fun record(r: TransferRecord) {

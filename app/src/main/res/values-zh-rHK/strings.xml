@@ -326,4 +326,10 @@
     <string name="no_network">未連接 Wi-Fi。請連接 Wi-Fi 或開啟熱點。</string>
     <string name="n_received">已接收 %1$s 個</string>
     <string name="received_location">接收的檔案會儲存在 %1$s</string>
+    <string name="auto_stop_hint">離開此畫面後，如沒有進行中的傳輸，會自動停止接收。</string>
+    <string name="computer_browser">電腦（瀏覽器）</string>
+    <string name="computer_browser_sub">在同一網絡的電腦用瀏覽器下載這些檔案</string>
+    <string name="send_to_computer">傳送至電腦</string>
+    <string name="send_to_computer_hint">在電腦瀏覽器開啟下方地址或掃描 QR 碼，輸入配對碼後即可下載這些檔案。</string>
+    <string name="computer_downloaded">電腦已下載 %1$s / %2$s</string>
 </resources>

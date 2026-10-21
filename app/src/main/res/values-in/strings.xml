@@ -326,4 +326,10 @@
     <string name="no_network">Tidak terhubung ke Wi-Fi. Hubungkan ke Wi-Fi atau aktifkan hotspot.</string>
     <string name="n_received">%1$s diterima</string>
     <string name="received_location">File yang diterima disimpan di %1$s</string>
+    <string name="auto_stop_hint">Penerimaan berhenti otomatis setelah Anda keluar dari layar ini dan tidak ada transfer yang berjalan.</string>
+    <string name="computer_browser">Komputer (browser)</string>
+    <string name="computer_browser_sub">Download file ini di browser komputer pada jaringan yang sama</string>
+    <string name="send_to_computer">Kirim ke komputer</string>
+    <string name="send_to_computer_hint">Di komputer, buka alamat di bawah dalam browser atau pindai kode QR, lalu masukkan kode penyambungan untuk mendownload file.</string>
+    <string name="computer_downloaded">Didownload komputer: %1$s / %2$s</string>
 </resources>

@@ -55,25 +55,26 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease --stacktrace --warning-mode=none 2>&1 | tee build.log
 
-      - name: Keep APK for the UI test
+      # Publishing happens in release.yml, after the UI test and SonarCloud have passed.
+      - name: Keep APK for the UI test and release
         uses: actions/upload-artifact@v4
         with:
           name: apk
           path: app/build/outputs/apk/release/app-release.apk
-          retention-days: 7
+          retention-days: 14
 
-      - name: Publish release
-        # Commits marked [wip] are only built (to check they compile), not released.
-        if: env.HAS_RELEASE_KEY == 'true' && !contains(github.event.head_commit.message, '[wip]')
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Keep release notes
         run: |
-          VERSION="1.0.${{ github.run_number }}"
-          cp app/build/outputs/apk/release/app-release.apk "QVGallery-$VERSION.apk"
-          gh release create "v$VERSION" "QVGallery-$VERSION.apk" \
-            --title "QV Gallery $VERSION" \
-            --notes-file notes.md \
-            --latest
+          mkdir -p release-meta
+          cp notes.md release-meta/
+          echo "1.0.${{ github.run_number }}" > release-meta/version.txt
+          echo "${HAS_RELEASE_KEY:-false}" > release-meta/signed.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-meta
+          path: release-meta/
+          retention-days: 14
 
       - name: Publish log
         if: always()

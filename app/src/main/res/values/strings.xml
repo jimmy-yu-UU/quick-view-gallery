@@ -327,4 +327,10 @@
     <string name="no_network">Not connected to Wi-Fi. Connect to Wi-Fi or turn on a hotspot.</string>
     <string name="n_received">%1$s received</string>
     <string name="received_location">Received files are saved in %1$s</string>
+    <string name="auto_stop_hint">Receiving stops automatically after you leave this screen and nothing is being transferred.</string>
+    <string name="computer_browser">Computer (browser)</string>
+    <string name="computer_browser_sub">Download these files in a browser on a computer on the same network</string>
+    <string name="send_to_computer">Send to computer</string>
+    <string name="send_to_computer_hint">On the computer, open the address below in a browser or scan the QR code, then enter the pairing code to download the files.</string>
+    <string name="computer_downloaded">Downloaded by the computer: %1$s / %2$s</string>
 </resources>

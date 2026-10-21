@@ -326,4 +326,10 @@
     <string name="no_network">غير متصل بشبكة Wi-Fi. يُرجى الاتصال بشبكة Wi-Fi أو تفعيل نقطة اتصال.</string>
     <string name="n_received">تم استلام %1$s</string>
     <string name="received_location">يتم حفظ الملفات المستلَمة في %1$s</string>
+    <string name="auto_stop_hint">يتوقف الاستلام تلقائيًا عند مغادرة هذه الشاشة إذا لم يكن هناك نقل جارٍ.</string>
+    <string name="computer_browser">كمبيوتر (متصفّح)</string>
+    <string name="computer_browser_sub">نزّل هذه الملفات من متصفّح على كمبيوتر في الشبكة نفسها</string>
+    <string name="send_to_computer">إرسال إلى الكمبيوتر</string>
+    <string name="send_to_computer_hint">على الكمبيوتر، افتح العنوان أدناه في متصفّح أو امسح رمز الاستجابة السريعة، ثم أدخل رمز الإقران لتنزيل الملفات.</string>
+    <string name="computer_downloaded">نزّلها الكمبيوتر: %1$s / %2$s</string>
 </resources>

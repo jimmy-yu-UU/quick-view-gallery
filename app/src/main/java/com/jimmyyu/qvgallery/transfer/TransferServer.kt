@@ -91,6 +91,15 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
     }
 
     private fun serve(client: Socket) {
+        TransferState.requestStarted()
+        try {
+            serveRequest(client)
+        } finally {
+            TransferState.requestFinished()
+        }
+    }
+
+    private fun serveRequest(client: Socket) {
         client.use { sock ->
             sock.soTimeout = 60_000
             val input = BufferedInputStream(sock.getInputStream(), 64 * 1024)
@@ -180,6 +189,9 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
             "/api/thumb" -> thumb(req, out)
             "/api/file" -> file(req, out)
             "/api/zip" -> zip(req, out)
+            "/api/outbox" -> outboxList(out)
+            "/api/outbox/file" -> outboxFile(req, out)
+            "/api/outbox/zip" -> outboxZip(req, out)
             "/api/upload" -> if (req.method == "PUT" || req.method == "POST") upload(req, out) else json(out, 405, JSONObject())
             else -> json(out, 404, JSONObject().put("error", "not found"))
         }
@@ -328,6 +340,55 @@ class TransferServer(private val app: App, private val onReceived: (TransferReco
             zip.closeEntry()
         }
         zip.finish()
+    }
+
+    // ---------------- Outbox (phone → computer) ----------------
+
+    private fun outboxList(out: OutputStream) {
+        val arr = JSONArray()
+        val done = TransferState.outboxDownloaded.value
+        TransferState.outbox.value.forEachIndexed { i, f ->
+            val mime = MediaTypes.mimeFor(f.name) ?: "application/octet-stream"
+            arr.put(
+                JSONObject().put("i", i).put("name", f.name).put("size", f.size).put("mime", mime)
+                    .put("video", mime.startsWith("video/")).put("downloaded", i in done)
+            )
+        }
+        json(out, 200, JSONObject().put("from", TransferState.deviceName(app)).put("files", arr))
+    }
+
+    private fun outboxFile(req: Request, out: OutputStream) {
+        val i = req.query["i"]?.toIntOrNull() ?: return json(out, 400, JSONObject())
+        val f = TransferState.outbox.value.getOrNull(i) ?: return json(out, 404, JSONObject())
+        val mime = MediaTypes.mimeFor(f.name) ?: "application/octet-stream"
+        val disposition = (if (req.query["dl"] == "1") "attachment" else "inline") + "; filename*=UTF-8''" + encodeRfc5987(f.name)
+        head(out, 200, mime, f.size.takeIf { it > 0 }, mapOf("Content-Disposition" to disposition))
+        app.contentResolver.openInputStream(f.uri)?.use { it.copyTo(out, 256 * 1024) }
+        if (req.query["dl"] == "1") {
+            TransferState.markDownloaded(listOf(i))
+            onReceived(TransferRecord(f.name, f.size, incoming = false, peer = browserName(req.headers["user-agent"].orEmpty())))
+        }
+    }
+
+    private fun outboxZip(req: Request, out: OutputStream) {
+        val files = TransferState.outbox.value
+        if (files.isEmpty()) return json(out, 404, JSONObject())
+        head(out, 200, "application/zip", null, mapOf("Content-Disposition" to "attachment; filename*=UTF-8''" + encodeRfc5987("QV Gallery.zip")))
+        val zip = ZipOutputStream(out)
+        zip.setLevel(Deflater.NO_COMPRESSION)
+        val used = HashSet<String>()
+        for (f in files) {
+            var entry = f.name
+            var n = 1
+            while (!used.add(entry)) entry = f.name.substringBeforeLast('.') + " (${n++})." + f.name.substringAfterLast('.', "")
+            zip.putNextEntry(ZipEntry(entry))
+            app.contentResolver.openInputStream(f.uri)?.use { it.copyTo(zip, 256 * 1024) }
+            zip.closeEntry()
+        }
+        zip.finish()
+        TransferState.markDownloaded(files.indices.toList())
+        val peer = browserName(req.headers["user-agent"].orEmpty())
+        files.forEach { onReceived(TransferRecord(it.name, it.size, incoming = false, peer = peer)) }
     }
 
     /** Saves an uploaded photo/video into Pictures/QV Transfer through MediaStore. */

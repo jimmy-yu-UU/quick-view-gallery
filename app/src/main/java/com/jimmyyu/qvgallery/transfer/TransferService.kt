@@ -9,7 +9,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
@@ -21,6 +23,18 @@ import com.jimmyyu.qvgallery.tr
 /** Keeps the receiver (HTTP server + mDNS announcement) running while the app is in the background. */
 class TransferService : Service() {
     private var advertiser: Advertiser? = null
+    private val handler = Handler(Looper.getMainLooper())
+
+    /** Stops the receiver once the transfer screen is closed and nothing is being transferred. */
+    private val idleCheck = object : Runnable {
+        override fun run() {
+            if (TransferState.stopWhenIdle && TransferState.isIdle()) {
+                stopSelf()
+            } else {
+                handler.postDelayed(this, 2_000)
+            }
+        }
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -38,6 +52,7 @@ class TransferService : Service() {
             TransferState.running = server
             TransferState.setServer(ServerInfo(server.code, port, TransferState.localAddresses()))
             advertiser = Advertiser(this).also { it.start(TransferState.deviceName(this), port) }
+            handler.postDelayed(idleCheck, 2_000)
         }
         ServiceCompat.startForeground(
             this, NOTIFICATION_ID, notification(),
@@ -52,6 +67,7 @@ class TransferService : Service() {
     }
 
     override fun onDestroy() {
+        handler.removeCallbacks(idleCheck)
         advertiser?.stop()
         TransferState.running?.stop()
         TransferState.running = null

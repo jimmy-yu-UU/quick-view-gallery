@@ -21,7 +21,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,6 +35,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Computer
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.PhoneAndroid
@@ -76,12 +81,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LifecycleStartEffect
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import com.jimmyyu.qvgallery.R
 import com.jimmyyu.qvgallery.transfer.Browser
 import com.jimmyyu.qvgallery.transfer.Peer
 import com.jimmyyu.qvgallery.transfer.SendError
+import com.jimmyyu.qvgallery.transfer.ServerInfo
 import com.jimmyyu.qvgallery.transfer.TransferClient
 import com.jimmyyu.qvgallery.transfer.TransferRecord
 import com.jimmyyu.qvgallery.transfer.TransferServer
@@ -96,7 +103,14 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransferScreen(vm: GalleryViewModel, startOnReceive: Boolean, onBack: () -> Unit) {
-    var tab by rememberSaveable { mutableIntStateOf(if (startOnReceive || vm.sender.files.value.isEmpty() && TransferState.server.value != null) 1 else 0) }
+    val initialTab = if (startOnReceive || vm.sender.files.value.isEmpty() && TransferState.server.value != null) 1 else 0
+    val pager = rememberPagerState(initialPage = initialTab) { 2 }
+    val scope = rememberCoroutineScope()
+    // The receiver runs only while this screen is visible, or until a running transfer finishes.
+    LifecycleStartEffect(Unit) {
+        TransferState.stopWhenIdle = false
+        onStopOrDispose { TransferState.stopWhenIdle = true }
+    }
     Scaffold(
         topBar = {
             Column {
@@ -109,15 +123,15 @@ fun TransferScreen(vm: GalleryViewModel, startOnReceive: Boolean, onBack: () -> 
                         }
                     },
                 )
-                TabRow(selectedTabIndex = tab) {
-                    Tab(selected = tab == 0, onClick = { tab = 0 }, text = { Text(tr(R.string.transfer_send)) })
-                    Tab(selected = tab == 1, onClick = { tab = 1 }, text = { Text(tr(R.string.transfer_receive)) })
+                TabRow(selectedTabIndex = pager.currentPage) {
+                    Tab(selected = pager.currentPage == 0, onClick = { scope.launch { pager.animateScrollToPage(0) } }, text = { Text(tr(R.string.transfer_send)) })
+                    Tab(selected = pager.currentPage == 1, onClick = { scope.launch { pager.animateScrollToPage(1) } }, text = { Text(tr(R.string.transfer_receive)) })
                 }
             }
         },
     ) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding)) {
-            if (tab == 0) SendTab(vm) else ReceiveTab()
+        HorizontalPager(pager, Modifier.fillMaxSize().padding(padding)) { page ->
+            if (page == 0) SendTab(vm) else ReceiveTab()
         }
     }
 }
@@ -136,6 +150,8 @@ private fun SendTab(vm: GalleryViewModel) {
     var codeFor by remember { mutableStateOf<Peer?>(null) }
     var manual by remember { mutableStateOf(false) }
     var lastPeer by remember { mutableStateOf<Peer?>(null) }
+    var computer by remember { mutableStateOf(false) }
+    val startReceiver = rememberStartReceiver()
 
     DisposableEffect(Unit) {
         browser.start(ownName = TransferState.deviceName(context).takeIf { TransferState.server.value != null })
@@ -198,6 +214,28 @@ private fun SendTab(vm: GalleryViewModel) {
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
+        item {
+            // A browser can't accept connections, so the phone serves the files and the computer downloads them.
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clickable(enabled = files.isNotEmpty()) {
+                        TransferState.offer(files)
+                        if (TransferState.server.value == null) startReceiver()
+                        computer = true
+                    }
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Filled.Computer, null, tint = MaterialTheme.colorScheme.primary)
+                Spacer(Modifier.width(16.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(tr(R.string.computer_browser), fontWeight = FontWeight.Medium)
+                    Text(tr(R.string.computer_browser_sub), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                if (files.isNotEmpty()) Text(tr(R.string.transfer_send), color = MaterialTheme.colorScheme.primary)
+            }
+        }
         items(peers, key = { it.name }) { peer ->
             Row(
                 Modifier
@@ -225,6 +263,7 @@ private fun SendTab(vm: GalleryViewModel) {
             onDismiss = { codeFor = null },
         )
     }
+    if (computer) ComputerSendDialog(onDismiss = { computer = false })
     if (manual) {
         ManualAddressDialog(onFound = { peer -> manual = false; lastPeer = peer; if (files.isNotEmpty()) codeFor = peer }, onDismiss = { manual = false })
     }
@@ -333,25 +372,65 @@ private fun ManualAddressDialog(onFound: (Peer) -> Unit, onDismiss: () -> Unit) 
 
 // ---------------- Receive ----------------
 
+/** Starts the receiver service, asking for the notification permission first (it's started either way). */
 @Composable
-private fun ReceiveTab() {
+private fun rememberStartReceiver(): () -> Unit {
     val context = LocalContext.current
-    val server by TransferState.server.collectAsState()
-    val history by TransferState.history.collectAsState()
-    // Notifications show the running receiver; ask once, but start either way.
     val notify = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { TransferService.start(context) }
-    fun start() {
+    return {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) notify.launch(Manifest.permission.POST_NOTIFICATIONS)
         else TransferService.start(context)
     }
-    // Addresses change when the phone switches networks; refresh while visible.
+}
+
+/** Current IPv4 addresses; refreshed because they change when the phone switches networks. */
+@Composable
+private fun rememberAddresses(): List<String> {
     var addresses by remember { mutableStateOf(TransferState.localAddresses()) }
-    LaunchedEffect(server) {
+    LaunchedEffect(Unit) {
         while (true) {
             addresses = TransferState.localAddresses()
             delay(5_000)
         }
     }
+    return addresses
+}
+
+/** Pairing code, QR code and addresses of the running receiver. */
+@Composable
+private fun ServerAccessInfo(server: ServerInfo, qrSize: Int = 200) {
+    val addresses = rememberAddresses()
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(tr(R.string.pairing_code), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+        Text(
+            server.code.chunked(3).joinToString(" "),
+            fontSize = 44.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Monospace,
+        )
+        Spacer(Modifier.height(16.dp))
+        val urls = addresses.map { "http://$it:${server.port}/" }
+        val first = urls.firstOrNull()
+        if (first != null) {
+            val qr = remember(first) { qrBitmap(first, 512) }
+            Box(Modifier.background(Color.White, RoundedCornerShape(12.dp)).padding(12.dp)) {
+                Image(qr.asImageBitmap(), first, Modifier.size(qrSize.dp))
+            }
+            Spacer(Modifier.height(12.dp))
+            urls.forEach { Text(it, style = MaterialTheme.typography.titleMedium, fontFamily = FontFamily.Monospace) }
+        } else {
+            Text(tr(R.string.no_network), color = MaterialTheme.colorScheme.error)
+        }
+    }
+}
+
+@Composable
+private fun ReceiveTab() {
+    val context = LocalContext.current
+    val server by TransferState.server.collectAsState()
+    val history by TransferState.history.collectAsState()
+    val start = rememberStartReceiver()
+    val addresses = rememberAddresses()
 
     LazyColumn(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         val s = server
@@ -362,7 +441,7 @@ private fun ReceiveTab() {
                     Spacer(Modifier.height(16.dp))
                     Text(tr(R.string.receive_intro), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.height(24.dp))
-                    Button(onClick = { start() }) { Text(tr(R.string.start_receiving)) }
+                    Button(onClick = start) { Text(tr(R.string.start_receiving)) }
                     if (addresses.isEmpty()) {
                         Spacer(Modifier.height(12.dp))
                         Text(tr(R.string.no_network), color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
@@ -372,28 +451,11 @@ private fun ReceiveTab() {
         } else {
             item {
                 Column(Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(tr(R.string.pairing_code), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-                    Text(
-                        s.code.chunked(3).joinToString(" "),
-                        fontSize = 44.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace,
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    val urls = addresses.map { "http://$it:${s.port}/" }
-                    val first = urls.firstOrNull()
-                    if (first != null) {
-                        val qr = remember(first) { qrBitmap(first, 512) }
-                        Box(Modifier.background(Color.White, RoundedCornerShape(12.dp)).padding(12.dp)) {
-                            Image(qr.asImageBitmap(), first, Modifier.size(200.dp))
-                        }
-                        Spacer(Modifier.height(12.dp))
-                        urls.forEach { Text(it, style = MaterialTheme.typography.titleMedium, fontFamily = FontFamily.Monospace) }
-                    } else {
-                        Text(tr(R.string.no_network), color = MaterialTheme.colorScheme.error)
-                    }
+                    ServerAccessInfo(s)
                     Spacer(Modifier.height(12.dp))
                     Text(tr(R.string.receive_running_hint), textAlign = TextAlign.Center, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(Modifier.height(8.dp))
+                    Text(tr(R.string.auto_stop_hint), textAlign = TextAlign.Center, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.height(16.dp))
                     OutlinedButton(onClick = { TransferService.stop(context) }) { Text(tr(R.string.stop_receiving)) }
                 }
@@ -401,6 +463,33 @@ private fun ReceiveTab() {
         }
         item { HistoryList(history.filter { it.incoming }) }
     }
+}
+
+/** Offers the queued files to a computer: shows where to connect and how many were downloaded. */
+@Composable
+private fun ComputerSendDialog(onDismiss: () -> Unit) {
+    val server by TransferState.server.collectAsState()
+    val outbox by TransferState.outbox.collectAsState()
+    val downloaded by TransferState.outboxDownloaded.collectAsState()
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(tr(R.string.send_to_computer)) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(tr(R.string.send_to_computer_hint), style = MaterialTheme.typography.bodyMedium)
+                Spacer(Modifier.height(16.dp))
+                val s = server
+                if (s == null) CircularProgressIndicator() else ServerAccessInfo(s, qrSize = 160)
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    tr(R.string.computer_downloaded, downloaded.size, outbox.size),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = if (outbox.isNotEmpty() && downloaded.size >= outbox.size) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(tr(R.string.close)) } },
+    )
 }
 
 @Composable

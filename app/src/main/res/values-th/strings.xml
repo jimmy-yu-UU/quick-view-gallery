@@ -326,4 +326,10 @@
     <string name="no_network">ไม่ได้เชื่อมต่อ Wi-Fi โปรดเชื่อมต่อ Wi-Fi หรือเปิดฮอตสปอต</string>
     <string name="n_received">ได้รับ %1$s รายการ</string>
     <string name="received_location">ไฟล์ที่ได้รับจะบันทึกไว้ใน %1$s</string>
+    <string name="auto_stop_hint">การรับจะหยุดโดยอัตโนมัติเมื่อคุณออกจากหน้าจอนี้และไม่มีการโอนที่กำลังดำเนินอยู่</string>
+    <string name="computer_browser">คอมพิวเตอร์ (เบราว์เซอร์)</string>
+    <string name="computer_browser_sub">ดาวน์โหลดไฟล์เหล่านี้ในเบราว์เซอร์บนคอมพิวเตอร์ที่อยู่ในเครือข่ายเดียวกัน</string>
+    <string name="send_to_computer">ส่งไปยังคอมพิวเตอร์</string>
+    <string name="send_to_computer_hint">บนคอมพิวเตอร์ ให้เปิดที่อยู่ด้านล่างในเบราว์เซอร์หรือสแกนคิวอาร์โค้ด แล้วป้อนรหัสการจับคู่เพื่อดาวน์โหลดไฟล์</string>
+    <string name="computer_downloaded">คอมพิวเตอร์ดาวน์โหลดแล้ว: %1$s / %2$s</string>
 </resources>

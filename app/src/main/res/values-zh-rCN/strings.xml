@@ -326,4 +326,10 @@
     <string name="no_network">没有连接 Wi-Fi。请连接 Wi-Fi 或开启热点。</string>
     <string name="n_received">已接收 %1$s 个</string>
     <string name="received_location">接收的文件保存在 %1$s</string>
+    <string name="auto_stop_hint">离开这个界面后，没有进行中的传输时会自动停止接收。</string>
+    <string name="computer_browser">电脑（浏览器）</string>
+    <string name="computer_browser_sub">在同一个网络的电脑上用浏览器下载这些文件</string>
+    <string name="send_to_computer">发送到电脑</string>
+    <string name="send_to_computer_hint">在电脑的浏览器打开下方网址或扫描二维码，输入配对码后即可下载这些文件。</string>
+    <string name="computer_downloaded">电脑已下载 %1$s / %2$s</string>
 </resources>

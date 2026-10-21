@@ -326,4 +326,10 @@
     <string name="no_network">Нет подключения к Wi-Fi. Подключитесь к сети Wi-Fi или включите точку доступа.</string>
     <string name="n_received">Получено: %1$s</string>
     <string name="received_location">Полученные файлы сохраняются в %1$s</string>
+    <string name="auto_stop_hint">Приём автоматически остановится, когда вы уйдёте с этого экрана и не будет активных передач.</string>
+    <string name="computer_browser">Компьютер (браузер)</string>
+    <string name="computer_browser_sub">Скачайте эти файлы в браузере на компьютере в той же сети</string>
+    <string name="send_to_computer">Отправить на компьютер</string>
+    <string name="send_to_computer_hint">На компьютере откройте адрес ниже в браузере или отсканируйте QR-код, затем введите код подключения, чтобы скачать файлы.</string>
+    <string name="computer_downloaded">Скачано на компьютер: %1$s / %2$s</string>
 </resources>

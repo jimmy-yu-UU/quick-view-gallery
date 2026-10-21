@@ -326,4 +326,10 @@
     <string name="no_network">Non connesso al Wi-Fi. Connettiti a una rete Wi-Fi o attiva un hotspot.</string>
     <string name="n_received">%1$s ricevuti</string>
     <string name="received_location">I file ricevuti vengono salvati in %1$s</string>
+    <string name="auto_stop_hint">La ricezione si interrompe automaticamente quando esci da questa schermata e non ci sono trasferimenti in corso.</string>
+    <string name="computer_browser">Computer (browser)</string>
+    <string name="computer_browser_sub">Scarica questi file nel browser di un computer sulla stessa rete</string>
+    <string name="send_to_computer">Invia al computer</string>
+    <string name="send_to_computer_hint">Sul computer apri l\'indirizzo qui sotto in un browser o scansiona il codice QR, poi inserisci il codice di accoppiamento per scaricare i file.</string>
+    <string name="computer_downloaded">Scaricati dal computer: %1$s / %2$s</string>
 </resources>

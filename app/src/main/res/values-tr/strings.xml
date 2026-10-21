@@ -326,4 +326,10 @@
     <string name="no_network">Wi-Fi bağlantısı yok. Bir Wi-Fi ağına bağlanın veya hotspot\'u açın.</string>
     <string name="n_received">%1$s alındı</string>
     <string name="received_location">Alınan dosyalar %1$s konumuna kaydedilir</string>
+    <string name="auto_stop_hint">Bu ekrandan ayrıldığınızda devam eden aktarım yoksa alım otomatik olarak durur.</string>
+    <string name="computer_browser">Bilgisayar (tarayıcı)</string>
+    <string name="computer_browser_sub">Bu dosyaları aynı ağdaki bir bilgisayarın tarayıcısından indirin</string>
+    <string name="send_to_computer">Bilgisayara gönder</string>
+    <string name="send_to_computer_hint">Bilgisayarda aşağıdaki adresi bir tarayıcıda açın veya QR kodu tarayın, ardından dosyaları indirmek için eşleme kodunu girin.</string>
+    <string name="computer_downloaded">Bilgisayarın indirdiği: %1$s / %2$s</string>
 </resources>

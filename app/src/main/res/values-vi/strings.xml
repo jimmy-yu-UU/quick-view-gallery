@@ -326,4 +326,10 @@
     <string name="no_network">Chưa kết nối Wi-Fi. Hãy kết nối Wi-Fi hoặc bật điểm phát sóng.</string>
     <string name="n_received">Đã nhận %1$s</string>
     <string name="received_location">Tệp đã nhận được lưu trong %1$s</string>
+    <string name="auto_stop_hint">Việc nhận sẽ tự dừng khi bạn rời màn hình này và không có quá trình truyền nào.</string>
+    <string name="computer_browser">Máy tính (trình duyệt)</string>
+    <string name="computer_browser_sub">Tải các tệp này xuống bằng trình duyệt trên máy tính cùng mạng</string>
+    <string name="send_to_computer">Gửi đến máy tính</string>
+    <string name="send_to_computer_hint">Trên máy tính, mở địa chỉ bên dưới trong trình duyệt hoặc quét mã QR, rồi nhập mã ghép nối để tải tệp xuống.</string>
+    <string name="computer_downloaded">Máy tính đã tải: %1$s / %2$s</string>
 </resources>
