@@ -101,6 +101,10 @@ data class AppSettings(
     val slideIncludeVideos: Boolean = false,
     // Cache
     val diskCacheMb: Int = 512,
+    // Updates
+    val autoCheckUpdates: Boolean = true,
+    val lastUpdateCheck: Long = 0,
+    val skippedVersion: Int = 0,
 )
 
 private val Context.dataStore by preferencesDataStore("settings")
@@ -150,6 +154,9 @@ class SettingsRepository(private val context: Context) {
         val slideLoop = booleanPreferencesKey("slideLoop")
         val slideIncludeVideos = booleanPreferencesKey("slideIncludeVideos")
         val diskCacheMb = intPreferencesKey("diskCacheMb")
+        val autoCheckUpdates = booleanPreferencesKey("autoCheckUpdates")
+        val lastUpdateCheck = longPreferencesKey("lastUpdateCheck")
+        val skippedVersion = intPreferencesKey("skippedVersion")
     }
 
     val settings: Flow<AppSettings> = context.dataStore.data.map { it.toSettings() }
@@ -209,6 +216,9 @@ class SettingsRepository(private val context: Context) {
             slideLoop = this[K.slideLoop] ?: d.slideLoop,
             slideIncludeVideos = this[K.slideIncludeVideos] ?: d.slideIncludeVideos,
             diskCacheMb = this[K.diskCacheMb] ?: d.diskCacheMb,
+            autoCheckUpdates = this[K.autoCheckUpdates] ?: d.autoCheckUpdates,
+            lastUpdateCheck = this[K.lastUpdateCheck] ?: d.lastUpdateCheck,
+            skippedVersion = this[K.skippedVersion] ?: d.skippedVersion,
         )
     }
 
@@ -255,5 +265,8 @@ class SettingsRepository(private val context: Context) {
         this[K.slideLoop] = s.slideLoop
         this[K.slideIncludeVideos] = s.slideIncludeVideos
         this[K.diskCacheMb] = s.diskCacheMb
+        this[K.autoCheckUpdates] = s.autoCheckUpdates
+        this[K.lastUpdateCheck] = s.lastUpdateCheck
+        this[K.skippedVersion] = s.skippedVersion
     }
 }

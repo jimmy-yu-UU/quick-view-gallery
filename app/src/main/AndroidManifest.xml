@@ -12,6 +12,9 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <!-- Only used to check GitHub for new releases and download them. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name=".App"

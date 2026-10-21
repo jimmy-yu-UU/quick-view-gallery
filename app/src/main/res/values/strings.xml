@@ -260,4 +260,24 @@
     <string name="excluded_help">Excluded folders don\'t appear in albums or in All media.</string>
     <string name="hidden_help">Hidden albums only show under Hidden albums and need unlocking when a password is set.</string>
     <string name="extra_help">Folders MediaStore skips (e.g. with .nomedia) or USB drives can be added here to be scanned directly.</string>
+    <string name="sec_updates">Updates</string>
+    <string name="sec_updates_sub">Check for new versions, automatic checks</string>
+    <string name="update_available">New version available: %1$s</string>
+    <string name="current_version">Current version: %1$s</string>
+    <string name="downloading">Downloading…</string>
+    <string name="download_failed">Download failed. You can download it in the browser instead.</string>
+    <string name="download_done">Downloaded. If the installer didn\'t open, allow \"Install unknown apps\" and tap Install again.</string>
+    <string name="download_and_update">Download and update</string>
+    <string name="cancel_download">Cancel download</string>
+    <string name="install">Install</string>
+    <string name="open_in_browser">Open in browser</string>
+    <string name="skip_version">Skip this version</string>
+    <string name="later">Later</string>
+    <string name="checking">Checking…</string>
+    <string name="check_now">Check for updates now</string>
+    <string name="update_check_failed">Couldn\'t check for updates. Check your connection.</string>
+    <string name="up_to_date">You have the latest version</string>
+    <string name="auto_check_updates">Check for updates automatically</string>
+    <string name="auto_check_updates_sub">Check for a new version when the app opens</string>
+    <string name="updates_help">Updates are downloaded from GitHub Releases and installed by the Android package installer.</string>
 </resources>

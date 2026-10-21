@@ -20,13 +20,19 @@ android {
         versionName = "1.0.$buildNumber"
     }
 
+    // Release signing comes from CI: the workflow decrypts app/signing/release.keystore.enc with the
+    // SIGNING_PASSWORD secret. Without it (local or forked builds) the debug key is used instead.
+    val keystorePath = System.getenv("QV_KEYSTORE")
+    val signingPassword = System.getenv("QV_SIGNING_PASSWORD")
+    val hasReleaseKey = !keystorePath.isNullOrEmpty() && !signingPassword.isNullOrEmpty()
     signingConfigs {
-        // Personal signing key kept in this private repo so every CI build can update the previous install.
-        create("release") {
-            storeFile = file("release.keystore")
-            storePassword = "qvgallery"
-            keyAlias = "qv"
-            keyPassword = "qvgallery"
+        if (hasReleaseKey) {
+            create("release") {
+                storeFile = file(keystorePath!!)
+                storePassword = signingPassword
+                keyAlias = "qv"
+                keyPassword = signingPassword
+            }
         }
     }
 
@@ -35,11 +41,12 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = if (hasReleaseKey) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
+            buildConfigField("String", "UPDATE_REPO", "\"${System.getenv("GITHUB_REPOSITORY") ?: "jimmy-yu-UU/quick-view-gallery"}\"")
         }
         debug {
             applicationIdSuffix = ".debug"
-            signingConfig = signingConfigs.getByName("release")
+            buildConfigField("String", "UPDATE_REPO", "\"jimmy-yu-UU/quick-view-gallery\"")
         }
     }
 

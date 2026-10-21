@@ -63,6 +63,8 @@ import com.jimmyyu.qvgallery.data.LockManager
 import com.jimmyyu.qvgallery.data.LockScope
 import com.jimmyyu.qvgallery.data.LockType
 import com.jimmyyu.qvgallery.data.MediaItem
+import com.jimmyyu.qvgallery.data.ReleaseInfo
+import com.jimmyyu.qvgallery.data.UpdateChecker
 import com.jimmyyu.qvgallery.data.StartPage
 import com.jimmyyu.qvgallery.ui.AlbumScreen
 import com.jimmyyu.qvgallery.ui.AlbumsScreen
@@ -72,6 +74,7 @@ import com.jimmyyu.qvgallery.ui.SettingsHome
 import com.jimmyyu.qvgallery.ui.SettingsPage
 import com.jimmyyu.qvgallery.ui.SettingsSection
 import com.jimmyyu.qvgallery.ui.SlideshowScreen
+import com.jimmyyu.qvgallery.ui.UpdateDialog
 import com.jimmyyu.qvgallery.ui.lock.LockScreen
 import com.jimmyyu.qvgallery.ui.theme.QvTheme
 import com.jimmyyu.qvgallery.ui.viewer.KeyEvents
@@ -235,6 +238,25 @@ private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings) {
     LaunchedEffect(Unit) {
         if (!openedStart && s.startPage == StartPage.ALL) nav.navigate(Routes.album(AlbumKeys.ALL))
         openedStart = true
+    }
+
+    // Check for a newer release once per launch (throttled), unless turned off or skipped.
+    var update by remember { mutableStateOf<ReleaseInfo?>(null) }
+    LaunchedEffect(Unit) {
+        val now = System.currentTimeMillis()
+        if (s.autoCheckUpdates && now - s.lastUpdateCheck > UpdateChecker.AUTO_INTERVAL_MS) {
+            vm.updateSettings { it.copy(lastUpdateCheck = now) }
+            UpdateChecker.latest().getOrNull()
+                ?.takeIf { it.isNewer && it.versionCode != s.skippedVersion }
+                ?.let { update = it }
+        }
+    }
+    update?.let { info ->
+        UpdateDialog(
+            info = info,
+            onSkip = { vm.updateSettings { it.copy(skippedVersion = info.versionCode) }; update = null },
+            onDismiss = { update = null },
+        )
     }
 
     NavHost(nav, startDestination = Routes.ALBUMS) {

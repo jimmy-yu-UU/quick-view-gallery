@@ -26,6 +26,20 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      - name: Decrypt signing key
+        env:
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: |
+          if [ -z "$SIGNING_PASSWORD" ]; then
+            echo "::warning::Secret SIGNING_PASSWORD is not set: building with the debug key and not publishing."
+            exit 0
+          fi
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 \
+            -in app/signing/release.keystore.enc -out "$RUNNER_TEMP/release.keystore" -pass env:SIGNING_PASSWORD
+          echo "QV_KEYSTORE=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
+          echo "QV_SIGNING_PASSWORD=$SIGNING_PASSWORD" >> "$GITHUB_ENV"
+          echo "HAS_RELEASE_KEY=true" >> "$GITHUB_ENV"
+
       - name: Build release APK
         run: |
           set -o pipefail
@@ -33,6 +47,7 @@ jobs:
           ./gradlew assembleRelease --stacktrace --warning-mode=none 2>&1 | tee build.log
 
       - name: Publish release
+        if: env.HAS_RELEASE_KEY == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -60,9 +75,9 @@ jobs:
         if: always()
         run: |
           mkdir -p ci && cd ci
-          echo "run=${{ github.run_number }} sha=${{ github.sha }} status=${{ job.status }}" > status.txt
+          echo "run=${{ github.run_number }} sha=${{ github.sha }} status=${{ job.status }} signed=${HAS_RELEASE_KEY:-false}" > status.txt
           if [ -f ../build.log ]; then
-            grep -nE '^e: |error:|What went wrong|FAILURE|BUILD' ../build.log | head -300 > errors.txt || true
+            grep -nE '^e: |error:|::error::|What went wrong|FAILURE|BUILD' ../build.log | head -300 > errors.txt || true
             tail -200 ../build.log > tail.txt
           fi
           git init -q && git add -A

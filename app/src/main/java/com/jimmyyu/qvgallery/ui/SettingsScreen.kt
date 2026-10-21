@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Slideshow
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.ToggleOn
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Info
@@ -79,6 +80,8 @@ import com.jimmyyu.qvgallery.data.AppSettings
 import com.jimmyyu.qvgallery.data.LockManager
 import com.jimmyyu.qvgallery.data.LockScope
 import com.jimmyyu.qvgallery.data.LockType
+import com.jimmyyu.qvgallery.data.ReleaseInfo
+import com.jimmyyu.qvgallery.data.UpdateChecker
 import com.jimmyyu.qvgallery.data.SlideTransition
 import com.jimmyyu.qvgallery.data.StartPage
 import com.jimmyyu.qvgallery.data.ThemeMode
@@ -97,6 +100,7 @@ enum class SettingsSection(private val titleRes: Int, private val subtitleRes: I
     SECURITY(R.string.sec_security, R.string.sec_security_sub, Icons.Filled.Lock),
     SLIDESHOW(R.string.slideshow, R.string.sec_slideshow_sub, Icons.Filled.Slideshow),
     CACHE(R.string.sec_cache, R.string.sec_cache_sub, Icons.Filled.Cached),
+    UPDATES(R.string.sec_updates, R.string.sec_updates_sub, Icons.Filled.SystemUpdate),
     ABOUT(R.string.sec_about, R.string.sec_about_sub, Icons.Outlined.Info);
 
     val title: String get() = tr(titleRes)
@@ -142,6 +146,7 @@ fun SettingsPage(section: SettingsSection, vm: GalleryViewModel, settings: AppSe
         SettingsSection.SECURITY -> SecuritySettings(vm, settings, onBack)
         SettingsSection.SLIDESHOW -> SlideshowSettings(vm, settings, onBack)
         SettingsSection.CACHE -> CacheSettings(vm, settings, onBack)
+        SettingsSection.UPDATES -> UpdateSettings(vm, settings, onBack)
         SettingsSection.ABOUT -> AboutPage(onBack)
     }
 }
@@ -420,6 +425,48 @@ private fun CacheSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Un
                 vm.toast(tr(R.string.cache_cleared))
             }
         })
+    }
+}
+
+@Composable
+private fun UpdateSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Unit) {
+    val scope = rememberCoroutineScope()
+    var checking by remember { mutableStateOf(false) }
+    var found by remember { mutableStateOf<ReleaseInfo?>(null) }
+    SettingsScaffold(tr(R.string.sec_updates), onBack) {
+        Pref(
+            if (checking) tr(R.string.checking) else tr(R.string.check_now),
+            tr(R.string.current_version, BuildConfig.VERSION_NAME),
+            enabled = !checking,
+            onClick = {
+                checking = true
+                scope.launch {
+                    val result = UpdateChecker.latest()
+                    checking = false
+                    vm.updateSettings { it.copy(lastUpdateCheck = System.currentTimeMillis()) }
+                    val info = result.getOrNull()
+                    when {
+                        info == null -> vm.toast(tr(R.string.update_check_failed))
+                        info.isNewer -> found = info
+                        else -> vm.toast(tr(R.string.up_to_date))
+                    }
+                }
+            },
+        )
+        SwitchPref(tr(R.string.auto_check_updates), tr(R.string.auto_check_updates_sub), s.autoCheckUpdates) { v -> vm.updateSettings { it.copy(autoCheckUpdates = v) } }
+        Text(
+            tr(R.string.updates_help),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+        )
+    }
+    found?.let { info ->
+        UpdateDialog(
+            info = info,
+            onSkip = { vm.updateSettings { it.copy(skippedVersion = info.versionCode) }; found = null },
+            onDismiss = { found = null },
+        )
     }
 }
 
