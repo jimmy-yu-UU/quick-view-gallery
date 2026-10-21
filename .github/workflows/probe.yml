@@ -2,12 +2,15 @@ name: probe
 on:
   push:
     paths: ['.github/workflows/probe.yml']
+permissions:
+  contents: write
 jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
       - name: Versions
         run: |
+          exec > probe.txt 2>&1
           v(){ curl -sS "https://dl.google.com/dl/android/maven2/$(echo $1|tr . /)/$2/maven-metadata.xml" | grep -oE '<version>[^<]+' | sed 's/<version>//' | grep -vE 'alpha|beta|rc|dev' | tail -4 | tr '\n' ' '; echo " <= $1:$2"; }
           v com.android.tools.build gradle
           v androidx.compose compose-bom
@@ -24,3 +27,9 @@ jobs:
           v androidx.compose.material material-icons-extended
           ls $ANDROID_HOME/platforms $ANDROID_HOME/build-tools
           java -version
+      - name: Publish log
+        if: always()
+        run: |
+          git init -q logs && cd logs && cp ../probe.txt . && git add probe.txt
+          git -c user.name=ci -c user.email=ci@local commit -qm probe
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" HEAD:ci-logs
