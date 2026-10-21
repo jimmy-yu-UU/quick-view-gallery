@@ -1,0 +1,95 @@
+indexed 19/16
+media count: 36
+
+screen 1080x2400
+[01] albums
+[02] albums_menu
+[03] albums_list
+[04] album_sort_menu
+[05] album_search
+[06] album_grid
+[07] viewer
+[08] viewer_swiped
+[09] viewer_zoom_in
+[10] viewer_zoom_pan
+[11] viewer_volume_next
+[12] viewer_fullscreen
+[13] viewer_menu
+[14] viewer_details
+[15] editor
+[16] editor_square
+[17] editor_rotated
+[18] editor_save_dialog
+[19] after_save
+[20] camera_grid
+[21] selection_details
+[22] camera_viewer
+[23] camera_details_exif
+[24] video_page
+[25] formats_grid
+[26] formats_viewer_1
+[27] formats_viewer_2
+[28] formats_viewer_3
+[29] formats_viewer_4
+[30] huge_viewer
+[31] huge_zoomed
+[32] slideshow_1
+[33] slideshow_2
+[34] album_selected
+[35] album_details
+[36] after_hide
+[37] after_drawer_stress
+[38] drawer
+[39] hidden_albums
+[40] settings
+[41] settings_介面
+[42] settings_相簿
+[43] settings_檢視
+[44] settings_安全性
+[45] settings_幻燈片
+[46] settings_快取
+[47] settings_更新
+[48] settings_關於
+[49] about_version_notes
+[50] pin_setup
+[51] pin_set
+[52] hidden_lock_screen
+[53] hidden_unlocked
+[54] light_theme_albums
+[55] external_view
+[56] external_view_swiped
+[57] transfer_send_tab
+  !! could not find 'Allow'
+[58] transfer_receive
+pairing code: 562442
+PASS  info  b'{"app":"QV Gallery","name":"sdk_gphone64_x86_64","version":"1.0.26"}'
+PASS  web page  16883 bytes
+PASS  albums without token -> 401  401
+PASS  wrong code -> 403  403
+PASS  login  200
+PASS  albums  Camera, Formats, Wallpapers
+PASS  hidden album not shared  
+PASS  media  7 items
+PASS  thumbnail jpeg  19121 bytes
+PASS  file download  111490 / 111490
+PASS  range request  bytes 100-199/111490
+PASS  arbitrary path refused  404
+PASS  album zip  7 entries, 800847 bytes
+PASS  selection zip (form)  ['wall_4_edit.jpg', 'wall_6.jpg']
+PASS  upload  b'{"ok":true}'
+PASS  non-media upload refused  415
+
+[59] transfer_after_api
+[60] transfer_queue
+[61] transfer_computer_dialog
+pairing code now: 889093
+outbox: 1 file(s), downloaded 111490 bytes
+[62] transfer_computer_downloaded
+[63] transfer_code_dialog
+[64] transfer_sent
+[65] transfer_received_list
+receiver stopped after leaving the screen
+[66] albums_with_qv_transfer
+[67] landscape_albums
+failures:
+

@@ -1,0 +1,16 @@
+PASS  info  b'{"app":"QV Gallery","name":"sdk_gphone64_x86_64","version":"1.0.26"}'
+PASS  web page  16883 bytes
+PASS  albums without token -> 401  401
+PASS  wrong code -> 403  403
+PASS  login  200
+PASS  albums  Camera, Formats, Wallpapers
+PASS  hidden album not shared  
+PASS  media  7 items
+PASS  thumbnail jpeg  19121 bytes
+PASS  file download  111490 / 111490
+PASS  range request  bytes 100-199/111490
+PASS  arbitrary path refused  404
+PASS  album zip  7 entries, 800847 bytes
+PASS  selection zip (form)  ['wall_4_edit.jpg', 'wall_6.jpg']
+PASS  upload  b'{"ok":true}'
+PASS  non-media upload refused  415
