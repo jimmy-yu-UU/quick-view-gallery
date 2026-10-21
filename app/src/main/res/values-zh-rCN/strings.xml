@@ -322,9 +322,7 @@
     <string name="stop">停止</string>
     <string name="pairing_code">配对码</string>
     <string name="pairing_code_fmt">配对码 %1$s</string>
-    <string name="receive_running_hint">电脑：用浏览器打开上方网址或扫描二维码，再输入配对码。
-手机：在另一台的“WiFi 传输 &gt; 发送”中选择这台设备。
-隐藏和排除的相册不会被分享。</string>
+    <string name="receive_running_hint">电脑：用浏览器打开上方网址或扫描二维码，再输入配对码。\n手机：在另一台的“WiFi 传输 &gt; 发送”中选择这台设备。\n隐藏和排除的相册不会被分享。</string>
     <string name="no_network">没有连接 Wi-Fi。请连接 Wi-Fi 或开启热点。</string>
     <string name="n_received">已接收 %1$s 个</string>
     <string name="received_location">接收的文件保存在 %1$s</string>

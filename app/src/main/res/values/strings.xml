@@ -323,9 +323,7 @@
     <string name="stop">Stop</string>
     <string name="pairing_code">Pairing code</string>
     <string name="pairing_code_fmt">Pairing code %1$s</string>
-    <string name="receive_running_hint">Computer: open the address above in a browser or scan the QR code, then enter the pairing code.
-Phone: on the other device, choose this one under Wi-Fi transfer &gt; Send.
-Hidden and excluded albums are not shared.</string>
+    <string name="receive_running_hint">Computer: open the address above in a browser or scan the QR code, then enter the pairing code.\nPhone: on the other device, choose this one under Wi-Fi transfer &gt; Send.\nHidden and excluded albums are not shared.</string>
     <string name="no_network">Not connected to Wi-Fi. Connect to Wi-Fi or turn on a hotspot.</string>
     <string name="n_received">%1$s received</string>
     <string name="received_location">Received files are saved in %1$s</string>

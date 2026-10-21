@@ -322,9 +322,7 @@
     <string name="stop">停止</string>
     <string name="pairing_code">配對碼</string>
     <string name="pairing_code_fmt">配對碼 %1$s</string>
-    <string name="receive_running_hint">電腦：用瀏覽器開啟上方網址或掃描 QR Code，再輸入配對碼。
-手機：在另一台的「WiFi 傳輸 &gt; 傳送」中選擇這台裝置。
-隱藏和排除的相簿不會被分享。</string>
+    <string name="receive_running_hint">電腦：用瀏覽器開啟上方網址或掃描 QR Code，再輸入配對碼。\n手機：在另一台的「WiFi 傳輸 &gt; 傳送」中選擇這台裝置。\n隱藏和排除的相簿不會被分享。</string>
     <string name="no_network">沒有連上 Wi-Fi。請連上 Wi-Fi 或開啟熱點。</string>
     <string name="n_received">已接收 %1$s 個</string>
     <string name="received_location">接收的檔案存放在 %1$s</string>
