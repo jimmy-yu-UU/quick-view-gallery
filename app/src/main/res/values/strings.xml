@@ -294,4 +294,39 @@
     <string name="tap_for_version_notes">Tap to see what\'s new in this version</string>
     <string name="version_notes_title">What\'s new in %1$s</string>
     <string name="no_version_notes">This version has no release notes.</string>
+    <string name="transfer_title">Wi-Fi transfer</string>
+    <string name="transfer_send">Send</string>
+    <string name="transfer_receive">Receive</string>
+    <string name="transfer_receiving">Receiving files</string>
+    <string name="transfer_history">Transfer history</string>
+    <string name="files_to_send">Files to send</string>
+    <string name="no_files_to_send">Tap + to pick photos or videos, or select items in an album and choose Send to nearby device.</string>
+    <string name="nearby_devices">Nearby devices</string>
+    <string name="nearby_hint">On the other device, open QV Gallery &gt; Wi-Fi transfer &gt; Receive on the same Wi-Fi.</string>
+    <string name="enter_address">Enter address</string>
+    <string name="enter_address_hint">Enter the address shown on the other device\'s Receive screen.</string>
+    <string name="peer_not_found">No QV Gallery receiver found at this address</string>
+    <string name="send_to">Send to %1$s</string>
+    <string name="enter_pairing_code_hint">Enter the 6-digit pairing code shown on the other device.</string>
+    <string name="sending_to">Sending to %1$s…</string>
+    <string name="send_done">Sent %1$s items to %2$s</string>
+    <string name="send_partly_failed">Finished, %1$s failed</string>
+    <string name="send_cancelled">Sending cancelled</string>
+    <string name="wrong_pairing_code">Wrong pairing code</string>
+    <string name="pairing_locked">Too many attempts, try again in a minute</string>
+    <string name="peer_unreachable">Can\'t connect to %1$s</string>
+    <string name="retry">Retry</string>
+    <string name="send_nearby">Send to nearby device</string>
+    <string name="receive_intro">When receiving is on, other phones on the same Wi-Fi can send you files, and a computer can open the address in a browser to browse, download or upload photos.</string>
+    <string name="start_receiving">Start receiving</string>
+    <string name="stop_receiving">Stop receiving</string>
+    <string name="stop">Stop</string>
+    <string name="pairing_code">Pairing code</string>
+    <string name="pairing_code_fmt">Pairing code %1$s</string>
+    <string name="receive_running_hint">Computer: open the address above in a browser or scan the QR code, then enter the pairing code.
+Phone: on the other device, choose this one under Wi-Fi transfer &gt; Send.
+Hidden and excluded albums are not shared.</string>
+    <string name="no_network">Not connected to Wi-Fi. Connect to Wi-Fi or turn on a hotspot.</string>
+    <string name="n_received">%1$s received</string>
+    <string name="received_location">Received files are saved in %1$s</string>
 </resources>

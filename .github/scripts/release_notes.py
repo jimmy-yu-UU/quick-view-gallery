@@ -22,6 +22,8 @@ raw = subprocess.run(
 
 en, zh = [], []
 for msg in filter(None, (m.strip() for m in raw.split("\x1e"))):
+    if "[wip]" in msg:
+        continue
     lines = [l for l in msg.splitlines() if not re.match(r"^(Co-Authored-By|Claude-Session):", l)]
     subject, body = lines[0], "\n".join(lines[1:]).strip()
     s_en, _, s_zh = subject.partition(" / ")

@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.Slideshow
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.outlined.Collections
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Info
@@ -105,6 +106,7 @@ fun AlbumsScreen(
     onOpenAlbum: (String) -> Unit,
     onOpenSettings: () -> Unit,
     onOpenHidden: () -> Unit,
+    onOpenTransfer: () -> Unit,
     onSlideshow: (String) -> Unit,
     onBack: () -> Unit,
 ) {
@@ -161,6 +163,7 @@ fun AlbumsScreen(
                 item(Icons.Filled.Videocam, tr(R.string.all_videos)) { onOpenAlbum(AlbumKeys.VIDEOS) }
                 HorizontalDivider(Modifier.padding(vertical = 8.dp, horizontal = 28.dp))
                 item(Icons.Filled.VisibilityOff, tr(R.string.hidden_albums)) { onOpenHidden() }
+                if (!hiddenMode) item(Icons.Filled.Wifi, tr(R.string.transfer_title)) { onOpenTransfer() }
                 item(Icons.Filled.Settings, tr(R.string.settings)) { onOpenSettings() }
             }
         },

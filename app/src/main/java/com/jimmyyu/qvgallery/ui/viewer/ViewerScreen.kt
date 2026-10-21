@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Slideshow
 import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material.icons.filled.ZoomOut
 import androidx.compose.material.icons.outlined.Info
@@ -95,6 +96,7 @@ fun ViewerScreen(
     onBack: () -> Unit,
     onEdit: (MediaItem) -> Unit,
     onSlideshow: (Int) -> Unit,
+    onSendNearby: ((MediaItem) -> Unit)? = null,
     jumpTo: String? = null,
     onJumped: () -> Unit = {},
 ) {
@@ -308,6 +310,13 @@ fun ViewerScreen(
                                             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                         context.startActivity(Intent.createChooser(intent, tr(R.string.set_as_title)))
                                     },
+                                )
+                            }
+                            if (onSendNearby != null) {
+                                DropdownMenuItem(
+                                    text = { Text(tr(R.string.send_nearby)) },
+                                    leadingIcon = { Icon(Icons.Filled.Wifi, null) },
+                                    onClick = { menu = false; onSendNearby(current) },
                                 )
                             }
                             DropdownMenuItem(

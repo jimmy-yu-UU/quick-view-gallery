@@ -18,6 +18,7 @@ import com.jimmyyu.qvgallery.data.AppSettings
 import com.jimmyyu.qvgallery.data.MediaItem
 import com.jimmyyu.qvgallery.data.MediaSort
 import com.jimmyyu.qvgallery.data.isUnderAny
+import com.jimmyyu.qvgallery.transfer.SendController
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -39,6 +40,9 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     private val app = application.app
     private val repo = app.media
     val fileOps = app.fileOps
+
+    /** Files queued for Wi-Fi transfer and the running upload; outlives the transfer screen. */
+    val sender = SendController(application, viewModelScope)
 
     val settings: StateFlow<AppSettings?> = app.settings.settings
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -98,52 +102,6 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     fun snapshotFor(key: String): List<MediaItem> {
         val s = settings.value ?: return emptyList()
         return filterAndSort(_media.value, s, key)
-    }
-
-    private fun filterAndSort(media: List<MediaItem>, s: AppSettings, key: String): List<MediaItem> {
-        // Exclusion and hiding cover subfolders too; cache the answer per folder.
-        val roots = s.excludedAlbums + s.hiddenAlbums
-        val blockedCache = HashMap<String, Boolean>()
-        fun blocked(item: MediaItem) = blockedCache.getOrPut(item.folder) { isUnderAny(item.folder, roots) }
-        val filtered = when (key) {
-            AlbumKeys.ALL -> media.filter { !blocked(it) && (s.showVideos || !it.isVideo) }
-            AlbumKeys.VIDEOS -> media.filter { it.isVideo && !blocked(it) }
-            AlbumKeys.PHOTOS -> media.filter { !it.isVideo && !blocked(it) }
-            else -> media.filter { it.folder == key && (s.showVideos || !it.isVideo) }
-        }
-        return sortMedia(filtered, s.mediaSort, s.mediaSortAsc)
-    }
-
-    private fun buildAlbums(media: List<MediaItem>, s: AppSettings, hidden: Boolean): List<Album> {
-        val groups = media.asSequence()
-            .filter { s.showVideos || !it.isVideo }
-            .groupBy { it.folder }
-        val albums = groups.mapNotNull { (folder, items) ->
-            if (isUnderAny(folder, s.excludedAlbums)) return@mapNotNull null
-            val isHidden = isUnderAny(folder, s.hiddenAlbums)
-            if (isHidden != hidden) return@mapNotNull null
-            val sorted = sortMedia(items, s.mediaSort, s.mediaSortAsc)
-            Album(
-                path = folder,
-                name = folder.substringAfterLast('/').ifEmpty { folder },
-                count = items.size,
-                cover = sorted.first(),
-                latest = items.maxOf { it.dateTaken },
-                totalSize = items.sumOf { it.size },
-                videoCount = items.count { it.isVideo },
-                isPinned = folder in s.pinnedAlbums,
-                isHidden = isHidden,
-            )
-        }
-        val cmp: Comparator<Album> = when (s.albumSort) {
-            AlbumSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-            AlbumSort.DATE -> compareBy { it.latest }
-            AlbumSort.SIZE -> compareBy { it.totalSize }
-            AlbumSort.COUNT -> compareBy { it.count }
-            AlbumSort.PATH -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.path }
-        }
-        val ordered = albums.sortedWith(if (s.albumSortAsc) cmp else cmp.reversed())
-        return ordered.sortedByDescending { it.isPinned }
     }
 
     fun updateSettings(transform: (AppSettings) -> AppSettings) {
@@ -227,6 +185,54 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     }
 
     companion object {
+        /** Media for a grid key, respecting hidden/excluded folders and the sort setting. */
+        fun filterAndSort(media: List<MediaItem>, s: AppSettings, key: String): List<MediaItem> {
+            // Exclusion and hiding cover subfolders too; cache the answer per folder.
+            val roots = s.excludedAlbums + s.hiddenAlbums
+            val blockedCache = HashMap<String, Boolean>()
+            fun blocked(item: MediaItem) = blockedCache.getOrPut(item.folder) { isUnderAny(item.folder, roots) }
+            val filtered = when (key) {
+                AlbumKeys.ALL -> media.filter { !blocked(it) && (s.showVideos || !it.isVideo) }
+                AlbumKeys.VIDEOS -> media.filter { it.isVideo && !blocked(it) }
+                AlbumKeys.PHOTOS -> media.filter { !it.isVideo && !blocked(it) }
+                else -> media.filter { it.folder == key && (s.showVideos || !it.isVideo) }
+            }
+            return sortMedia(filtered, s.mediaSort, s.mediaSortAsc)
+        }
+
+        /** Albums from media; [hidden] selects the hidden albums instead of the visible ones. */
+        fun buildAlbums(media: List<MediaItem>, s: AppSettings, hidden: Boolean): List<Album> {
+            val groups = media.asSequence()
+                .filter { s.showVideos || !it.isVideo }
+                .groupBy { it.folder }
+            val albums = groups.mapNotNull { (folder, items) ->
+                if (isUnderAny(folder, s.excludedAlbums)) return@mapNotNull null
+                val isHidden = isUnderAny(folder, s.hiddenAlbums)
+                if (isHidden != hidden) return@mapNotNull null
+                val sorted = sortMedia(items, s.mediaSort, s.mediaSortAsc)
+                Album(
+                    path = folder,
+                    name = folder.substringAfterLast('/').ifEmpty { folder },
+                    count = items.size,
+                    cover = sorted.first(),
+                    latest = items.maxOf { it.dateTaken },
+                    totalSize = items.sumOf { it.size },
+                    videoCount = items.count { it.isVideo },
+                    isPinned = folder in s.pinnedAlbums,
+                    isHidden = isHidden,
+                )
+            }
+            val cmp: Comparator<Album> = when (s.albumSort) {
+                AlbumSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                AlbumSort.DATE -> compareBy { it.latest }
+                AlbumSort.SIZE -> compareBy { it.totalSize }
+                AlbumSort.COUNT -> compareBy { it.count }
+                AlbumSort.PATH -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.path }
+            }
+            val ordered = albums.sortedWith(if (s.albumSortAsc) cmp else cmp.reversed())
+            return ordered.sortedByDescending { it.isPinned }
+        }
+
         fun sortMedia(items: List<MediaItem>, sort: MediaSort, asc: Boolean): List<MediaItem> {
             val cmp: Comparator<MediaItem> = when (sort) {
                 MediaSort.DATE_TAKEN -> compareBy<MediaItem> { it.dateTaken }.thenBy { it.name }

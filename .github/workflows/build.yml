@@ -56,7 +56,8 @@ jobs:
           ./gradlew assembleRelease --stacktrace --warning-mode=none 2>&1 | tee build.log
 
       - name: Publish release
-        if: env.HAS_RELEASE_KEY == 'true'
+        # Commits marked [wip] are only built (to check they compile), not released.
+        if: env.HAS_RELEASE_KEY == 'true' && !contains(github.event.head_commit.message, '[wip]')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

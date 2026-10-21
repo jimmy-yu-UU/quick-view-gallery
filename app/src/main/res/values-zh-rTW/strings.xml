@@ -293,4 +293,39 @@
     <string name="tap_for_version_notes">點擊查看此版本的更新內容</string>
     <string name="version_notes_title">版本 %1$s 更新內容</string>
     <string name="no_version_notes">這個版本沒有附帶更新說明。</string>
+    <string name="transfer_title">WiFi 傳輸</string>
+    <string name="transfer_send">傳送</string>
+    <string name="transfer_receive">接收</string>
+    <string name="transfer_receiving">正在接收檔案</string>
+    <string name="transfer_history">傳輸紀錄</string>
+    <string name="files_to_send">要傳送的檔案</string>
+    <string name="no_files_to_send">按 + 選擇相片或影片，或在相簿中選取項目後選「傳送到附近裝置」。</string>
+    <string name="nearby_devices">附近的裝置</string>
+    <string name="nearby_hint">對方需在同一個 Wi-Fi 下開啟 QV Gallery 的「WiFi 傳輸 &gt; 接收」。</string>
+    <string name="enter_address">輸入位址</string>
+    <string name="enter_address_hint">輸入對方「接收」畫面上顯示的位址。</string>
+    <string name="peer_not_found">找不到這個位址上的 QV Gallery 接收端</string>
+    <string name="send_to">傳送到 %1$s</string>
+    <string name="enter_pairing_code_hint">輸入對方畫面上顯示的 6 位數配對碼。</string>
+    <string name="sending_to">正在傳送到 %1$s…</string>
+    <string name="send_done">已將 %1$s 個項目傳送到 %2$s</string>
+    <string name="send_partly_failed">傳送完成，%1$s 個失敗</string>
+    <string name="send_cancelled">已取消傳送</string>
+    <string name="wrong_pairing_code">配對碼錯誤</string>
+    <string name="pairing_locked">嘗試次數過多，請稍候一分鐘再試</string>
+    <string name="peer_unreachable">無法連線到 %1$s</string>
+    <string name="retry">重試</string>
+    <string name="send_nearby">傳送到附近裝置</string>
+    <string name="receive_intro">開啟接收後，同一個 Wi-Fi 下的其他手機可以傳送檔案過來，電腦也能用瀏覽器開啟網址來瀏覽、下載或上傳相片。</string>
+    <string name="start_receiving">開始接收</string>
+    <string name="stop_receiving">停止接收</string>
+    <string name="stop">停止</string>
+    <string name="pairing_code">配對碼</string>
+    <string name="pairing_code_fmt">配對碼 %1$s</string>
+    <string name="receive_running_hint">電腦：用瀏覽器開啟上方網址或掃描 QR Code，再輸入配對碼。
+手機：在另一台的「WiFi 傳輸 &gt; 傳送」中選擇這台裝置。
+隱藏和排除的相簿不會被分享。</string>
+    <string name="no_network">沒有連上 Wi-Fi。請連上 Wi-Fi 或開啟熱點。</string>
+    <string name="n_received">已接收 %1$s 個</string>
+    <string name="received_location">接收的檔案存放在 %1$s</string>
 </resources>

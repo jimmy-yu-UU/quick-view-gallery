@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   ui-test:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && !contains(github.event.workflow_run.head_commit.message, '[wip]')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:

@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Slideshow
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -119,6 +120,7 @@ fun AlbumScreen(
     settings: AppSettings,
     albumKey: String,
     onOpen: (Int) -> Unit,
+    onSendNearby: (List<MediaItem>) -> Unit,
     onSlideshow: () -> Unit,
     onBack: () -> Unit,
 ) {
@@ -154,6 +156,11 @@ fun AlbumScreen(
                                 text = { Text(tr(R.string.details)) },
                                 leadingIcon = { Icon(Icons.Outlined.Info, null) },
                                 onClick = { menu = false; showDetails = true },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(tr(R.string.send_nearby)) },
+                                leadingIcon = { Icon(Icons.Filled.Wifi, null) },
+                                onClick = { menu = false; onSendNearby(selectedItems()); selection = emptySet() },
                             )
                             DropdownMenuItem(
                                 text = { Text(tr(R.string.move_to_ellipsis)) },

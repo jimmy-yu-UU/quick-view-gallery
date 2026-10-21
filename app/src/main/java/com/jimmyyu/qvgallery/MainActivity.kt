@@ -77,12 +77,14 @@ import com.jimmyyu.qvgallery.ui.SettingsHome
 import com.jimmyyu.qvgallery.ui.SettingsPage
 import com.jimmyyu.qvgallery.ui.SettingsSection
 import com.jimmyyu.qvgallery.ui.SlideshowScreen
+import com.jimmyyu.qvgallery.ui.TransferScreen
 import com.jimmyyu.qvgallery.ui.UpdateDialog
 import com.jimmyyu.qvgallery.ui.lock.LockScreen
 import com.jimmyyu.qvgallery.ui.theme.QvTheme
 import com.jimmyyu.qvgallery.ui.viewer.KeyEvents
 import com.jimmyyu.qvgallery.ui.viewer.ViewerScreen
 import java.io.File
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.lang.ref.WeakReference
 
 open class BaseActivity : FragmentActivity() {
@@ -114,8 +116,18 @@ open class BaseActivity : FragmentActivity() {
 }
 
 class MainActivity : BaseActivity() {
+    /** Set when the transfer notification is tapped. */
+    private val openTransfer = MutableStateFlow(false)
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        if (intent.getBooleanExtra(EXTRA_OPEN_TRANSFER, false)) openTransfer.value = true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (savedInstanceState == null && intent.getBooleanExtra(EXTRA_OPEN_TRANSFER, false)) openTransfer.value = true
         enableEdgeToEdge()
         setContent {
             val vm: GalleryViewModel = viewModel()
@@ -126,9 +138,13 @@ class MainActivity : BaseActivity() {
                 return@setContent
             }
             QvTheme(s) {
-                AppGate(vm, s) { GalleryNavHost(vm, s) }
+                AppGate(vm, s) { GalleryNavHost(vm, s, openTransfer) }
             }
         }
+    }
+
+    companion object {
+        const val EXTRA_OPEN_TRANSFER = "open_transfer"
     }
 }
 
@@ -220,19 +236,28 @@ private object Routes {
     const val SLIDESHOW = "slideshow/{key}/{index}"
     const val SETTINGS = "settings"
     const val SETTINGS_PAGE = "settings/{section}"
+    const val TRANSFER = "transfer/{receive}"
 
     fun album(key: String) = "album/${Uri.encode(key)}"
     fun viewer(key: String, index: Int) = "viewer/${Uri.encode(key)}/$index"
     fun editor(path: String) = "editor/${Uri.encode(path)}"
     fun slideshow(key: String, index: Int) = "slideshow/${Uri.encode(key)}/$index"
+    fun transfer(receive: Boolean) = "transfer/$receive"
 }
 
 private fun findItem(vm: GalleryViewModel, path: String, context: Context): MediaItem =
     vm.media.value.firstOrNull { it.path == path } ?: context.app.media.fileItem(File(path))
 
 @Composable
-private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings) {
+private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings, openTransfer: MutableStateFlow<Boolean>) {
     val nav = rememberNavController()
+    val wantTransfer by openTransfer.collectAsState()
+    LaunchedEffect(wantTransfer) {
+        if (wantTransfer) {
+            nav.navigate(Routes.transfer(receive = true)) { launchSingleTop = true }
+            openTransfer.value = false
+        }
+    }
     val context = LocalContext.current
     val keyArg = navArgument("key") { type = NavType.StringType }
     val indexArg = navArgument("index") { type = NavType.IntType }
@@ -272,6 +297,7 @@ private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings) {
                 onOpenAlbum = { n.go(Routes.album(it)) },
                 onOpenSettings = { n.go(Routes.SETTINGS) },
                 onOpenHidden = { n.go(Routes.HIDDEN) },
+                onOpenTransfer = { n.go(Routes.transfer(receive = false)) },
                 onSlideshow = { n.go(Routes.slideshow(it, 0)) },
                 onBack = {},
             )
@@ -286,6 +312,7 @@ private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings) {
                     onOpenAlbum = { n.go(Routes.album(it)) },
                     onOpenSettings = { n.go(Routes.SETTINGS) },
                     onOpenHidden = {},
+                    onOpenTransfer = {},
                     onSlideshow = { n.go(Routes.slideshow(it, 0)) },
                     onBack = { n.back() },
                 )
@@ -300,6 +327,7 @@ private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings) {
                     settings = s,
                     albumKey = key,
                     onOpen = { n.go(Routes.viewer(key, it)) },
+                    onSendNearby = { items -> vm.sender.addItems(items); n.go(Routes.transfer(receive = false)) },
                     onSlideshow = { n.go(Routes.slideshow(key, 0)) },
                     onBack = { n.back() },
                 )
@@ -327,6 +355,7 @@ private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings) {
                 onBack = { n.back() },
                 onEdit = { n.go(Routes.editor(it.path)) },
                 onSlideshow = { n.go(Routes.slideshow(key, it)) },
+                onSendNearby = { item -> vm.sender.addItems(listOf(item)); n.go(Routes.transfer(receive = false)) },
                 jumpTo = jumpTo,
                 onJumped = { entry.savedStateHandle["jumpTo"] = null },
             )
@@ -353,6 +382,10 @@ private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings) {
         composable(Routes.SETTINGS) { entry ->
             val n = rememberSafeNav(nav, entry)
             SettingsHome(onOpen = { n.go("settings/${it.name}") }, onBack = { n.back() })
+        }
+        composable(Routes.TRANSFER, arguments = listOf(navArgument("receive") { type = NavType.BoolType })) { entry ->
+            val n = rememberSafeNav(nav, entry)
+            TransferScreen(vm, startOnReceive = entry.arguments?.getBoolean("receive") == true, onBack = { n.back() })
         }
         composable(Routes.SETTINGS_PAGE, arguments = listOf(navArgument("section") { type = NavType.StringType })) { entry ->
             val n = rememberSafeNav(nav, entry)
