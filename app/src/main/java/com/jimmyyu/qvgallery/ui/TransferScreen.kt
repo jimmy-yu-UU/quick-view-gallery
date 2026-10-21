@@ -71,6 +71,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -306,7 +307,8 @@ private fun ManualAddressDialog(onFound: (Peer) -> Unit, onDismiss: () -> Unit) 
                     singleLine = true,
                     placeholder = { Text("192.168.1.20:${TransferServer.PREFERRED_PORT}") },
                     isError = error,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+                    // Ask for a Latin layout so Zhuyin / Japanese keyboards don't turn the IP into characters.
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, hintLocales = LocaleList("en")),
                     modifier = Modifier.fillMaxWidth(),
                 )
                 if (error) Text(tr(R.string.peer_not_found), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)

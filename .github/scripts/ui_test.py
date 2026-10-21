@@ -90,6 +90,9 @@ def find_class(cls):
 
 
 def type_into_field(text):
+    # No on-screen keyboard: with the app in Chinese, Gboard would compose Zhuyin from these keys.
+    for ime in sh("ime list -s").split():
+        sh(f"ime disable {ime}")
     pos = find_class("android.widget.EditText")
     if pos:
         sh(f"input tap {pos[0]} {pos[1]}")

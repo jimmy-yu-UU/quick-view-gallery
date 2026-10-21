@@ -146,7 +146,7 @@ function updateBar() {
   const inAlbum = !!album;
   $("dlBtn").style.display = inAlbum ? "" : "none";
   $("selAllBtn").style.display = inAlbum ? "" : "none";
-  $("dlBtn").textContent = T.download(selected.size);
+  $("dlBtn").textContent = selected.size === 1 ? T.save : T.download(selected.size);
   $("selAllBtn").textContent = selected.size === items.length && items.length ? T.none : T.selectAll;
 }
 $("backBtn").onclick = showAlbums;
