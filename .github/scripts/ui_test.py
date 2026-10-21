@@ -278,7 +278,7 @@ def main():
     shot("viewer_menu")
     tap("詳細資訊")
     shot("viewer_details")
-    tap("關閉")
+    tap("關閉", exact=True)
 
     # Editor
     tap("編輯", exact=True, wait=3)
@@ -305,14 +305,14 @@ def main():
     tap("更多")
     tap("詳細資訊")
     shot("selection_details")
-    tap("關閉")
+    tap("關閉", exact=True)
     back()
     tap_xy(W // 6, int(H * 0.16), wait=3)
     shot("camera_viewer")
     tap("更多")
     tap("詳細資訊")
     shot("camera_details_exif")
-    tap("關閉")
+    tap("關閉", exact=True)
     for i in range(5):
         sh(f"input swipe {int(W * 0.85)} {H // 2} {int(W * 0.15)} {H // 2} 200")
         time.sleep(1.2)
@@ -365,7 +365,7 @@ def main():
         tap("更多")
         tap("詳細資訊")
         shot("album_details")
-        tap("關閉")
+        tap("關閉", exact=True)
         tap("隱藏")
         time.sleep(2)
         shot("after_hide")
@@ -403,7 +403,7 @@ def main():
             if page == "關於":
                 tap("QV Gallery", exact=True)
                 shot("about_version_notes")
-                tap("關閉", wait=2)  # let the dialog close before pressing back
+                tap("關閉", exact=True, wait=2)  # let the dialog close before pressing back
             back()
 
     # Set a PIN, then hidden albums should require it
