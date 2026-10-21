@@ -265,7 +265,6 @@
     <string name="current_version">Versión actual: %1$s</string>
     <string name="downloading">Descargando…</string>
     <string name="download_failed">No se ha podido descargar. Puedes descargarla en el navegador.</string>
-    <string name="download_done">Descarga completada. Si no se ha abierto el instalador, permite \"Instalar aplicaciones desconocidas\" y vuelve a tocar Instalar.</string>
     <string name="download_and_update">Descargar y actualizar</string>
     <string name="cancel_download">Cancelar descarga</string>
     <string name="install">Instalar</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">Álbumes</string>
     <string name="latest_item">Elemento más reciente</string>
     <string name="storage_location">Almacenamiento</string>
+    <string name="installing_hint">Descargado, instalando. La app se cerrará al terminar la actualización; vuelve a abrirla. Si aparece una pantalla de instalación, toca Instalar.</string>
+    <string name="install_failed">Error al instalar: %1$s</string>
 </resources>

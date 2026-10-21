@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,6 +32,7 @@ import com.jimmyyu.qvgallery.data.ApkDownloader
 import com.jimmyyu.qvgallery.data.ReleaseInfo
 import com.jimmyyu.qvgallery.data.UpdateChecker
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /** Offers a new release: shows its notes, downloads the APK in-app and opens the installer. */
 @Composable
@@ -39,6 +41,7 @@ fun UpdateDialog(info: ReleaseInfo, onSkip: () -> Unit, onDismiss: () -> Unit) {
     val downloader = remember { ApkDownloader(context) }
     var downloadId by remember { mutableStateOf<Long?>(null) }
     var state by remember { mutableStateOf<ApkDownloader.State?>(null) }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(downloadId) {
         val id = downloadId ?: return@LaunchedEffect
@@ -81,7 +84,7 @@ fun UpdateDialog(info: ReleaseInfo, onSkip: () -> Unit, onDismiss: () -> Unit) {
                     }
                     ApkDownloader.State.Done -> {
                         Spacer(Modifier.height(12.dp))
-                        Text(tr(R.string.download_done), style = MaterialTheme.typography.bodySmall)
+                        Text(tr(R.string.installing_hint), style = MaterialTheme.typography.bodySmall)
                     }
                     null -> {}
                 }
@@ -97,7 +100,7 @@ fun UpdateDialog(info: ReleaseInfo, onSkip: () -> Unit, onDismiss: () -> Unit) {
                     downloadId = null
                     state = null
                 }) { Text(tr(R.string.cancel_download)) }
-                ApkDownloader.State.Done -> TextButton(onClick = { downloader.install(info) }) { Text(tr(R.string.install)) }
+                ApkDownloader.State.Done -> TextButton(onClick = { scope.launch { downloader.install(info) } }) { Text(tr(R.string.install)) }
                 ApkDownloader.State.Failed -> TextButton(onClick = { openPage() }) { Text(tr(R.string.open_in_browser)) }
             }
         },

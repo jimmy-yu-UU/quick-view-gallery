@@ -1,12 +1,18 @@
 package com.jimmyyu.qvgallery.data
 
 import android.app.DownloadManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.pm.PackageInstaller
+import android.os.Build
+import android.widget.Toast
+import com.jimmyyu.qvgallery.R
+import com.jimmyyu.qvgallery.tr
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.provider.Settings
-import androidx.core.content.FileProvider
 import com.jimmyyu.qvgallery.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -140,21 +146,63 @@ class ApkDownloader(private val context: Context) {
         dm.remove(id)
     }
 
-    /** Returns false when the user first has to allow installing from this app. */
-    fun install(info: ReleaseInfo): Boolean {
+    /**
+     * Installs the downloaded APK through a PackageInstaller session. Because the app is updating
+     * itself, Android 12+ skips the confirmation screen; otherwise the system asks as usual.
+     * Returns false when the user first has to allow installing from this app.
+     */
+    suspend fun install(info: ReleaseInfo): Boolean = withContext(Dispatchers.IO) {
         if (!context.packageManager.canRequestPackageInstalls()) {
             context.startActivity(
                 Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:${context.packageName}"))
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             )
-            return false
+            return@withContext false
         }
-        val uri = FileProvider.getUriForFile(context, context.packageName + ".files", fileFor(info))
-        context.startActivity(
-            Intent(Intent.ACTION_VIEW)
-                .setDataAndType(uri, "application/vnd.android.package-archive")
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
-        return true
+        val file = fileFor(info)
+        val installer = context.packageManager.packageInstaller
+        val params = PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL).apply {
+            setAppPackageName(context.packageName)
+            setSize(file.length())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                setRequireUserAction(PackageInstaller.SessionParams.USER_ACTION_NOT_REQUIRED)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                setPackageSource(PackageInstaller.PACKAGE_SOURCE_DOWNLOADED_FILE)
+            }
+        }
+        val sessionId = installer.createSession(params)
+        installer.openSession(sessionId).use { session ->
+            session.openWrite("base.apk", 0, file.length()).use { out ->
+                file.inputStream().use { it.copyTo(out) }
+                session.fsync(out)
+            }
+            val callback = PendingIntent.getBroadcast(
+                context,
+                sessionId,
+                Intent(context, InstallResultReceiver::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
+            )
+            session.commit(callback.intentSender)
+        }
+        true
+    }
+}
+
+/** Receives the install session result; shows the system prompt if Android still wants confirmation. */
+class InstallResultReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        when (intent.getIntExtra(PackageInstaller.EXTRA_STATUS, PackageInstaller.STATUS_FAILURE)) {
+            PackageInstaller.STATUS_PENDING_USER_ACTION -> {
+                @Suppress("DEPRECATION")
+                val confirm = intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT) ?: return
+                context.startActivity(confirm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            }
+            PackageInstaller.STATUS_SUCCESS -> Unit // The app is replaced and this process ends.
+            else -> {
+                val msg = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE).orEmpty()
+                Toast.makeText(context, tr(R.string.install_failed, msg), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }

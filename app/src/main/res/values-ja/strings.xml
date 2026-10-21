@@ -265,7 +265,6 @@
     <string name="current_version">現在のバージョン: %1$s</string>
     <string name="downloading">ダウンロード中…</string>
     <string name="download_failed">ダウンロードに失敗しました。代わりにブラウザでダウンロードできます。</string>
-    <string name="download_done">ダウンロードしました。インストーラが開かない場合は、「不明なアプリのインストール」を許可してから、もう一度 [インストール] をタップしてください。</string>
     <string name="download_and_update">ダウンロードしてアップデート</string>
     <string name="cancel_download">ダウンロードをキャンセル</string>
     <string name="install">インストール</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">アルバム数</string>
     <string name="latest_item">最新の項目</string>
     <string name="storage_location">保存場所</string>
+    <string name="installing_hint">ダウンロード完了、インストール中です。更新が終わるとアプリが閉じるので、もう一度開いてください。インストール画面が表示された場合は「インストール」をタップしてください。</string>
+    <string name="install_failed">インストールに失敗しました: %1$s</string>
 </resources>

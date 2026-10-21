@@ -265,7 +265,6 @@
     <string name="current_version">Phiên bản hiện tại: %1$s</string>
     <string name="downloading">Đang tải xuống…</string>
     <string name="download_failed">Không tải xuống được. Bạn có thể tải xuống trong trình duyệt.</string>
-    <string name="download_done">Đã tải xuống. Nếu trình cài đặt không mở, hãy cho phép \"Cài đặt ứng dụng không rõ nguồn gốc\" rồi nhấn lại vào Cài đặt.</string>
     <string name="download_and_update">Tải xuống và cập nhật</string>
     <string name="cancel_download">Hủy tải xuống</string>
     <string name="install">Cài đặt</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">Số album</string>
     <string name="latest_item">Mục mới nhất</string>
     <string name="storage_location">Bộ nhớ</string>
+    <string name="installing_hint">Đã tải xong, đang cài đặt. Ứng dụng sẽ tự đóng khi cập nhật xong; hãy mở lại. Nếu màn hình cài đặt xuất hiện, hãy nhấn Cài đặt.</string>
+    <string name="install_failed">Cài đặt không thành công: %1$s</string>
 </resources>

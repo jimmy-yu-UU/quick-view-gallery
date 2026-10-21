@@ -265,7 +265,6 @@
     <string name="current_version">Текущая версия: %1$s</string>
     <string name="downloading">Скачивание…</string>
     <string name="download_failed">Не удалось скачать. Вы можете скачать обновление в браузере.</string>
-    <string name="download_done">Скачано. Если установщик не открылся, разрешите «Установку неизвестных приложений» и снова нажмите «Установить».</string>
     <string name="download_and_update">Скачать и обновить</string>
     <string name="cancel_download">Отменить скачивание</string>
     <string name="install">Установить</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">Альбомов</string>
     <string name="latest_item">Самый новый</string>
     <string name="storage_location">Хранилище</string>
+    <string name="installing_hint">Загрузка завершена, идёт установка. После обновления приложение закроется — просто откройте его снова. Если появится экран установки, нажмите «Установить».</string>
+    <string name="install_failed">Ошибка установки: %1$s</string>
 </resources>

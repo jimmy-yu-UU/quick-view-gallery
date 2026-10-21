@@ -265,7 +265,6 @@
     <string name="current_version">Geçerli sürüm: %1$s</string>
     <string name="downloading">İndiriliyor…</string>
     <string name="download_failed">İndirme başarısız oldu. Bunun yerine tarayıcıda indirebilirsiniz.</string>
-    <string name="download_done">İndirildi. Yükleyici açılmadıysa \"Bilinmeyen uygulamaları yükle\" iznini verin ve tekrar Yükle\'ye dokunun.</string>
     <string name="download_and_update">İndir ve güncelle</string>
     <string name="cancel_download">İndirmeyi iptal et</string>
     <string name="install">Yükle</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">Albüm sayısı</string>
     <string name="latest_item">En yeni öğe</string>
     <string name="storage_location">Depolama</string>
+    <string name="installing_hint">İndirildi, yükleniyor. Güncelleme bitince uygulama kapanır; yeniden açın. Bir yükleme ekranı görünürse Yükle\'ye dokunun.</string>
+    <string name="install_failed">Yükleme başarısız: %1$s</string>
 </resources>

@@ -266,7 +266,6 @@
     <string name="current_version">Current version: %1$s</string>
     <string name="downloading">Downloading…</string>
     <string name="download_failed">Download failed. You can download it in the browser instead.</string>
-    <string name="download_done">Downloaded. If the installer didn\'t open, allow \"Install unknown apps\" and tap Install again.</string>
     <string name="download_and_update">Download and update</string>
     <string name="cancel_download">Cancel download</string>
     <string name="install">Install</string>
@@ -290,4 +289,6 @@
     <string name="albums_count">Albums</string>
     <string name="latest_item">Newest item</string>
     <string name="storage_location">Storage</string>
+    <string name="installing_hint">Downloaded, installing now. The app closes when the update is done; just open it again. If an install screen appears, tap Install.</string>
+    <string name="install_failed">Install failed: %1$s</string>
 </resources>

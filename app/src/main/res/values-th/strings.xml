@@ -265,7 +265,6 @@
     <string name="current_version">เวอร์ชันปัจจุบัน: %1$s</string>
     <string name="downloading">กำลังดาวน์โหลด…</string>
     <string name="download_failed">ดาวน์โหลดไม่สำเร็จ คุณสามารถดาวน์โหลดในเบราว์เซอร์แทนได้</string>
-    <string name="download_done">ดาวน์โหลดแล้ว หากโปรแกรมติดตั้งไม่เปิดขึ้น ให้อนุญาต \"ติดตั้งแอปที่ไม่รู้จัก\" แล้วแตะติดตั้งอีกครั้ง</string>
     <string name="download_and_update">ดาวน์โหลดและอัปเดต</string>
     <string name="cancel_download">ยกเลิกการดาวน์โหลด</string>
     <string name="install">ติดตั้ง</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">จำนวนอัลบั้ม</string>
     <string name="latest_item">รายการล่าสุด</string>
     <string name="storage_location">พื้นที่เก็บข้อมูล</string>
+    <string name="installing_hint">ดาวน์โหลดเสร็จแล้ว กำลังติดตั้ง แอปจะปิดเมื่ออัปเดตเสร็จ โปรดเปิดใหม่อีกครั้ง หากมีหน้าจอติดตั้งปรากฏขึ้น ให้แตะติดตั้ง</string>
+    <string name="install_failed">ติดตั้งไม่สำเร็จ: %1$s</string>
 </resources>

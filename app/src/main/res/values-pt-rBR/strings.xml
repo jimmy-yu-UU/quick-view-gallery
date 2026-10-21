@@ -265,7 +265,6 @@
     <string name="current_version">Versão atual: %1$s</string>
     <string name="downloading">Fazendo o download…</string>
     <string name="download_failed">Falha no download. Você pode fazer o download pelo navegador.</string>
-    <string name="download_done">Download concluído. Se o instalador não abriu, permita \"Instalar apps desconhecidos\" e toque em Instalar novamente.</string>
     <string name="download_and_update">Fazer o download e atualizar</string>
     <string name="cancel_download">Cancelar download</string>
     <string name="install">Instalar</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">Álbuns</string>
     <string name="latest_item">Item mais recente</string>
     <string name="storage_location">Armazenamento</string>
+    <string name="installing_hint">Download concluído, instalando. O app será fechado quando a atualização terminar; abra-o de novo. Se aparecer uma tela de instalação, toque em Instalar.</string>
+    <string name="install_failed">Falha na instalação: %1$s</string>
 </resources>

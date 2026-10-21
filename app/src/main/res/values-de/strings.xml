@@ -265,7 +265,6 @@
     <string name="current_version">Aktuelle Version: %1$s</string>
     <string name="downloading">Wird heruntergeladen…</string>
     <string name="download_failed">Download fehlgeschlagen. Du kannst sie stattdessen im Browser herunterladen.</string>
-    <string name="download_done">Heruntergeladen. Falls das Installationsprogramm nicht geöffnet wurde, erlaube „Unbekannte Apps installieren“ und tippe noch einmal auf Installieren.</string>
     <string name="download_and_update">Herunterladen und aktualisieren</string>
     <string name="cancel_download">Download abbrechen</string>
     <string name="install">Installieren</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">Alben</string>
     <string name="latest_item">Neuestes Element</string>
     <string name="storage_location">Speicherort</string>
+    <string name="installing_hint">Heruntergeladen, wird installiert. Die App wird nach dem Update geschlossen; öffne sie einfach erneut. Falls ein Installationsbildschirm erscheint, tippe auf „Installieren“.</string>
+    <string name="install_failed">Installation fehlgeschlagen: %1$s</string>
 </resources>

@@ -265,7 +265,6 @@
     <string name="current_version">Versi saat ini: %1$s</string>
     <string name="downloading">Mendownload…</string>
     <string name="download_failed">Download gagal. Anda dapat mendownloadnya di browser.</string>
-    <string name="download_done">Sudah didownload. Jika penginstal tidak terbuka, izinkan \"Instal aplikasi yang tidak dikenal\" dan ketuk Instal lagi.</string>
     <string name="download_and_update">Download dan update</string>
     <string name="cancel_download">Batalkan download</string>
     <string name="install">Instal</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">Jumlah album</string>
     <string name="latest_item">Item terbaru</string>
     <string name="storage_location">Penyimpanan</string>
+    <string name="installing_hint">Selesai diunduh, sedang memasang. Aplikasi akan tertutup setelah update selesai; buka kembali. Jika muncul layar pemasangan, ketuk Instal.</string>
+    <string name="install_failed">Gagal memasang: %1$s</string>
 </resources>

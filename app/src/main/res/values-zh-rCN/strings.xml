@@ -265,7 +265,6 @@
     <string name="current_version">当前版本：%1$s</string>
     <string name="downloading">下载中…</string>
     <string name="download_failed">下载失败，可改从浏览器下载。</string>
-    <string name="download_done">下载完成。若未出现安装界面，请允许“安装未知应用”后再点一次安装。</string>
     <string name="download_and_update">下载并更新</string>
     <string name="cancel_download">取消下载</string>
     <string name="install">安装</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">相册数量</string>
     <string name="latest_item">最新项目</string>
     <string name="storage_location">存储位置</string>
+    <string name="installing_hint">下载完成，正在安装。更新完成后应用会自动关闭，请重新打开。如果出现安装界面，请点“安装”。</string>
+    <string name="install_failed">安装失败：%1$s</string>
 </resources>

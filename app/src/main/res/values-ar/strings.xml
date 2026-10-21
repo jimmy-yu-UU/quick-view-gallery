@@ -265,7 +265,6 @@
     <string name="current_version">الإصدار الحالي: %1$s</string>
     <string name="downloading">جارٍ التنزيل…</string>
     <string name="download_failed">تعذّر التنزيل. يمكنك تنزيله من المتصفّح بدلاً من ذلك.</string>
-    <string name="download_done">اكتمل التنزيل. إذا لم يتم فتح أداة التثبيت، اسمح بـ \"تثبيت التطبيقات غير المعروفة\" ثم انقر على \"تثبيت\" مرة أخرى.</string>
     <string name="download_and_update">التنزيل والتحديث</string>
     <string name="cancel_download">إلغاء التنزيل</string>
     <string name="install">تثبيت</string>
@@ -289,4 +288,6 @@
     <string name="albums_count">الألبومات</string>
     <string name="latest_item">أحدث عنصر</string>
     <string name="storage_location">مكان التخزين</string>
+    <string name="installing_hint">اكتمل التنزيل، جارٍ التثبيت. سيُغلق التطبيق عند انتهاء التحديث؛ افتحه مرة أخرى. إذا ظهرت شاشة التثبيت، فانقر على تثبيت.</string>
+    <string name="install_failed">تعذّر التثبيت: %1$s</string>
 </resources>
