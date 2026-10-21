@@ -101,6 +101,17 @@ def type_into_field(text):
     time.sleep(0.8)
 
 
+def read_pairing_code():
+    root = dump()
+    if root is None:
+        return None
+    for node in root.iter("node"):
+        t = node.get("text") or ""
+        if re.fullmatch(r"\d{3} \d{3}", t):
+            return t.replace(" ", "")
+    return None
+
+
 def tap(label, exact=False, wait=1.5, required=True):
     for _ in range(3):
         pos = find(label, exact)
@@ -392,7 +403,7 @@ def main():
             if page == "關於":
                 tap("QV Gallery", exact=True)
                 shot("about_version_notes")
-                tap("關閉")
+                tap("關閉", wait=2)  # let the dialog close before pressing back
             back()
 
     # Set a PIN, then hidden albums should require it
@@ -455,13 +466,7 @@ def main():
     tap("Allow", exact=True, wait=2, required=False)  # notification permission prompt
     time.sleep(2)
     shot("transfer_receive")
-    code = None
-    root = dump()
-    if root is not None:
-        for node in root.iter("node"):
-            t = node.get("text") or ""
-            if re.fullmatch(r"\d{3} \d{3}", t):
-                code = t.replace(" ", "")
+    code = read_pairing_code()
     log(f"pairing code: {code}")
     if code:
         adb("forward", "tcp:18899", "tcp:8899")
@@ -489,6 +494,9 @@ def main():
         # Phone -> computer: offer the queued file, then download it like a browser would.
         tap("電腦 (瀏覽器)", exact=True, wait=3)
         shot("transfer_computer_dialog")
+        # Leaving the transfer screen stopped the receiver; it restarted with a new code.
+        code = read_pairing_code() or code
+        log(f"pairing code now: {code}")
         try:
             import json, urllib.request
             base = "http://127.0.0.1:18899"

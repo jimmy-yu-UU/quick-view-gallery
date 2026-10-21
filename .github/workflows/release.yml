@@ -12,7 +12,8 @@ permissions:
 
 jobs:
   release:
-    # Runs for every UI test so SonarCloud issues are exported; publishing needs a passing test.
+    # A skipped UI test (e.g. its build was cancelled) has nothing to release.
+    if: ${{ github.event.workflow_run.conclusion != 'skipped' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
