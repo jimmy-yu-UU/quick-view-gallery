@@ -279,4 +279,6 @@
     <string name="auto_check_updates">Güncellemeleri otomatik olarak denetle</string>
     <string name="auto_check_updates_sub">Uygulama açıldığında yeni sürüm olup olmadığını denetle</string>
     <string name="updates_help">Güncellemeler GitHub Releases\'tan indirilir ve Android paket yükleyicisi tarafından yüklenir.</string>
+    <string name="update_not_found">Yayınlanmış sürüm bulunamadı (depo henüz herkese açık olmayabilir)</string>
+    <string name="includes_subfolders">Bu ayar tüm alt klasörlere de uygulanır.</string>
 </resources>

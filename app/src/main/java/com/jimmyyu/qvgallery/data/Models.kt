@@ -86,3 +86,7 @@ enum class MediaSort(private val labelRes: Int) {
 
     val label: String get() = tr(labelRes)
 }
+
+/** True when [folder] is one of [roots] or anywhere below one of them. */
+fun isUnderAny(folder: String, roots: Set<String>): Boolean =
+    roots.isNotEmpty() && roots.any { folder == it || folder.startsWith("$it/") }

@@ -279,4 +279,6 @@
     <string name="auto_check_updates">Periksa update secara otomatis</string>
     <string name="auto_check_updates_sub">Periksa versi baru saat aplikasi dibuka</string>
     <string name="updates_help">Update didownload dari GitHub Releases dan diinstal oleh penginstal paket Android.</string>
+    <string name="update_not_found">Tidak ada rilis yang ditemukan (repositori mungkin belum publik)</string>
+    <string name="includes_subfolders">Ini juga berlaku untuk semua subfoldernya.</string>
 </resources>

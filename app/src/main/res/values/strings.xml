@@ -280,4 +280,6 @@
     <string name="auto_check_updates">Check for updates automatically</string>
     <string name="auto_check_updates_sub">Check for a new version when the app opens</string>
     <string name="updates_help">Updates are downloaded from GitHub Releases and installed by the Android package installer.</string>
+    <string name="update_not_found">No published release found (the repository may not be public yet)</string>
+    <string name="includes_subfolders">This also applies to all of its subfolders.</string>
 </resources>

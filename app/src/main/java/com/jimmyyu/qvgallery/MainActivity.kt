@@ -66,6 +66,7 @@ import com.jimmyyu.qvgallery.data.MediaItem
 import com.jimmyyu.qvgallery.data.ReleaseInfo
 import com.jimmyyu.qvgallery.data.UpdateChecker
 import com.jimmyyu.qvgallery.data.StartPage
+import com.jimmyyu.qvgallery.data.isUnderAny
 import com.jimmyyu.qvgallery.ui.AlbumScreen
 import com.jimmyyu.qvgallery.ui.AlbumsScreen
 import com.jimmyyu.qvgallery.ui.EditorScreen
@@ -298,7 +299,7 @@ private fun GalleryNavHost(vm: GalleryViewModel, s: AppSettings) {
                     onBack = { nav.popBackStack() },
                 )
             }
-            if (key in s.hiddenAlbums) HiddenGate(s, onCancel = { nav.popBackStack() }) { content() } else content()
+            if (isUnderAny(key, s.hiddenAlbums)) HiddenGate(s, onCancel = { nav.popBackStack() }) { content() } else content()
         }
         composable(Routes.VIEWER, arguments = listOf(keyArg, indexArg)) { entry ->
             val key = entry.arguments?.getString("key").orEmpty()

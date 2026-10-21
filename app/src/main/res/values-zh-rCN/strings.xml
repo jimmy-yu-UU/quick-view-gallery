@@ -279,4 +279,6 @@
     <string name="auto_check_updates">自动检查更新</string>
     <string name="auto_check_updates_sub">打开应用时检查是否有新版本</string>
     <string name="updates_help">更新文件从 GitHub Releases 下载。下载完成后由 Android 系统安装程序完成安装。</string>
+    <string name="update_not_found">找不到发布的版本（仓库可能尚未公开）</string>
+    <string name="includes_subfolders">此设置也会应用到其下所有子文件夹。</string>
 </resources>

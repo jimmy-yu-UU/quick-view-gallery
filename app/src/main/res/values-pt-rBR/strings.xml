@@ -279,4 +279,6 @@
     <string name="auto_check_updates">Verificar atualizações automaticamente</string>
     <string name="auto_check_updates_sub">Verificar se há uma nova versão ao abrir o app</string>
     <string name="updates_help">As atualizações são baixadas do GitHub Releases e instaladas pelo instalador de pacotes do Android.</string>
+    <string name="update_not_found">Nenhuma versão publicada encontrada (o repositório pode ainda não ser público)</string>
+    <string name="includes_subfolders">Isso também se aplica a todas as subpastas.</string>
 </resources>

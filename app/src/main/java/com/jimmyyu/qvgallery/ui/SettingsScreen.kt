@@ -81,6 +81,7 @@ import com.jimmyyu.qvgallery.data.LockManager
 import com.jimmyyu.qvgallery.data.LockScope
 import com.jimmyyu.qvgallery.data.LockType
 import com.jimmyyu.qvgallery.data.ReleaseInfo
+import com.jimmyyu.qvgallery.data.ReleaseNotFound
 import com.jimmyyu.qvgallery.data.UpdateChecker
 import com.jimmyyu.qvgallery.data.SlideTransition
 import com.jimmyyu.qvgallery.data.StartPage
@@ -285,6 +286,9 @@ private fun AlbumSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Un
             text = {
                 Column {
                     Text(help, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (kind != "extra") {
+                        Text(tr(R.string.includes_subfolders), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                     Spacer(Modifier.size(8.dp))
                     if (set.isEmpty()) Text(tr(R.string.none_paren), Modifier.padding(vertical = 8.dp))
                     LazyColumn(Modifier.heightIn(max = 360.dp)) {
@@ -446,6 +450,7 @@ private fun UpdateSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> U
                     vm.updateSettings { it.copy(lastUpdateCheck = System.currentTimeMillis()) }
                     val info = result.getOrNull()
                     when {
+                        result.exceptionOrNull() is ReleaseNotFound -> vm.toast(tr(R.string.update_not_found))
                         info == null -> vm.toast(tr(R.string.update_check_failed))
                         info.isNewer -> found = info
                         else -> vm.toast(tr(R.string.up_to_date))

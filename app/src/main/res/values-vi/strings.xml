@@ -279,4 +279,6 @@
     <string name="auto_check_updates">Tự động kiểm tra bản cập nhật</string>
     <string name="auto_check_updates_sub">Kiểm tra phiên bản mới khi mở ứng dụng</string>
     <string name="updates_help">Bản cập nhật được tải xuống từ GitHub Releases và được trình cài đặt gói của Android cài đặt.</string>
+    <string name="update_not_found">Không tìm thấy bản phát hành (kho lưu trữ có thể chưa công khai)</string>
+    <string name="includes_subfolders">Cài đặt này cũng áp dụng cho tất cả thư mục con.</string>
 </resources>

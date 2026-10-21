@@ -27,6 +27,8 @@ data class ReleaseInfo(
     val isNewer: Boolean get() = versionCode > BuildConfig.VERSION_CODE
 }
 
+class ReleaseNotFound : Exception("no public release")
+
 /** Looks up the latest GitHub release of this app. */
 object UpdateChecker {
     /** Minimum time between automatic checks. */
@@ -40,6 +42,8 @@ object UpdateChecker {
                 conn.readTimeout = 10_000
                 conn.setRequestProperty("Accept", "application/vnd.github+json")
                 conn.setRequestProperty("User-Agent", "QVGallery/${BuildConfig.VERSION_NAME}")
+                // GitHub answers 404 for private repositories and for repositories without releases.
+                if (conn.responseCode == 404) throw ReleaseNotFound()
                 check(conn.responseCode == 200) { "HTTP ${conn.responseCode}" }
                 parse(JSONObject(conn.inputStream.bufferedReader().use { it.readText() }))
             } finally {

@@ -279,4 +279,6 @@
     <string name="auto_check_updates">البحث عن التحديثات تلقائيًا</string>
     <string name="auto_check_updates_sub">البحث عن إصدار جديد عند فتح التطبيق</string>
     <string name="updates_help">يتم تنزيل التحديثات من GitHub Releases وتثبيتها باستخدام أداة تثبيت الحِزم في Android.</string>
+    <string name="update_not_found">لم يتم العثور على إصدار منشور (قد لا يكون المستودع عامًا بعد)</string>
+    <string name="includes_subfolders">ينطبق هذا أيضًا على جميع المجلدات الفرعية.</string>
 </resources>

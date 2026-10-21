@@ -279,4 +279,6 @@
     <string name="auto_check_updates">ตรวจหาการอัปเดตโดยอัตโนมัติ</string>
     <string name="auto_check_updates_sub">ตรวจหาเวอร์ชันใหม่เมื่อเปิดแอป</string>
     <string name="updates_help">ระบบจะดาวน์โหลดการอัปเดตจาก GitHub Releases และติดตั้งด้วยโปรแกรมติดตั้งแพ็กเกจของ Android</string>
+    <string name="update_not_found">ไม่พบรุ่นที่เผยแพร่ (ที่เก็บอาจยังไม่เป็นสาธารณะ)</string>
+    <string name="includes_subfolders">การตั้งค่านี้มีผลกับโฟลเดอร์ย่อยทั้งหมดด้วย</string>
 </resources>

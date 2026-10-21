@@ -279,4 +279,6 @@
     <string name="auto_check_updates">Rechercher automatiquement les mises à jour</string>
     <string name="auto_check_updates_sub">Rechercher une nouvelle version à l\'ouverture de l\'application</string>
     <string name="updates_help">Les mises à jour sont téléchargées depuis GitHub Releases et installées par le programme d\'installation de packages Android.</string>
+    <string name="update_not_found">Aucune version publiée trouvée (le dépôt n\'est peut-être pas encore public)</string>
+    <string name="includes_subfolders">S\'applique aussi à tous ses sous-dossiers.</string>
 </resources>

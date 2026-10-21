@@ -279,4 +279,6 @@
     <string name="auto_check_updates">自動檢查更新</string>
     <string name="auto_check_updates_sub">開啟 App 時檢查是否有新版本</string>
     <string name="updates_help">更新檔從 GitHub Releases 下載。下載完成後由 Android 系統安裝程式完成安裝。</string>
+    <string name="update_not_found">找不到發布的版本 (Repo 可能尚未公開)</string>
+    <string name="includes_subfolders">此設定也會套用到其下所有子資料夾。</string>
 </resources>

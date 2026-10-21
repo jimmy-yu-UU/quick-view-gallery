@@ -279,4 +279,6 @@
     <string name="auto_check_updates">アップデートを自動的に確認</string>
     <string name="auto_check_updates_sub">アプリを開いたときに新しいバージョンを確認します</string>
     <string name="updates_help">アップデートは GitHub Releases からダウンロードされ、Android のパッケージ インストーラによってインストールされます。</string>
+    <string name="update_not_found">公開されたリリースが見つかりません（リポジトリがまだ公開されていない可能性があります）</string>
+    <string name="includes_subfolders">この設定はすべてのサブフォルダにも適用されます。</string>
 </resources>

@@ -279,4 +279,6 @@
     <string name="auto_check_updates">अपडेट के लिए अपने-आप जांच करें</string>
     <string name="auto_check_updates_sub">ऐप्लिकेशन खुलने पर नए वर्शन की जांच करें</string>
     <string name="updates_help">अपडेट GitHub Releases से डाउनलोड किए जाते हैं और Android पैकेज इंस्टॉलर से इंस्टॉल किए जाते हैं.</string>
+    <string name="update_not_found">कोई प्रकाशित रिलीज़ नहीं मिली (रिपॉज़िटरी शायद अभी सार्वजनिक नहीं है)</string>
+    <string name="includes_subfolders">यह इसके सभी सबफ़ोल्डर पर भी लागू होता है.</string>
 </resources>

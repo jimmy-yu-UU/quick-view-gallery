@@ -279,4 +279,6 @@
     <string name="auto_check_updates">Buscar actualizaciones automáticamente</string>
     <string name="auto_check_updates_sub">Buscar una nueva versión al abrir la aplicación</string>
     <string name="updates_help">Las actualizaciones se descargan de GitHub Releases y las instala el instalador de paquetes de Android.</string>
+    <string name="update_not_found">No se encontró ninguna versión publicada (es posible que el repositorio aún no sea público)</string>
+    <string name="includes_subfolders">También se aplica a todas sus subcarpetas.</string>
 </resources>

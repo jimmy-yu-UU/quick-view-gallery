@@ -17,6 +17,7 @@ import com.jimmyyu.qvgallery.data.AlbumSort
 import com.jimmyyu.qvgallery.data.AppSettings
 import com.jimmyyu.qvgallery.data.MediaItem
 import com.jimmyyu.qvgallery.data.MediaSort
+import com.jimmyyu.qvgallery.data.isUnderAny
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -100,11 +101,14 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun filterAndSort(media: List<MediaItem>, s: AppSettings, key: String): List<MediaItem> {
-        val blocked = s.excludedAlbums + s.hiddenAlbums
+        // Exclusion and hiding cover subfolders too; cache the answer per folder.
+        val roots = s.excludedAlbums + s.hiddenAlbums
+        val blockedCache = HashMap<String, Boolean>()
+        fun blocked(item: MediaItem) = blockedCache.getOrPut(item.folder) { isUnderAny(item.folder, roots) }
         val filtered = when (key) {
-            AlbumKeys.ALL -> media.filter { it.folder !in blocked && (s.showVideos || !it.isVideo) }
-            AlbumKeys.VIDEOS -> media.filter { it.isVideo && it.folder !in blocked }
-            AlbumKeys.PHOTOS -> media.filter { !it.isVideo && it.folder !in blocked }
+            AlbumKeys.ALL -> media.filter { !blocked(it) && (s.showVideos || !it.isVideo) }
+            AlbumKeys.VIDEOS -> media.filter { it.isVideo && !blocked(it) }
+            AlbumKeys.PHOTOS -> media.filter { !it.isVideo && !blocked(it) }
             else -> media.filter { it.folder == key && (s.showVideos || !it.isVideo) }
         }
         return sortMedia(filtered, s.mediaSort, s.mediaSortAsc)
@@ -115,8 +119,8 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
             .filter { s.showVideos || !it.isVideo }
             .groupBy { it.folder }
         val albums = groups.mapNotNull { (folder, items) ->
-            if (folder in s.excludedAlbums) return@mapNotNull null
-            val isHidden = folder in s.hiddenAlbums
+            if (isUnderAny(folder, s.excludedAlbums)) return@mapNotNull null
+            val isHidden = isUnderAny(folder, s.hiddenAlbums)
             if (isHidden != hidden) return@mapNotNull null
             val sorted = sortMedia(items, s.mediaSort, s.mediaSortAsc)
             Album(
