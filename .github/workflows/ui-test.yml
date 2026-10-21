@@ -7,23 +7,34 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 jobs:
   ui-test:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && !contains(github.event.workflow_run.head_commit.message, '[wip]')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download latest APK
+      - name: Get APK from the build that triggered this run
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: apk
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: Get latest released APK
+        if: github.event_name != 'workflow_run'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download --pattern '*.apk' --output app.apk --clobber
+        run: gh release download --pattern '*.apk' --output app-release.apk --clobber
 
       - name: Test tools
         run: |
-          pip install --quiet pillow pillow-heif
+          pip install --quiet pillow pillow-heif playwright
+          python -m playwright install --with-deps chromium
           which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
 
       - name: Enable KVM
@@ -43,13 +54,13 @@ jobs:
           disk-size: 6000M
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: python3 .github/scripts/ui_test.py app.apk
+          script: python3 .github/scripts/ui_test.py app-release.apk
 
       - name: Publish results
         if: always()
         run: |
           mkdir -p out && cd out
-          echo "run=${{ github.run_number }} sha=${{ github.sha }} status=${{ job.status }}" > status.txt
+          echo "run=${{ github.run_number }} sha=${{ github.event.workflow_run.head_sha || github.sha }} status=${{ job.status }}" > status.txt
           git init -q && git add -A
           git -c user.name=ci -c user.email=ci@local commit -qm "ui-test ${{ github.run_number }}"
           git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" HEAD:ci-test

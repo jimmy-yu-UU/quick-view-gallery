@@ -76,6 +76,28 @@ def find(label, exact=False):
     return None
 
 
+def find_class(cls):
+    root = dump()
+    if root is None:
+        return None
+    for node in root.iter("node"):
+        if node.get("class") == cls:
+            m = re.findall(r"\d+", node.get("bounds", ""))
+            if len(m) == 4:
+                x1, y1, x2, y2 = map(int, m)
+                return (x1 + x2) // 2, (y1 + y2) // 2
+    return None
+
+
+def type_into_field(text):
+    pos = find_class("android.widget.EditText")
+    if pos:
+        sh(f"input tap {pos[0]} {pos[1]}")
+        time.sleep(0.5)
+    sh(f"input text {text}")
+    time.sleep(0.8)
+
+
 def tap(label, exact=False, wait=1.5, required=True):
     for _ in range(3):
         pos = find(label, exact)
@@ -409,6 +431,66 @@ def main():
         time.sleep(2)
         shot("external_view_swiped")
         back()
+
+    # ---- Wi-Fi transfer ----
+    sh(f"am start -n {PKG}/.MainActivity")
+    time.sleep(2)
+    tap("選單")
+    tap("WiFi 傳輸", exact=True, wait=2)
+    shot("transfer_send_tab")
+    tap("接收", exact=True)
+    tap("開始接收", wait=2)
+    tap("Allow", exact=True, wait=2, required=False)  # notification permission prompt
+    time.sleep(2)
+    shot("transfer_receive")
+    code = None
+    root = dump()
+    if root is not None:
+        for node in root.iter("node"):
+            t = node.get("text") or ""
+            if re.fullmatch(r"\d{3} \d{3}", t):
+                code = t.replace(" ", "")
+    log(f"pairing code: {code}")
+    if code:
+        adb("forward", "tcp:18899", "tcp:8899")
+        here = os.path.dirname(os.path.abspath(__file__))
+        r = subprocess.run([sys.executable, os.path.join(here, "transfer_api_test.py"), "18899", code, OUT], capture_output=True, text=True)
+        log(r.stdout + r.stderr)
+        if r.returncode != 0:
+            failures.append("  !! transfer API test failed (see transfer_api.txt)")
+        r = subprocess.run([sys.executable, os.path.join(here, "web_screens.py"), "18899", code, OUT], capture_output=True, text=True)
+        if r.returncode != 0:
+            log(r.stdout + r.stderr)
+            failures.append("  !! web page test failed")
+        sh("input keyevent KEYCODE_WAKEUP")
+        time.sleep(1)
+        shot("transfer_after_api")
+        # Send to ourselves through the phone-to-phone path (manual address).
+        back()
+        tap("Wallpapers")
+        time.sleep(1.5)
+        sh(f"input swipe {W // 6} {int(H * 0.16)} {W // 6} {int(H * 0.16)} 900")
+        time.sleep(1)
+        tap("更多")
+        tap("傳送到附近裝置", wait=2)
+        shot("transfer_queue")
+        tap("輸入位址")
+        type_into_field("127.0.0.1:8899")
+        tap("確定", exact=True, wait=3)
+        type_into_field(code)
+        shot("transfer_code_dialog")
+        tap("傳送", exact=True, wait=6)
+        shot("transfer_sent")
+        tap("接收", exact=True)
+        shot("transfer_received_list")
+        tap("停止接收", wait=2)
+        back()
+        time.sleep(2)
+        if not find("QV Transfer"):
+            failures.append("  !! QV Transfer album missing after receiving")
+        shot("albums_with_qv_transfer")
+    else:
+        failures.append("  !! no pairing code on the receive screen")
 
     # Landscape
     sh("settings put system accelerometer_rotation 0")
