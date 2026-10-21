@@ -1,0 +1,55 @@
+name: build
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build release APK
+        run: |
+          set -o pipefail
+          chmod +x gradlew
+          ./gradlew assembleRelease --stacktrace --warning-mode=none 2>&1 | tee build.log
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="1.0.${{ github.run_number }}"
+          cp app/build/outputs/apk/release/app-release.apk "QVGallery-$VERSION.apk"
+          gh release create "v$VERSION" "QVGallery-$VERSION.apk" \
+            --title "QV Gallery $VERSION" \
+            --notes "Commit: ${{ github.sha }}" \
+            --latest
+
+      - name: Publish log
+        if: always()
+        run: |
+          mkdir -p ci && cd ci
+          echo "run=${{ github.run_number }} sha=${{ github.sha }} status=${{ job.status }}" > status.txt
+          if [ -f ../build.log ]; then
+            grep -nE '^e: |error:|What went wrong|FAILURE|BUILD' ../build.log | head -300 > errors.txt || true
+            tail -200 ../build.log > tail.txt
+          fi
+          git init -q && git add -A
+          git -c user.name=ci -c user.email=ci@local commit -qm "build ${{ github.run_number }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" HEAD:ci-logs
