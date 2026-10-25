@@ -87,6 +87,9 @@ enum class MediaSort(private val labelRes: Int) {
     val label: String get() = tr(labelRes)
 }
 
-/** True when [folder] is one of [roots] or anywhere below one of them. */
+/**
+ * True when [folder] is one of [roots] or anywhere below one of them. Ignores case like shared storage
+ * does: MediaStore can keep a folder's old spelling ("galgame") after it was renamed ("Galgame").
+ */
 fun isUnderAny(folder: String, roots: Set<String>): Boolean =
-    roots.isNotEmpty() && roots.any { folder == it || folder.startsWith("$it/") }
+    roots.isNotEmpty() && roots.any { folder.equals(it, ignoreCase = true) || folder.startsWith("$it/", ignoreCase = true) }

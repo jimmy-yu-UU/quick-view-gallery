@@ -87,6 +87,7 @@ import com.jimmyyu.qvgallery.data.SlideTransition
 import com.jimmyyu.qvgallery.data.StartPage
 import com.jimmyyu.qvgallery.data.ThemeMode
 import com.jimmyyu.qvgallery.data.ViewerBackground
+import com.jimmyyu.qvgallery.data.isUnderAny
 import com.jimmyyu.qvgallery.ui.lock.LockScreen
 import com.jimmyyu.qvgallery.ui.lock.SetupLockScreen
 import com.jimmyyu.qvgallery.ui.theme.AccentColors
@@ -251,8 +252,8 @@ private fun AlbumSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Un
             ),
             albums = when (kind) {
                 "extra" -> emptyList()
-                "excluded" -> known.filter { it !in s.excludedAlbums }
-                else -> known.filter { it !in s.hiddenAlbums }
+                "excluded" -> known.filter { !isUnderAny(it, s.excludedAlbums) }
+                else -> known.filter { !isUnderAny(it, s.hiddenAlbums) }
             },
             onPick = { f ->
                 val path = f.absolutePath
