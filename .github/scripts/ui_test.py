@@ -53,12 +53,33 @@ def shot(name):
 
 
 def dump():
-    sh("uiautomator dump /sdcard/ui.xml", timeout=60)
-    xml = adb("shell", "cat /sdcard/ui.xml")
-    try:
-        return ET.fromstring(xml[xml.index("<"):])
-    except Exception:
-        return None
+    root = None
+    for _ in range(3):
+        sh("uiautomator dump /sdcard/ui.xml", timeout=60)
+        xml = adb("shell", "cat /sdcard/ui.xml")
+        try:
+            root = ET.fromstring(xml[xml.index("<"):])
+        except Exception:
+            return None
+        if not dismiss_anr(root):
+            break
+    return root
+
+
+def dismiss_anr(root):
+    """A system app on the emulator (e.g. Pixel Launcher) can stall and cover the screen with an ANR dialog."""
+    if not any("isn't responding" in (n.get("text") or "") for n in root.iter("node")):
+        return False
+    for node in root.iter("node"):
+        if (node.get("text") or "") == "Wait":
+            m = re.findall(r"\d+", node.get("bounds", ""))
+            if len(m) == 4:
+                x1, y1, x2, y2 = map(int, m)
+                log("  dismissed a system 'isn't responding' dialog")
+                sh(f"input tap {(x1 + x2) // 2} {(y1 + y2) // 2}")
+                time.sleep(1)
+                return True
+    return False
 
 
 def find(label, exact=False):
@@ -221,6 +242,8 @@ def main():
     sh(f"cmd locale set-app-locales {PKG} --locales zh-TW")
     # Skip Android's one-time "Viewing full screen" hint, which would cover the app.
     sh("settings put secure immersive_mode_confirmations confirmed")
+    # Don't let another app's ANR dialog cover ours; dump() also dismisses any that still appear.
+    sh("settings put global hide_error_dialogs 1")
     adb("logcat", "-c")
     sh("svc power stayon true")  # screen-off would count as leaving the transfer screen
     W, H = screen_size()
