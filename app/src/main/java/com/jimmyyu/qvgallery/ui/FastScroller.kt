@@ -3,6 +3,7 @@ package com.jimmyyu.qvgallery.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -28,6 +29,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +41,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 private val HandleWidth = 44.dp
@@ -64,6 +68,7 @@ fun FastScroller(
     // Only worth it when the list is several screens long.
     if (visibleCount == 0 || total <= visibleCount * 3) return
 
+    val scope = rememberCoroutineScope()
     var dragging by remember { mutableStateOf(false) }
     var dragFraction by remember { mutableFloatStateOf(0f) }
     var shown by remember { mutableStateOf(false) }
@@ -81,6 +86,10 @@ fun FastScroller(
         val density = LocalDensity.current
         val trackPx = with(density) { (maxHeight - TouchHeight).toPx() }.coerceAtLeast(1f)
         val thumbY = (fraction * trackPx).roundToInt()
+        // Both change while scrolling; reading them through state keeps the drag gesture from being
+        // restarted (and the drag dropped) every time the grid moves under the finger.
+        val currentMaxFirst by rememberUpdatedState(maxFirst)
+        val currentTrackPx by rememberUpdatedState(trackPx)
 
         AnimatedVisibility(
             shown,
@@ -109,19 +118,24 @@ fun FastScroller(
                 Box(
                     Modifier
                         .size(TouchWidth, TouchHeight)
-                        .pointerInput(maxFirst, trackPx) {
+                        .pointerInput(state) {
                             // Starts on touch-down, without the usual drag slop, so the handle feels held at once.
                             awaitEachGesture {
                                 val down = awaitFirstDown()
                                 down.consume()
-                                dragFraction = scrollFraction
+                                // The handle shows while the grid scrolls, so it is usually grabbed mid-fling:
+                                // stop the fling, or it keeps pulling the grid away from the finger.
+                                scope.launch { state.stopScroll(MutatePriority.UserInput) }
+                                dragFraction = (state.firstVisibleItemIndex.toFloat() / currentMaxFirst).coerceIn(0f, 1f)
                                 dragging = true
                                 try {
                                     drag(down.id) { change ->
                                         val dy = change.positionChange().y
                                         change.consume()
-                                        dragFraction = (dragFraction + dy / trackPx).coerceIn(0f, 1f)
-                                        state.requestScrollToItem((dragFraction * maxFirst).roundToInt())
+                                        dragFraction = (dragFraction + dy / currentTrackPx).coerceIn(0f, 1f)
+                                        val target = (dragFraction * currentMaxFirst).roundToInt()
+                                        // Each jump replaces the previous one, so fast moves don't queue up.
+                                        scope.launch { state.scrollToItem(target) }
                                     }
                                 } finally {
                                     dragging = false
