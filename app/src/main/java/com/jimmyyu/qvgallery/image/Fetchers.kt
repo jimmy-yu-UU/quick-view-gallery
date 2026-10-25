@@ -122,11 +122,11 @@ object RawCache {
                 dir.mkdirs()
                 val tmp = File(dir, "${file.name}.tmp")
                 tmp.outputStream().use { bitmap.compress(Bitmap.CompressFormat.JPEG, 92, it) }
-                if (!tmp.renameTo(file)) tmp.delete()
+                if (!tmp.renameTo(file) && !tmp.delete()) tmp.deleteOnExit()
                 dir.listFiles { f -> f.extension == "jpg" }
                     ?.sortedByDescending { it.lastModified() }
                     ?.drop(MAX_FILES)
-                    ?.forEach { it.delete() }
+                    ?.forEach { if (!it.delete()) it.deleteOnExit() }
             }
         }
     }
