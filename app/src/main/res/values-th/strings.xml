@@ -143,8 +143,9 @@
     <string name="close">ปิด</string>
     <string name="display">การแสดงผล</string>
     <string name="album_view">มุมมองอัลบั้ม</string>
-    <string name="album_columns">จำนวนอัลบั้มต่อแถว</string>
-    <string name="media_columns">จำนวนรูปภาพต่อแถว</string>
+    <string name="album_columns">ขนาดอัลบั้ม</string>
+    <string name="media_columns">ขนาดรูปภาพ</string>
+    <string name="per_row_portrait">%1$d ต่อแถวในแนวตั้ง</string>
     <string name="show_videos">แสดงวิดีโอ</string>
     <string name="show_videos_sub">รวมวิดีโอไว้ในอัลบั้ม</string>
     <string name="show_album_path">แสดงเส้นทางอัลบั้ม</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">ซ่อนแถบเครื่องมือเมื่อเปิด</string>
     <string name="hide_bars_on_open_sub">แสดงรูปภาพแบบเต็มหน้าจอทันที</string>
     <string name="max_zoom">ซูมสูงสุด</string>
+    <string name="double_tap_zoom">การซูมเมื่อแตะสองครั้ง</string>
     <string name="behavior">การทำงาน</string>
     <string name="keep_screen_on">เปิดหน้าจอค้างไว้</string>
     <string name="keep_screen_on_sub">ไม่ปิดหน้าจอขณะกำลังดู</string>

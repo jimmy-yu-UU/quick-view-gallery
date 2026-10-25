@@ -143,8 +143,9 @@
     <string name="close">閉じる</string>
     <string name="display">表示</string>
     <string name="album_view">アルバムの表示</string>
-    <string name="album_columns">1 行あたりのアルバム数</string>
-    <string name="media_columns">1 行あたりの写真数</string>
+    <string name="album_columns">アルバムのサイズ</string>
+    <string name="media_columns">写真のサイズ</string>
+    <string name="per_row_portrait">縦向きで1行 %1$d 枚</string>
     <string name="show_videos">動画を表示</string>
     <string name="show_videos_sub">アルバムに動画を含める</string>
     <string name="show_album_path">アルバムのパスを表示</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">開くときにツールバーを非表示</string>
     <string name="hide_bars_on_open_sub">画像をすぐに全画面で表示</string>
     <string name="max_zoom">最大ズーム</string>
+    <string name="double_tap_zoom">ダブルタップの拡大率</string>
     <string name="behavior">動作</string>
     <string name="keep_screen_on">画面をオンのままにする</string>
     <string name="keep_screen_on_sub">表示中は画面をオフにしない</string>

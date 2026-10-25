@@ -143,8 +143,9 @@
     <string name="close">बंद करें</string>
     <string name="display">डिसप्ले</string>
     <string name="album_view">एल्बम व्यू</string>
-    <string name="album_columns">हर लाइन में एल्बम</string>
-    <string name="media_columns">हर लाइन में फ़ोटो</string>
+    <string name="album_columns">एल्बम का आकार</string>
+    <string name="media_columns">फ़ोटो का आकार</string>
+    <string name="per_row_portrait">पोर्ट्रेट में हर पंक्ति में %1$d</string>
     <string name="show_videos">वीडियो दिखाएं</string>
     <string name="show_videos_sub">एल्बम में वीडियो शामिल करें</string>
     <string name="show_album_path">एल्बम का पाथ दिखाएं</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">खोलते समय टूलबार छिपाएं</string>
     <string name="hide_bars_on_open_sub">इमेज को तुरंत फ़ुल स्क्रीन में दिखाएं</string>
     <string name="max_zoom">ज़्यादा से ज़्यादा ज़ूम</string>
+    <string name="double_tap_zoom">दो बार टैप पर ज़ूम</string>
     <string name="behavior">काम करने का तरीका</string>
     <string name="keep_screen_on">स्क्रीन चालू रखें</string>
     <string name="keep_screen_on_sub">देखते समय स्क्रीन बंद न करें</string>

@@ -143,8 +143,9 @@
     <string name="close">Kapat</string>
     <string name="display">Ekran</string>
     <string name="album_view">Albüm görünümü</string>
-    <string name="album_columns">Satır başına albüm</string>
-    <string name="media_columns">Satır başına fotoğraf</string>
+    <string name="album_columns">Albüm boyutu</string>
+    <string name="media_columns">Fotoğraf boyutu</string>
+    <string name="per_row_portrait">Dikeyde satır başına %1$d</string>
     <string name="show_videos">Videoları göster</string>
     <string name="show_videos_sub">Videoları albümlere dahil et</string>
     <string name="show_album_path">Albüm yolunu göster</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">Açılırken araç çubuklarını gizle</string>
     <string name="hide_bars_on_open_sub">Görüntüleri hemen tam ekran göster</string>
     <string name="max_zoom">Maksimum yakınlaştırma</string>
+    <string name="double_tap_zoom">Çift dokunma yakınlaştırması</string>
     <string name="behavior">Davranış</string>
     <string name="keep_screen_on">Ekranı açık tut</string>
     <string name="keep_screen_on_sub">Görüntüleme sırasında ekranı kapatma</string>

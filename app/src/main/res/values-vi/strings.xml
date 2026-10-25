@@ -143,8 +143,9 @@
     <string name="close">Đóng</string>
     <string name="display">Hiển thị</string>
     <string name="album_view">Kiểu xem album</string>
-    <string name="album_columns">Số album mỗi hàng</string>
-    <string name="media_columns">Số ảnh mỗi hàng</string>
+    <string name="album_columns">Kích thước album</string>
+    <string name="media_columns">Kích thước ảnh</string>
+    <string name="per_row_portrait">%1$d mỗi hàng khi dọc</string>
     <string name="show_videos">Hiện video</string>
     <string name="show_videos_sub">Bao gồm video trong album</string>
     <string name="show_album_path">Hiện đường dẫn album</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">Ẩn thanh công cụ khi mở</string>
     <string name="hide_bars_on_open_sub">Hiển thị ảnh toàn màn hình ngay lập tức</string>
     <string name="max_zoom">Mức thu phóng tối đa</string>
+    <string name="double_tap_zoom">Thu phóng khi nhấn đúp</string>
     <string name="behavior">Hoạt động</string>
     <string name="keep_screen_on">Giữ màn hình luôn bật</string>
     <string name="keep_screen_on_sub">Không tắt màn hình khi đang xem</string>

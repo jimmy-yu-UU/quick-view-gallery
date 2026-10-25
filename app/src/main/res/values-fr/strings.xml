@@ -143,8 +143,9 @@
     <string name="close">Fermer</string>
     <string name="display">Affichage</string>
     <string name="album_view">Affichage des albums</string>
-    <string name="album_columns">Albums par ligne</string>
-    <string name="media_columns">Photos par ligne</string>
+    <string name="album_columns">Taille des albums</string>
+    <string name="media_columns">Taille des photos</string>
+    <string name="per_row_portrait">%1$d par ligne en portrait</string>
     <string name="show_videos">Afficher les vidéos</string>
     <string name="show_videos_sub">Inclure les vidéos dans les albums</string>
     <string name="show_album_path">Afficher le chemin de l\'album</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">Masquer les barres à l\'ouverture</string>
     <string name="hide_bars_on_open_sub">Afficher directement les images en plein écran</string>
     <string name="max_zoom">Zoom maximal</string>
+    <string name="double_tap_zoom">Zoom au double appui</string>
     <string name="behavior">Comportement</string>
     <string name="keep_screen_on">Laisser l\'écran allumé</string>
     <string name="keep_screen_on_sub">Ne pas éteindre l\'écran pendant la visualisation</string>

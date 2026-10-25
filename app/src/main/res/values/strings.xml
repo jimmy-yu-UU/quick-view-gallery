@@ -144,8 +144,9 @@
     <string name="close">Close</string>
     <string name="display">Display</string>
     <string name="album_view">Album view</string>
-    <string name="album_columns">Albums per row</string>
-    <string name="media_columns">Photos per row</string>
+    <string name="album_columns">Album size</string>
+    <string name="media_columns">Photo size</string>
+    <string name="per_row_portrait">%1$d per row in portrait</string>
     <string name="show_videos">Show videos</string>
     <string name="show_videos_sub">Include videos in albums</string>
     <string name="show_album_path">Show album path</string>
@@ -172,6 +173,7 @@
     <string name="hide_bars_on_open">Hide toolbars when opening</string>
     <string name="hide_bars_on_open_sub">Show images full screen right away</string>
     <string name="max_zoom">Maximum zoom</string>
+    <string name="double_tap_zoom">Double-tap zoom</string>
     <string name="behavior">Behavior</string>
     <string name="keep_screen_on">Keep screen on</string>
     <string name="keep_screen_on_sub">Don\'t turn the screen off while viewing</string>

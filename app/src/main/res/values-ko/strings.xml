@@ -143,8 +143,9 @@
     <string name="close">닫기</string>
     <string name="display">디스플레이</string>
     <string name="album_view">앨범 보기</string>
-    <string name="album_columns">한 줄당 앨범 수</string>
-    <string name="media_columns">한 줄당 사진 수</string>
+    <string name="album_columns">앨범 크기</string>
+    <string name="media_columns">사진 크기</string>
+    <string name="per_row_portrait">세로 모드에서 한 줄에 %1$d개</string>
     <string name="show_videos">동영상 표시</string>
     <string name="show_videos_sub">앨범에 동영상 포함</string>
     <string name="show_album_path">앨범 경로 표시</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">열 때 툴바 숨기기</string>
     <string name="hide_bars_on_open_sub">이미지를 바로 전체 화면으로 표시</string>
     <string name="max_zoom">최대 확대</string>
+    <string name="double_tap_zoom">두 번 탭 확대 배율</string>
     <string name="behavior">동작</string>
     <string name="keep_screen_on">화면 켜짐 유지</string>
     <string name="keep_screen_on_sub">보는 동안 화면이 꺼지지 않음</string>

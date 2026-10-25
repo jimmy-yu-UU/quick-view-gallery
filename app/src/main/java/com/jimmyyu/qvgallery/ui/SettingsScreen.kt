@@ -222,8 +222,8 @@ private fun AlbumSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Un
     SettingsScaffold(tr(R.string.albums), onBack) {
         Header(tr(R.string.display))
         ChoicePref(tr(R.string.album_view), s.albumViewMode, AlbumViewMode.entries, { it.label }) { v -> vm.updateSettings { it.copy(albumViewMode = v) } }
-        ChoicePref(tr(R.string.album_columns), s.albumColumns, (1..5).toList(), { it.toString() }) { v -> vm.updateSettings { it.copy(albumColumns = v) } }
-        ChoicePref(tr(R.string.media_columns), s.mediaColumns, (2..8).toList(), { it.toString() }) { v -> vm.updateSettings { it.copy(mediaColumns = v) } }
+        ChoicePref(tr(R.string.album_columns), s.albumColumns, (1..5).toList(), { tr(R.string.per_row_portrait, it) }) { v -> vm.updateSettings { it.copy(albumColumns = v) } }
+        ChoicePref(tr(R.string.media_columns), s.mediaColumns, (2..8).toList(), { tr(R.string.per_row_portrait, it) }) { v -> vm.updateSettings { it.copy(mediaColumns = v) } }
         SwitchPref(tr(R.string.show_videos), tr(R.string.show_videos_sub), s.showVideos) { v -> vm.updateSettings { it.copy(showVideos = v) } }
         SwitchPref(tr(R.string.show_album_path), tr(R.string.show_album_path_sub), s.showAlbumPath) { v -> vm.updateSettings { it.copy(showAlbumPath = v) } }
         Header(tr(R.string.scanning))
@@ -324,6 +324,7 @@ private fun ViewSettings(vm: GalleryViewModel, s: AppSettings, onBack: () -> Uni
         SwitchPref(tr(R.string.show_info_bar), tr(R.string.show_info_bar_sub), s.showInfoBar) { v -> vm.updateSettings { it.copy(showInfoBar = v) } }
         SwitchPref(tr(R.string.hide_bars_on_open), tr(R.string.hide_bars_on_open_sub), s.hideBarsOnOpen) { v -> vm.updateSettings { it.copy(hideBarsOnOpen = v) } }
         SliderPref(tr(R.string.max_zoom), s.maxZoom, 2f..20f, steps = 17, format = { "${it.toInt()}x" }) { v -> vm.updateSettings { it.copy(maxZoom = v) } }
+        SliderPref(tr(R.string.double_tap_zoom), s.doubleTapZoom, 1.5f..8f, steps = 12, format = { "%.1fx".format(it) }) { v -> vm.updateSettings { it.copy(doubleTapZoom = v) } }
         Header(tr(R.string.behavior))
         SwitchPref(tr(R.string.keep_screen_on), tr(R.string.keep_screen_on_sub), s.keepScreenOn) { v -> vm.updateSettings { it.copy(keepScreenOn = v) } }
         SwitchPref(tr(R.string.max_brightness), tr(R.string.max_brightness_sub), s.maxBrightness) { v -> vm.updateSettings { it.copy(maxBrightness = v) } }

@@ -143,8 +143,9 @@
     <string name="close">Закрыть</string>
     <string name="display">Отображение</string>
     <string name="album_view">Вид альбомов</string>
-    <string name="album_columns">Альбомов в строке</string>
-    <string name="media_columns">Фото в строке</string>
+    <string name="album_columns">Размер альбомов</string>
+    <string name="media_columns">Размер фото</string>
+    <string name="per_row_portrait">%1$d в ряд в портретной ориентации</string>
     <string name="show_videos">Показывать видео</string>
     <string name="show_videos_sub">Включать видео в альбомы</string>
     <string name="show_album_path">Показывать путь альбома</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">Скрывать панели при открытии</string>
     <string name="hide_bars_on_open_sub">Сразу показывать изображения во весь экран</string>
     <string name="max_zoom">Максимальный масштаб</string>
+    <string name="double_tap_zoom">Увеличение двойным касанием</string>
     <string name="behavior">Поведение</string>
     <string name="keep_screen_on">Не выключать экран</string>
     <string name="keep_screen_on_sub">Экран не гаснет во время просмотра</string>

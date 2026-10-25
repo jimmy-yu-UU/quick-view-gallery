@@ -143,8 +143,9 @@
     <string name="close">關閉</string>
     <string name="display">顯示</string>
     <string name="album_view">相簿檢視</string>
-    <string name="album_columns">相簿每列數量</string>
-    <string name="media_columns">相片每列數量</string>
+    <string name="album_columns">相簿縮圖大小</string>
+    <string name="media_columns">相片縮圖大小</string>
+    <string name="per_row_portrait">直向時每列 %1$d 張</string>
     <string name="show_videos">顯示影片</string>
     <string name="show_videos_sub">在相簿中包含影片</string>
     <string name="show_album_path">顯示相簿路徑</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">開啟時隱藏工具列</string>
     <string name="hide_bars_on_open_sub">直接以全螢幕顯示圖片</string>
     <string name="max_zoom">最大縮放倍數</string>
+    <string name="double_tap_zoom">雙擊放大倍數</string>
     <string name="behavior">行為</string>
     <string name="keep_screen_on">保持螢幕開啟</string>
     <string name="keep_screen_on_sub">瀏覽時不自動關閉螢幕</string>

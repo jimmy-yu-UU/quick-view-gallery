@@ -242,7 +242,7 @@ fun AlbumScreen(
         Box(Modifier.fillMaxSize()) {
             LazyVerticalGrid(
                 state = gridState,
-                columns = GridCells.Fixed(settings.mediaColumns.coerceIn(2, 8)),
+                columns = GridCells.Fixed(gridColumns(settings.mediaColumns.coerceIn(2, 8), min = 2)),
                 contentPadding = PaddingValues(top = padding.calculateTopPadding(), bottom = padding.calculateBottomPadding()),
                 horizontalArrangement = Arrangement.spacedBy(2.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp),

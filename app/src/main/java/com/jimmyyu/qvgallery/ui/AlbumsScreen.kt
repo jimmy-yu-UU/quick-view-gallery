@@ -302,7 +302,7 @@ fun AlbumsScreen(
                 } else {
                     val list = settings.albumViewMode == AlbumViewMode.LIST
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(if (list) 1 else settings.albumColumns.coerceIn(1, 6)),
+                        columns = GridCells.Fixed(if (list) 1 else gridColumns(settings.albumColumns.coerceIn(1, 6), min = 1)),
                         contentPadding = PaddingValues(
                             start = 2.dp, end = 2.dp,
                             top = padding.calculateTopPadding() + 2.dp,

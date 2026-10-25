@@ -80,6 +80,7 @@ import com.jimmyyu.qvgallery.ui.TextInputDialog
 import com.jimmyyu.qvgallery.ui.formatDate
 import com.jimmyyu.qvgallery.ui.rememberDeleter
 import kotlinx.coroutines.launch
+import me.saket.telephoto.zoomable.DoubleClickToZoomListener
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.ZoomableState
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
@@ -226,6 +227,7 @@ fun ViewerScreen(
                     state = rememberZoomableImageState(zoomable),
                     modifier = Modifier.fillMaxSize(),
                     onClick = { showUi = !showUi },
+                    onDoubleClick = DoubleClickToZoomListener.cycle(settings.doubleTapZoom.coerceAtMost(settings.maxZoom)),
                 )
             }
         }

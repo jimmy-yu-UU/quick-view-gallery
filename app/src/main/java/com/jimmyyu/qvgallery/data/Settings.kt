@@ -83,6 +83,7 @@ data class AppSettings(
     val showInfoBar: Boolean = true,
     val hideBarsOnOpen: Boolean = false,
     val maxZoom: Float = 8f,
+    val doubleTapZoom: Float = 2.5f,
     val autoPlayVideo: Boolean = true,
     val loopVideo: Boolean = true,
     val confirmDelete: Boolean = true,
@@ -139,6 +140,7 @@ class SettingsRepository(private val context: Context) {
         val showInfoBar = booleanPreferencesKey("showInfoBar")
         val hideBarsOnOpen = booleanPreferencesKey("hideBarsOnOpen")
         val maxZoom = floatPreferencesKey("maxZoom")
+        val doubleTapZoom = floatPreferencesKey("doubleTapZoom")
         val autoPlayVideo = booleanPreferencesKey("autoPlayVideo")
         val loopVideo = booleanPreferencesKey("loopVideo")
         val confirmDelete = booleanPreferencesKey("confirmDelete")
@@ -201,6 +203,7 @@ class SettingsRepository(private val context: Context) {
             showInfoBar = this[K.showInfoBar] ?: d.showInfoBar,
             hideBarsOnOpen = this[K.hideBarsOnOpen] ?: d.hideBarsOnOpen,
             maxZoom = this[K.maxZoom] ?: d.maxZoom,
+            doubleTapZoom = this[K.doubleTapZoom] ?: d.doubleTapZoom,
             autoPlayVideo = this[K.autoPlayVideo] ?: d.autoPlayVideo,
             loopVideo = this[K.loopVideo] ?: d.loopVideo,
             confirmDelete = this[K.confirmDelete] ?: d.confirmDelete,
@@ -250,6 +253,7 @@ class SettingsRepository(private val context: Context) {
         this[K.showInfoBar] = s.showInfoBar
         this[K.hideBarsOnOpen] = s.hideBarsOnOpen
         this[K.maxZoom] = s.maxZoom
+        this[K.doubleTapZoom] = s.doubleTapZoom
         this[K.autoPlayVideo] = s.autoPlayVideo
         this[K.loopVideo] = s.loopVideo
         this[K.confirmDelete] = s.confirmDelete

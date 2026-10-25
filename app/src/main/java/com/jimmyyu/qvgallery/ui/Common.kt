@@ -52,6 +52,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -64,6 +65,7 @@ import com.jimmyyu.qvgallery.image.Thumb
 import java.io.File
 import java.text.DateFormat
 import java.util.Date
+import kotlin.math.roundToInt
 
 // ---------- Formatting ----------
 
@@ -71,6 +73,18 @@ fun formatSize(context: Context, bytes: Long): String = Formatter.formatFileSize
 
 fun formatDate(millis: Long): String =
     DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(millis))
+
+/**
+ * Grid columns for a per-row setting, which is chosen as on a phone held upright. Wider windows
+ * (landscape, tablets) fit more cells of about the same size instead of stretching each cell.
+ */
+@Composable
+fun gridColumns(perRow: Int, min: Int): Int {
+    val config = LocalConfiguration.current
+    // A phone's upright width; tablets count as a large phone so they get more columns too.
+    val reference = config.smallestScreenWidthDp.coerceIn(320, 480)
+    return (config.screenWidthDp * perRow / reference.toFloat()).roundToInt().coerceAtLeast(min)
+}
 
 fun formatShortDate(millis: Long): String = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(millis))
 

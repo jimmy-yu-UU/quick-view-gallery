@@ -143,8 +143,9 @@
     <string name="close">إغلاق</string>
     <string name="display">العرض</string>
     <string name="album_view">عرض الألبومات</string>
-    <string name="album_columns">الألبومات في كل صف</string>
-    <string name="media_columns">الصور في كل صف</string>
+    <string name="album_columns">حجم الألبومات</string>
+    <string name="media_columns">حجم الصور</string>
+    <string name="per_row_portrait">%1$d في الصف بالوضع الرأسي</string>
     <string name="show_videos">إظهار الفيديوهات</string>
     <string name="show_videos_sub">تضمين الفيديوهات في الألبومات</string>
     <string name="show_album_path">إظهار مسار الألبوم</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">إخفاء أشرطة الأدوات عند الفتح</string>
     <string name="hide_bars_on_open_sub">عرض الصور بملء الشاشة مباشرةً</string>
     <string name="max_zoom">الحد الأقصى للتكبير</string>
+    <string name="double_tap_zoom">التكبير بالنقر المزدوج</string>
     <string name="behavior">السلوك</string>
     <string name="keep_screen_on">إبقاء الشاشة قيد التشغيل</string>
     <string name="keep_screen_on_sub">عدم إيقاف الشاشة أثناء العرض</string>

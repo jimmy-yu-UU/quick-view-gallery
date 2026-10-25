@@ -143,8 +143,9 @@
     <string name="close">Tutup</string>
     <string name="display">Tampilan</string>
     <string name="album_view">Tampilan album</string>
-    <string name="album_columns">Album per baris</string>
-    <string name="media_columns">Foto per baris</string>
+    <string name="album_columns">Ukuran album</string>
+    <string name="media_columns">Ukuran foto</string>
+    <string name="per_row_portrait">%1$d per baris dalam mode potret</string>
     <string name="show_videos">Tampilkan video</string>
     <string name="show_videos_sub">Sertakan video dalam album</string>
     <string name="show_album_path">Tampilkan jalur album</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">Sembunyikan toolbar saat membuka</string>
     <string name="hide_bars_on_open_sub">Langsung tampilkan gambar dalam layar penuh</string>
     <string name="max_zoom">Zoom maksimum</string>
+    <string name="double_tap_zoom">Zoom ketuk dua kali</string>
     <string name="behavior">Perilaku</string>
     <string name="keep_screen_on">Biarkan layar tetap menyala</string>
     <string name="keep_screen_on_sub">Jangan matikan layar saat melihat</string>

@@ -143,8 +143,9 @@
     <string name="close">关闭</string>
     <string name="display">显示</string>
     <string name="album_view">相册视图</string>
-    <string name="album_columns">每行相册数</string>
-    <string name="media_columns">每行照片数</string>
+    <string name="album_columns">相册缩略图大小</string>
+    <string name="media_columns">照片缩略图大小</string>
+    <string name="per_row_portrait">竖屏时每行 %1$d 张</string>
     <string name="show_videos">显示视频</string>
     <string name="show_videos_sub">在相册中包含视频</string>
     <string name="show_album_path">显示相册路径</string>
@@ -171,6 +172,7 @@
     <string name="hide_bars_on_open">打开时隐藏工具栏</string>
     <string name="hide_bars_on_open_sub">直接全屏显示图片</string>
     <string name="max_zoom">最大缩放倍数</string>
+    <string name="double_tap_zoom">双击放大倍数</string>
     <string name="behavior">行为</string>
     <string name="keep_screen_on">保持屏幕常亮</string>
     <string name="keep_screen_on_sub">浏览时不自动关闭屏幕</string>
