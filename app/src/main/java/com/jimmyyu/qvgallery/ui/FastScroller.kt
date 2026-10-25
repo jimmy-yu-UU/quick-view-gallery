@@ -35,8 +35,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
-private val ThumbHeight = 52.dp
-private val TouchWidth = 36.dp
+private val ThumbHeight = 64.dp
+// Wider than the visible bar so a finger at the screen edge catches it easily.
+private val TouchWidth = 56.dp
 
 /**
  * Draggable scroll thumb on the right edge of a grid. It appears while the grid scrolls and fades out
@@ -116,11 +117,11 @@ fun FastScroller(
                 ) {
                     Box(
                         Modifier
-                            .padding(end = 4.dp)
-                            .size(if (dragging) 10.dp else 8.dp, ThumbHeight)
+                            .padding(end = 2.dp)
+                            .size(if (dragging) 18.dp else 14.dp, ThumbHeight)
                             .background(
                                 if (dragging) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                                RoundedCornerShape(5.dp),
+                                RoundedCornerShape(9.dp),
                             ),
                     )
                 }
