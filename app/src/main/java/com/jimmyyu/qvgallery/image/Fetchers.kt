@@ -19,11 +19,19 @@ import coil3.key.Keyer
 import coil3.map.Mapper
 import coil3.request.Options
 import com.jimmyyu.qvgallery.data.MediaItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.File
+import java.util.UUID
 import kotlin.math.max
 
 /** Grid thumbnail. Uses the system thumbnail cache for MediaStore items (fast, handles video/HEIC/RAW). */
-data class Thumb(val item: MediaItem, val sizePx: Int = 384)
+data class Thumb(val item: MediaItem, val sizePx: Int = 384) {
+    /** Memory cache key; the viewer uses it to show the grid thumbnail while the full image loads. */
+    val cacheKey: String get() = "thumb:${item.uri}:${item.dateModified}:${item.size}:$sizePx"
+}
 
 /** Full-size preview of a RAW photo, taken from the embedded JPEG. */
 data class RawPreview(val item: MediaItem)
@@ -67,14 +75,16 @@ class ThumbMapper : Mapper<Thumb, File> {
 }
 
 class ThumbKeyer : Keyer<Thumb> {
-    override fun key(data: Thumb, options: Options) =
-        "thumb:${data.item.uri}:${data.item.dateModified}:${data.item.size}:${data.sizePx}"
+    override fun key(data: Thumb, options: Options) = data.cacheKey
 }
 
 class RawFetcher(private val data: RawPreview, private val context: Context) : Fetcher {
     override suspend fun fetch(): FetchResult {
-        val bitmap = RawDecoder.decode(context, data.item.uri, 4096)
-            ?: throw IllegalStateException("cannot decode RAW ${data.item.path}")
+        val item = data.item
+        val cached = RawCache.file(context, item)
+        val bitmap = RawCache.read(cached)
+            ?: RawDecoder.decode(context, item.uri, 4096)?.also { RawCache.write(cached, it) }
+            ?: throw IllegalStateException("cannot decode RAW ${item.path}")
         return ImageFetchResult(bitmap.asImage(), isSampled = true, dataSource = DataSource.DISK)
     }
 
@@ -86,6 +96,40 @@ class RawFetcher(private val data: RawPreview, private val context: Context) : F
 
 class RawKeyer : Keyer<RawPreview> {
     override fun key(data: RawPreview, options: Options) = "raw:${data.item.uri}:${data.item.dateModified}"
+}
+
+/**
+ * Decoded RAW previews saved as JPEG. Developing a RAW file (e.g. a 50 MP Pixel DNG) takes seconds;
+ * reading the saved JPEG back takes a fraction of that.
+ */
+object RawCache {
+    private const val MAX_FILES = 300
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    fun file(context: Context, item: MediaItem): File {
+        val key = "${item.uri}:${item.dateModified}:${item.size}"
+        return context.cacheDir.resolve("raw_preview").resolve("${UUID.nameUUIDFromBytes(key.toByteArray())}.jpg")
+    }
+
+    fun read(file: File): Bitmap? =
+        if (file.isFile) runCatching { BitmapFactory.decodeFile(file.path) }.getOrNull() else null
+
+    /** Saves in the background so the first view isn't held up by JPEG encoding. */
+    fun write(file: File, bitmap: Bitmap) {
+        scope.launch {
+            runCatching {
+                val dir = file.parentFile ?: return@runCatching
+                dir.mkdirs()
+                val tmp = File(dir, "${file.name}.tmp")
+                tmp.outputStream().use { bitmap.compress(Bitmap.CompressFormat.JPEG, 92, it) }
+                if (!tmp.renameTo(file)) tmp.delete()
+                dir.listFiles { f -> f.extension == "jpg" }
+                    ?.sortedByDescending { it.lastModified() }
+                    ?.drop(MAX_FILES)
+                    ?.forEach { it.delete() }
+            }
+        }
+    }
 }
 
 object RawDecoder {

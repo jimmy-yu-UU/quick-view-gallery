@@ -58,6 +58,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.jimmyyu.qvgallery.data.MediaItem
 import com.jimmyyu.qvgallery.image.Thumb
 import java.io.File
@@ -105,8 +106,11 @@ fun MediaThumbnail(
     showBadges: Boolean = true,
 ) {
     Box(modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh)) {
+        val context = LocalContext.current
+        val thumb = remember(item) { Thumb(item) }
         AsyncImage(
-            model = Thumb(item),
+            // Explicit key so the viewer can find this bitmap as its placeholder, whichever fetcher made it.
+            model = remember(thumb) { ImageRequest.Builder(context).data(thumb).memoryCacheKey(thumb.cacheKey).build() },
             contentDescription = item.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),

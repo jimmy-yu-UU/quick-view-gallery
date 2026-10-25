@@ -3,6 +3,7 @@ package com.jimmyyu.qvgallery.ui
 import com.jimmyyu.qvgallery.tr
 import com.jimmyyu.qvgallery.R
 import android.app.Activity
+import android.text.format.DateFormat
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -64,6 +65,9 @@ import com.jimmyyu.qvgallery.data.AppSettings
 import com.jimmyyu.qvgallery.data.MediaItem
 import com.jimmyyu.qvgallery.data.MediaSort
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Deletes media, falling back to the system confirmation dialog for files we may not delete directly.
@@ -234,38 +238,55 @@ fun AlbumScreen(
             }
             return@Scaffold
         }
-        LazyVerticalGrid(
-            state = gridState,
-            columns = GridCells.Fixed(settings.mediaColumns.coerceIn(2, 8)),
-            contentPadding = PaddingValues(top = padding.calculateTopPadding(), bottom = padding.calculateBottomPadding()),
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            itemsIndexed(items, key = { _, it -> it.path }) { index, item ->
-                val selected = item.path in selection
-                MediaThumbnail(
-                    item,
-                    selected = selected.takeIf { selecting },
-                    modifier = Modifier
-                        .aspectRatio(1f)
-                        .combinedClickable(
-                            onClick = {
-                                if (selecting) selection = if (selected) selection - item.path else selection + item.path
-                                else onOpen(index)
-                            },
-                            onLongClick = { selection = if (selected) selection - item.path else selection + item.path },
-                        ),
-                )
+        val monthFormat = remember { SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "yMMM"), Locale.getDefault()) }
+        Box(Modifier.fillMaxSize()) {
+            LazyVerticalGrid(
+                state = gridState,
+                columns = GridCells.Fixed(settings.mediaColumns.coerceIn(2, 8)),
+                contentPadding = PaddingValues(top = padding.calculateTopPadding(), bottom = padding.calculateBottomPadding()),
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                itemsIndexed(items, key = { _, it -> it.path }) { index, item ->
+                    val selected = item.path in selection
+                    MediaThumbnail(
+                        item,
+                        selected = selected.takeIf { selecting },
+                        modifier = Modifier
+                            .aspectRatio(1f)
+                            .combinedClickable(
+                                onClick = {
+                                    if (selecting) selection = if (selected) selection - item.path else selection + item.path
+                                    else onOpen(index)
+                                },
+                                onLongClick = { selection = if (selected) selection - item.path else selection + item.path },
+                            ),
+                    )
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    val photos = items.count { !it.isVideo }
+                    Text(
+                        tr(R.string.album_footer, photos, items.size - photos, formatSize(context, items.sumOf { it.size })),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    )
+                }
             }
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                val photos = items.count { !it.isVideo }
-                Text(
-                    tr(R.string.album_footer, photos, items.size - photos, formatSize(context, items.sumOf { it.size })),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                )
+            FastScroller(
+                gridState,
+                topPadding = padding.calculateTopPadding(),
+                bottomPadding = padding.calculateBottomPadding(),
+            ) { index ->
+                items.getOrNull(index)?.let { item ->
+                    when (settings.mediaSort) {
+                        MediaSort.DATE_TAKEN -> monthFormat.format(Date(item.dateTaken))
+                        MediaSort.DATE_MODIFIED -> monthFormat.format(Date(item.dateModified))
+                        MediaSort.NAME -> item.name.take(1).uppercase()
+                        MediaSort.SIZE -> formatSize(context, item.size)
+                    }
+                }
             }
         }
     }

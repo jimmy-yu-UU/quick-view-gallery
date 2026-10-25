@@ -73,6 +73,7 @@ import com.jimmyyu.qvgallery.data.AppSettings
 import com.jimmyyu.qvgallery.data.MediaItem
 import com.jimmyyu.qvgallery.data.ViewerBackground
 import com.jimmyyu.qvgallery.image.RawPreview
+import com.jimmyyu.qvgallery.image.Thumb
 import com.jimmyyu.qvgallery.ui.FolderPickerDialog
 import com.jimmyyu.qvgallery.ui.GalleryViewModel
 import com.jimmyyu.qvgallery.ui.TextInputDialog
@@ -211,11 +212,14 @@ fun ViewerScreen(
                     // Reset zoom on pages scrolled away from.
                     LaunchedEffect(Unit) { zoomable.resetZoom(withAnimation = false) }
                 }
-                val model: Any = if (item.isRaw) RawPreview(item) else
+                // The grid thumbnail is already in memory: show it at once while the full image decodes.
+                val model = remember(item) {
                     ImageRequest.Builder(context)
-                        .data(item.uri)
-                        .memoryCacheKey("${item.uri}#${item.dateModified}#${item.size}")
+                        .data(if (item.isRaw) RawPreview(item) else item.uri)
+                        .apply { if (!item.isRaw) memoryCacheKey("${item.uri}#${item.dateModified}#${item.size}") }
+                        .placeholderMemoryCacheKey(Thumb(item).cacheKey)
                         .build()
+                }
                 ZoomableAsyncImage(
                     model = model,
                     contentDescription = item.name,
