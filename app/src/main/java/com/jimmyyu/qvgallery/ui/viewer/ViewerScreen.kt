@@ -58,6 +58,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -227,7 +228,7 @@ fun ViewerScreen(
                     state = rememberZoomableImageState(zoomable),
                     modifier = Modifier.fillMaxSize(),
                     onClick = { showUi = !showUi },
-                    onDoubleClick = DoubleClickToZoomListener.cycle(settings.doubleTapZoom.coerceAtMost(settings.maxZoom)),
+                    onDoubleClick = DoubleTapZoom(settings.doubleTapZoom),
                 )
             }
         }
@@ -385,5 +386,17 @@ fun ViewerScreen(
                 onDismiss = { moveTarget = null },
             )
         }
+    }
+}
+
+/**
+ * Double-tap zooms by [factor] relative to the photo as it fits the screen, then back out. Telephoto's
+ * own listener zooms to [factor] of the image's full resolution instead, which on a 50 MP JPEG means
+ * close to the maximum zoom.
+ */
+private data class DoubleTapZoom(private val factor: Float) : DoubleClickToZoomListener {
+    override suspend fun onDoubleClick(state: ZoomableState, centroid: Offset) {
+        val zoomed = (state.zoomFraction ?: return) > 0.01f
+        if (zoomed) state.resetZoom() else state.zoomBy(factor, centroid)
     }
 }
