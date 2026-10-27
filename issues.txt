@@ -1,0 +1,37 @@
+app/src/main/AndroidManifest.xml:25 [SECURITY:LOW] xml:S5332 Make sure allowing clear-text traffic is safe here.
+app/src/main/assets/web/index.html:112 [MAINTAINABILITY:LOW] javascript:S7744 The empty object is useless.
+app/src/main/assets/web/index.html:252 [MAINTAINABILITY:LOW] javascript:S9382 Unexpected `await` inside a loop.
+app/src/main/assets/web/index.html:269 [MAINTAINABILITY:MEDIUM] javascript:S7785 Prefer top-level await over an async function `showAlbums` call.
+app/src/main/assets/web/index.html:270 [MAINTAINABILITY:LOW] javascript:S2486 Handle this exception, don't catch it at all, or explain in a comment why it is ignored.
+app/src/main/java/com/jimmyyu/qvgallery/ViewActivity.kt:74 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/data/FileOps.kt:102 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/data/FileOps.kt:113 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/data/FileOps.kt:26 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/data/FileOps.kt:51 [MAINTAINABILITY:HIGH] kotlin:S3776 Refactor this method to reduce its Cognitive Complexity from 31 to the 15 allowed.
+app/src/main/java/com/jimmyyu/qvgallery/data/FileOps.kt:51 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/data/FileOps.kt:93 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/data/MediaRepository.kt:17 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/data/MediaRepository.kt:34 [MAINTAINABILITY:HIGH] kotlin:S3776 Refactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.
+app/src/main/java/com/jimmyyu/qvgallery/data/Updates.kt:154 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/data/Updates.kt:43 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/data/Updates.kt:45 [MAINTAINABILITY:LOW] kotlin:S1874 Deprecated code should not be used.
+app/src/main/java/com/jimmyyu/qvgallery/transfer/SendController.kt:48 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/transfer/SendController.kt:63 [MAINTAINABILITY:HIGH] kotlin:S3776 Refactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.
+app/src/main/java/com/jimmyyu/qvgallery/transfer/SendController.kt:67 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/transfer/TransferClient.kt:15 [MAINTAINABILITY:LOW] kotlin:S1874 Deprecated code should not be used.
+app/src/main/java/com/jimmyyu/qvgallery/transfer/TransferServer.kt:410 [MAINTAINABILITY:MEDIUM] kotlin:S6619 Remove this useless elvis operation ?:, it always succeeds.
+app/src/main/java/com/jimmyyu/qvgallery/transfer/TransferService.kt:29 [MAINTAINABILITY:MEDIUM] kotlin:S6516 Replace explicit functional interface implementation with lambda expression.
+app/src/main/java/com/jimmyyu/qvgallery/ui/AlbumsScreen.kt:102 [MAINTAINABILITY:HIGH] kotlin:S3776 Refactor this method to reduce its Cognitive Complexity from 142 to the 45 allowed.
+app/src/main/java/com/jimmyyu/qvgallery/ui/EditorScreen.kt:189 [MAINTAINABILITY:HIGH] kotlin:S3776 Refactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.
+app/src/main/java/com/jimmyyu/qvgallery/ui/EditorScreen.kt:197 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/ui/EditorScreen.kt:98 [MAINTAINABILITY:HIGH] kotlin:S3776 Refactor this method to reduce its Cognitive Complexity from 67 to the 45 allowed.
+app/src/main/java/com/jimmyyu/qvgallery/ui/GalleryViewModel.kt:249 [MAINTAINABILITY:MEDIUM] kotlin:S6516 Replace explicit functional interface implementation with lambda expression.
+app/src/main/java/com/jimmyyu/qvgallery/ui/GalleryViewModel.kt:250 [MAINTAINABILITY:HIGH] kotlin:S3776 Refactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.
+app/src/main/java/com/jimmyyu/qvgallery/ui/SettingsScreen.kt:417 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/ui/SlideshowScreen.kt:72 [MAINTAINABILITY:HIGH] kotlin:S3776 Refactor this method to reduce its Cognitive Complexity from 49 to the 45 allowed.
+app/src/main/java/com/jimmyyu/qvgallery/ui/TransferScreen.kt:363 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/ui/lock/LockScreen.kt:89 [MAINTAINABILITY:MEDIUM] kotlin:S6619 Remove this useless null check, it always fails.
+app/src/main/java/com/jimmyyu/qvgallery/ui/viewer/ViewerParts.kt:108 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/ui/viewer/ViewerParts.kt:129 [MAINTAINABILITY:MEDIUM] kotlin:S6310 Avoid hardcoded dispatchers.
+app/src/main/java/com/jimmyyu/qvgallery/ui/viewer/ViewerParts.kt:169 [MAINTAINABILITY:MEDIUM] kotlin:S6619 Remove this useless null-safe access ?., it always succeeds.
+app/src/main/java/com/jimmyyu/qvgallery/ui/viewer/ViewerScreen.kt:92 [MAINTAINABILITY:HIGH] kotlin:S3776 Refactor this method to reduce its Cognitive Complexity from 119 to the 45 allowed.
