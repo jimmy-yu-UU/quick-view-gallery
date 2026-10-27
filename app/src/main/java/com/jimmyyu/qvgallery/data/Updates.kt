@@ -147,9 +147,8 @@ class ApkDownloader(private val context: Context) {
     }
 
     /**
-     * Installs the downloaded APK through a PackageInstaller session; the system shows its usual
-     * confirmation screen. Installing silently (USER_ACTION_NOT_REQUIRED) made Play Protect flag the
-     * app as harmful, since downloading and installing APKs without asking is how droppers behave.
+     * Installs the downloaded APK through a PackageInstaller session. Because the app is updating
+     * itself, Android 12+ skips the confirmation screen; otherwise the system asks as usual.
      * Returns false when the user first has to allow installing from this app.
      */
     suspend fun install(info: ReleaseInfo): Boolean = withContext(Dispatchers.IO) {
@@ -165,6 +164,9 @@ class ApkDownloader(private val context: Context) {
         val params = PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL).apply {
             setAppPackageName(context.packageName)
             setSize(file.length())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                setRequireUserAction(PackageInstaller.SessionParams.USER_ACTION_NOT_REQUIRED)
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 setPackageSource(PackageInstaller.PACKAGE_SOURCE_DOWNLOADED_FILE)
             }
@@ -187,7 +189,7 @@ class ApkDownloader(private val context: Context) {
     }
 }
 
-/** Receives the install session result and shows the system's confirmation screen when asked to. */
+/** Receives the install session result; shows the system prompt if Android still wants confirmation. */
 class InstallResultReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.getIntExtra(PackageInstaller.EXTRA_STATUS, PackageInstaller.STATUS_FAILURE)) {
